@@ -83,8 +83,12 @@ onUnmounted(() => {
   gap: var(--spacing-sm);
   font-weight: 700;
   font-size: var(--font-size-xl);
-  color: var(--color-text-primary);
+  color: white;
   text-decoration: none;
+}
+
+.navbar.scrolled .logo {
+  color: var(--color-text-primary);
 }
 
 .logo-icon {
@@ -107,7 +111,7 @@ onUnmounted(() => {
 
 .nav-link {
   font-weight: 500;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: none;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-base);
@@ -119,11 +123,25 @@ onUnmounted(() => {
 
 .nav-link:hover,
 .nav-link.router-link-active {
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-link.external {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar.scrolled .nav-link {
+  color: var(--color-text-secondary);
+}
+
+.navbar.scrolled .nav-link:hover,
+.navbar.scrolled .nav-link.router-link-active {
   color: var(--color-primary);
   background: rgba(102, 126, 234, 0.1);
 }
 
-.nav-link.external {
+.navbar.scrolled .nav-link.external {
   color: var(--color-primary);
 }
 
@@ -133,6 +151,10 @@ onUnmounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: white;
+}
+
+.navbar.scrolled .mobile-menu-btn {
   color: var(--color-text-primary);
 }
 
