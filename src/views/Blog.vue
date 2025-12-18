@@ -15,21 +15,21 @@
         <div class="featured-post">
           <div class="post-image">
             <div class="featured-icon">
-              <span>🔧</span>
+              <span>🧠</span>
             </div>
           </div>
           <div class="post-content">
             <div class="post-meta">
-              <span class="post-category">AI 协作开发</span>
-              <span class="post-date">2024年12月</span>
+              <span class="post-category">AI 深度对话</span>
+              <span class="post-date">2024年12月19日</span>
               <span class="post-badge new">NEW</span>
             </div>
-            <h2>从 AI Coding Template 到人机协同 Workflow</h2>
+            <h2>AI 规划能力与自我反思机制：一次深度对话</h2>
             <p>
-              我们是如何把 AI 变成"可执行的同事"的 —— 不是"怎么更好地用 AI 写代码"，
-              而是"怎么把 AI 纳入一个可复制、可扩展的工作流程里"。
+              在开发 AI 协作开发框架过程中，关于 AI 如何思考、规划和自我校验的探讨。
+              AI 自己是怎么做规划的？我们设计的这些流程，和 AI 内部的思考过程有什么关系？
             </p>
-            <router-link to="/blog/ai-coding-template-to-workflow" class="btn btn-primary">
+            <router-link to="/blog/ai-planning-and-reflection" class="btn btn-primary">
               阅读全文
               <el-icon><ArrowRight /></el-icon>
             </router-link>
@@ -118,12 +118,24 @@ const activeCategory = ref('all')
 const categories = [
   { id: 'all', name: '全部' },
   { id: 'ai-coding', name: 'AI 协作开发' },
+  { id: 'ai-dialogue', name: 'AI 深度对话' },
   { id: 'team', name: '团队转型' },
   { id: 'tools', name: '工具与实践' },
   { id: 'thoughts', name: '思考' }
 ]
 
 const posts = ref([
+  {
+    id: -2,
+    title: 'AI 规划能力与自我反思机制：一次深度对话',
+    excerpt: '在开发 AI 协作开发框架过程中，关于 AI 如何思考、规划和自我校验的探讨。AI 自己是怎么做规划的？',
+    category: 'AI 深度对话',
+    categoryId: 'ai-dialogue',
+    date: '2024年12月19日',
+    link: '/blog/ai-planning-and-reflection',
+    isInternal: true,
+    isNew: true
+  },
   {
     id: -1,
     title: '从 AI Coding Template 到人机协同 Workflow',
@@ -132,8 +144,7 @@ const posts = ref([
     categoryId: 'ai-coding',
     date: '2024年12月',
     link: '/blog/ai-coding-template-to-workflow',
-    isInternal: true,
-    isNew: true
+    isInternal: true
   },
   {
     id: 0,

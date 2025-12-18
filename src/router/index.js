@@ -7,6 +7,7 @@ import About from '../views/About.vue'
 // Articles
 import AiThreeNonDeliverances from '../views/articles/AiThreeNonDeliverances.vue'
 import AiCodingTemplateToWorkflow from '../views/articles/AiCodingTemplateToWorkflow.vue'
+import AiPlanningAndReflection from '../views/articles/AiPlanningAndReflection.vue'
 
 const routes = [
   {
@@ -39,6 +40,11 @@ const routes = [
     path: '/blog/ai-coding-template-to-workflow',
     name: 'AiCodingTemplateToWorkflow',
     component: AiCodingTemplateToWorkflow
+  },
+  {
+    path: '/blog/ai-planning-and-reflection',
+    name: 'AiPlanningAndReflection',
+    component: AiPlanningAndReflection
   }
 ]
 
