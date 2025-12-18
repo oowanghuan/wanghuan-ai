@@ -15,21 +15,21 @@
         <div class="featured-post">
           <div class="post-image">
             <div class="featured-icon">
-              <span>🧘‍♂️</span>
+              <span>🔧</span>
             </div>
           </div>
           <div class="post-content">
             <div class="post-meta">
-              <span class="post-category">思考</span>
+              <span class="post-category">AI 协作开发</span>
               <span class="post-date">2024年12月</span>
               <span class="post-badge new">NEW</span>
             </div>
-            <h2>AI 的三不渡</h2>
+            <h2>从 AI Coding Template 到人机协同 Workflow</h2>
             <p>
-              写给 AI Coding 时代的先行者 —— AI 时代的先行者不是救世主，而是点灯人。
-              灯点在那，愿来的自然会靠近；缘到的人会主动伸手；信具足的人会迅速成长。
+              我们是如何把 AI 变成"可执行的同事"的 —— 不是"怎么更好地用 AI 写代码"，
+              而是"怎么把 AI 纳入一个可复制、可扩展的工作流程里"。
             </p>
-            <router-link to="/blog/ai-three-non-deliverances" class="btn btn-primary">
+            <router-link to="/blog/ai-coding-template-to-workflow" class="btn btn-primary">
               阅读全文
               <el-icon><ArrowRight /></el-icon>
             </router-link>
@@ -125,6 +125,17 @@ const categories = [
 
 const posts = ref([
   {
+    id: -1,
+    title: '从 AI Coding Template 到人机协同 Workflow',
+    excerpt: '我们是如何把 AI 变成"可执行的同事"的 —— 把 AI 纳入一个可复制、可扩展的工作流程里。',
+    category: 'AI 协作开发',
+    categoryId: 'ai-coding',
+    date: '2024年12月',
+    link: '/blog/ai-coding-template-to-workflow',
+    isInternal: true,
+    isNew: true
+  },
+  {
     id: 0,
     title: 'AI 的三不渡',
     excerpt: '写给 AI Coding 时代的先行者 —— 无缘者不渡、无信者不渡、无愿者不渡。AI 将渡的是愿意自渡的人。',
@@ -132,8 +143,7 @@ const posts = ref([
     categoryId: 'thoughts',
     date: '2024年12月',
     link: '/blog/ai-three-non-deliverances',
-    isInternal: true,
-    isNew: true
+    isInternal: true
   },
   {
     id: 1,

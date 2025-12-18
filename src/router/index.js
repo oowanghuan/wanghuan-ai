@@ -6,6 +6,7 @@ import About from '../views/About.vue'
 
 // Articles
 import AiThreeNonDeliverances from '../views/articles/AiThreeNonDeliverances.vue'
+import AiCodingTemplateToWorkflow from '../views/articles/AiCodingTemplateToWorkflow.vue'
 
 const routes = [
   {
@@ -33,6 +34,11 @@ const routes = [
     path: '/blog/ai-three-non-deliverances',
     name: 'AiThreeNonDeliverances',
     component: AiThreeNonDeliverances
+  },
+  {
+    path: '/blog/ai-coding-template-to-workflow',
+    name: 'AiCodingTemplateToWorkflow',
+    component: AiCodingTemplateToWorkflow
   }
 ]
 
