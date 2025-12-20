@@ -11,6 +11,10 @@
 <script setup>
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
+import { inject } from '@vercel/analytics'
+
+// 初始化 Vercel Analytics
+inject()
 </script>
 
 <style>
