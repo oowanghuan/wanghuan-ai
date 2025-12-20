@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import ParticleHome from '../views/ParticleHome.vue'
 import Products from '../views/Products.vue'
 import Blog from '../views/Blog.vue'
 import About from '../views/About.vue'
@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: ParticleHome
   },
   {
     path: '/products',

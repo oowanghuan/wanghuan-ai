@@ -1,472 +1,620 @@
 <template>
   <div class="blog-page">
-    <!-- Hero -->
-    <section class="page-hero">
-      <div class="container">
-        <h1>博客</h1>
-        <p>AI 协作开发的实战经验与思考</p>
-      </div>
-    </section>
+    <!-- Subtle background / atmosphere -->
+    <div class="bg" aria-hidden="true"></div>
 
-    <!-- Blog Content -->
-    <section class="section">
-      <div class="container">
-        <!-- Featured Post -->
-        <div class="featured-post">
-          <div class="post-image">
-            <div class="featured-icon">
-              <span>🧠</span>
-            </div>
-          </div>
-          <div class="post-content">
-            <div class="post-meta">
-              <span class="post-category">AI 深度对话</span>
-              <span class="post-date">2024年12月19日</span>
-              <span class="post-badge new">NEW</span>
-            </div>
-            <h2>AI 规划能力与自我反思机制：一次深度对话</h2>
-            <p>
-              在开发 AI 协作开发框架过程中，关于 AI 如何思考、规划和自我校验的探讨。
-              AI 自己是怎么做规划的？我们设计的这些流程，和 AI 内部的思考过程有什么关系？
-            </p>
-            <router-link to="/blog/ai-planning-and-reflection" class="btn btn-primary">
-              阅读全文
-              <el-icon><ArrowRight /></el-icon>
-            </router-link>
-          </div>
+    <header class="top">
+      <div class="kicker">{{ $t('blog.kicker') }}</div>
+      <h1 class="title">{{ $t('blog.title') }}</h1>
+      <p class="desc">
+        {{ $t('blog.desc') }}
+      </p>
+
+      <div class="controls">
+        <div class="search">
+          <span class="search-icon">⌘</span>
+          <input
+            v-model="searchQuery"
+            class="search-input"
+            type="text"
+            :placeholder="$t('blog.searchPlaceholder')"
+            autocomplete="off"
+          />
+          <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''" title="清空">×</button>
         </div>
 
-        <!-- Categories -->
-        <div class="categories">
+        <div class="chips" role="tablist" aria-label="标签筛选">
           <button
-            v-for="cat in categories"
-            :key="cat.id"
-            :class="['category-btn', { active: activeCategory === cat.id }]"
-            @click="activeCategory = cat.id"
+            class="chip"
+            :class="{ active: activeTag === allTag }"
+            @click="activeTag = allTag"
+            role="tab"
           >
-            {{ cat.name }}
+            {{ $t('blog.all') }}
+          </button>
+          <button
+            v-for="tag in topTags"
+            :key="tag"
+            class="chip"
+            :class="{ active: activeTag === tag }"
+            @click="activeTag = tag"
+            role="tab"
+          >
+            {{ tag }}
           </button>
         </div>
-
-        <!-- Posts Grid -->
-        <div class="posts-grid">
-          <article v-for="post in filteredPosts" :key="post.id" class="post-card">
-            <div class="post-card-image">
-              <div class="placeholder-image small">
-                <el-icon><Document /></el-icon>
-              </div>
-            </div>
-            <div class="post-card-content">
-              <div class="post-meta">
-                <span class="post-category">{{ post.category }}</span>
-                <span class="post-date">{{ post.date }}</span>
-              </div>
-              <h3>{{ post.title }}</h3>
-              <p>{{ post.excerpt }}</p>
-              <router-link v-if="post.isInternal" :to="post.link" class="read-more">
-                阅读更多 <el-icon><ArrowRight /></el-icon>
-              </router-link>
-              <a v-else :href="post.link" target="_blank" class="read-more">
-                阅读更多 <el-icon><ArrowRight /></el-icon>
-              </a>
-            </div>
-          </article>
-        </div>
-
-        <!-- Coming Soon Notice -->
-        <div class="coming-soon-notice">
-          <el-icon><Edit /></el-icon>
-          <div>
-            <h4>更多文章即将发布</h4>
-            <p>我正在整理更多关于 AI 协作开发的实战经验，敬请期待</p>
-          </div>
-        </div>
-
-        <!-- Newsletter -->
-        <div class="newsletter">
-          <h3>订阅更新</h3>
-          <p>第一时间获取新文章和产品更新</p>
-          <form class="newsletter-form" @submit.prevent="handleSubscribe">
-            <el-input
-              v-model="email"
-              placeholder="your@email.com"
-              size="large"
-            >
-              <template #prefix>
-                <el-icon><Message /></el-icon>
-              </template>
-            </el-input>
-            <el-button type="primary" size="large" native-type="submit">
-              订阅
-            </el-button>
-          </form>
-          <p class="newsletter-note">暂未开通，敬请期待</p>
-        </div>
       </div>
-    </section>
+    </header>
+
+    <main class="content">
+      <!-- Empty -->
+      <section v-if="grouped.length === 0" class="empty">
+        <div class="empty-title">{{ $t('blog.noResults') }}</div>
+        <div class="empty-desc">{{ $t('blog.tryAgain') }}</div>
+      </section>
+
+      <!-- Year groups -->
+      <section v-for="g in grouped" :key="g.year" class="year-block">
+        <div class="year-head">
+          <div class="year">{{ g.year }}</div>
+          <div class="year-meta">{{ g.items.length }} {{ $t('blog.articles') }}</div>
+        </div>
+
+        <ol class="list">
+          <li v-for="post in g.items" :key="post.slug" class="item">
+            <router-link v-if="post.isInternal" class="item-link" :to="post.link">
+              <article class="row">
+                <div class="row-main">
+                  <div class="row-title">{{ post.title }}</div>
+                  <div v-if="post.subtitle" class="row-sub">{{ post.subtitle }}</div>
+                  <div class="row-summary">{{ post.summary }}</div>
+                  <div class="row-meta">
+                    <span class="meta-text">{{ post.dateDisplay }}{{ post.readingMins ? ` · ${post.readingMins} min` : '' }}</span>
+                    <span class="meta-tags">
+                      <span v-for="t in post.tags" :key="t" class="tag">{{ t }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row-arrow" aria-hidden="true">→</div>
+              </article>
+            </router-link>
+
+            <a v-else class="item-link" :href="post.link" target="_blank">
+              <article class="row">
+                <div class="row-main">
+                  <div class="row-title">
+                    {{ post.title }}
+                    <span class="external-icon">↗</span>
+                  </div>
+                  <div v-if="post.subtitle" class="row-sub">{{ post.subtitle }}</div>
+                  <div class="row-summary">{{ post.summary }}</div>
+                  <div class="row-meta">
+                    <span class="meta-text">{{ post.dateDisplay }}{{ post.readingMins ? ` · ${post.readingMins} min` : '' }}</span>
+                    <span class="meta-tags">
+                      <span v-for="t in post.tags" :key="t" class="tag">{{ t }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="row-arrow" aria-hidden="true">→</div>
+              </article>
+            </a>
+          </li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-line"></div>
+      <div class="footer-text">
+        {{ $t('blog.footerCta') }}
+        <router-link class="footer-link" to="/products">{{ $t('blog.footerLink') }}</router-link>
+      </div>
+    </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { Document, TopRight, ArrowRight, Edit, Message } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { computed, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
-const email = ref('')
-const activeCategory = ref('all')
+const { t, locale } = useI18n()
 
-const categories = [
-  { id: 'all', name: '全部' },
-  { id: 'ai-coding', name: 'AI 协作开发' },
-  { id: 'ai-dialogue', name: 'AI 深度对话' },
-  { id: 'team', name: '团队转型' },
-  { id: 'tools', name: '工具与实践' },
-  { id: 'thoughts', name: '思考' }
-]
+const searchQuery = ref('')
+const allTag = computed(() => t('blog.all'))
+const activeTag = ref(allTag.value)
 
 const posts = ref([
   {
-    id: -2,
     title: 'AI 规划能力与自我反思机制：一次深度对话',
-    excerpt: '在开发 AI 协作开发框架过程中，关于 AI 如何思考、规划和自我校验的探讨。AI 自己是怎么做规划的？',
-    category: 'AI 深度对话',
-    categoryId: 'ai-dialogue',
-    date: '2024年12月19日',
+    subtitle: '从"能写代码"到"能自校验"的关键机制',
+    slug: 'ai-planning-and-reflection',
+    date: '2024-12-19',
+    dateDisplay: '2024/12/19',
+    tags: ['AI-Coding', 'Reflection', 'Architecture'],
+    summary: '在开发 AI 协作开发框架过程中，梳理 AI 如何规划、如何自我校验、以及我们该如何把这些能力变成工程化流程。',
+    readingMins: 12,
     link: '/blog/ai-planning-and-reflection',
-    isInternal: true,
-    isNew: true
+    isInternal: true
   },
   {
-    id: -1,
     title: '从 AI Coding Template 到人机协同 Workflow',
-    excerpt: '我们是如何把 AI 变成"可执行的同事"的 —— 把 AI 纳入一个可复制、可扩展的工作流程里。',
-    category: 'AI 协作开发',
-    categoryId: 'ai-coding',
-    date: '2024年12月',
+    subtitle: '让 AI 变成可重复、可交付的"同事"',
+    slug: 'ai-coding-template-to-workflow',
+    date: '2024-12-10',
+    dateDisplay: '2024/12/10',
+    tags: ['Workflow', 'Spec-Driven', 'Tooling'],
+    summary: '把对话变成流程：Context → Spec → Demo → Review → Integrate。以及在团队协作中如何避免 spec 过大与上下文爆炸。',
+    readingMins: 10,
     link: '/blog/ai-coding-template-to-workflow',
     isInternal: true
   },
   {
-    id: 0,
     title: 'AI 的三不渡',
-    excerpt: '写给 AI Coding 时代的先行者 —— 无缘者不渡、无信者不渡、无愿者不渡。AI 将渡的是愿意自渡的人。',
-    category: '思考',
-    categoryId: 'thoughts',
-    date: '2024年12月',
+    subtitle: '写给 AI Coding 时代的先行者',
+    slug: 'ai-three-non-deliverances',
+    date: '2024-12-05',
+    dateDisplay: '2024/12/05',
+    tags: ['Reflection', 'Philosophy'],
+    summary: '无缘者不渡、无信者不渡、无愿者不渡。AI 将渡的是愿意自渡的人。',
+    readingMins: 6,
     link: '/blog/ai-three-non-deliverances',
     isInternal: true
   },
   {
-    id: 1,
     title: '为什么传统开发模式在 AI 时代失效了',
-    excerpt: '探讨 AI coding 带来的三个核心变化：编码成本趋零、瓶颈转移、协作模式重构。',
-    category: '团队转型',
-    categoryId: 'team',
-    date: '2024年12月',
-    link: 'https://ai-coding-org.vercel.app/why-change'
+    slug: 'why-change',
+    date: '2024-11-28',
+    dateDisplay: '2024/11/28',
+    tags: ['Team', 'Transformation'],
+    summary: '探讨 AI coding 带来的三个核心变化：编码成本趋零、瓶颈转移、协作模式重构。',
+    readingMins: 8,
+    link: 'https://ai-coding-org.vercel.app/why-change',
+    isInternal: false
   },
   {
-    id: 2,
     title: 'AI Product Engineer：新时代的核心角色',
-    excerpt: '详解 AI PE 的职责、能力要求和工作方式，为什么它是连接需求和实现的关键。',
-    category: 'AI 协作开发',
-    categoryId: 'ai-coding',
-    date: '2024年12月',
-    link: 'https://ai-coding-org.vercel.app/deep-dive/ai-pe'
+    slug: 'ai-pe',
+    date: '2024-11-20',
+    dateDisplay: '2024/11/20',
+    tags: ['AI-Coding', 'Role', 'Team'],
+    summary: '详解 AI PE 的职责、能力要求和工作方式，为什么它是连接需求和实现的关键。',
+    readingMins: 10,
+    link: 'https://ai-coding-org.vercel.app/deep-dive/ai-pe',
+    isInternal: false
   },
   {
-    id: 3,
     title: 'Spec 驱动开发：让 AI 更好地理解需求',
-    excerpt: '如何写出 AI 能理解的结构化需求文档，提高 AI 生成代码的质量。',
-    category: '工具与实践',
-    categoryId: 'tools',
-    date: '2024年12月',
-    link: 'https://ai-coding-org.vercel.app/deep-dive/ai-pe-spec-template'
+    slug: 'spec-driven',
+    date: '2024-11-15',
+    dateDisplay: '2024/11/15',
+    tags: ['Spec-Driven', 'Tooling', 'Process'],
+    summary: '如何写出 AI 能理解的结构化需求文档，提高 AI 生成代码的质量。',
+    readingMins: 9,
+    link: 'https://ai-coding-org.vercel.app/deep-dive/ai-pe-spec-template',
+    isInternal: false
   },
   {
-    id: 4,
     title: '架构师在 AI 时代的新定位',
-    excerpt: '从写代码到定规则，架构师如何成为 AI 开发的"规则制定者"。',
-    category: '团队转型',
-    categoryId: 'team',
-    date: '2024年12月',
-    link: 'https://ai-coding-org.vercel.app/deep-dive/architect-kickoff'
+    slug: 'architect-kickoff',
+    date: '2024-11-10',
+    dateDisplay: '2024/11/10',
+    tags: ['Architecture', 'Role', 'Team'],
+    summary: '从写代码到定规则，架构师如何成为 AI 开发的"规则制定者"。',
+    readingMins: 7,
+    link: 'https://ai-coding-org.vercel.app/deep-dive/architect-kickoff',
+    isInternal: false
   }
 ])
 
-const filteredPosts = computed(() => {
-  if (activeCategory.value === 'all') return posts.value
-  return posts.value.filter(p => p.categoryId === activeCategory.value)
+// 取常用标签（前 6 个）
+const topTags = computed(() => {
+  const map = new Map()
+  for (const p of posts.value) {
+    for (const t of p.tags) map.set(t, (map.get(t) ?? 0) + 1)
+  }
+  return [...map.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map((x) => x[0])
 })
 
-const handleSubscribe = () => {
-  ElMessage.info('订阅功能即将开通，敬请期待！')
-  email.value = ''
-}
+const filtered = computed(() => {
+  const kw = searchQuery.value.trim().toLowerCase()
+
+  return posts.value
+    .filter((p) => {
+      const tagOK = activeTag.value === allTag.value ? true : p.tags.includes(activeTag.value)
+      if (!tagOK) return false
+      if (!kw) return true
+
+      const hay = [
+        p.title,
+        p.subtitle ?? '',
+        p.summary,
+        p.tags.join(' '),
+        p.date,
+      ]
+        .join(' ')
+        .toLowerCase()
+
+      return hay.includes(kw)
+    })
+    .sort((a, b) => (a.date < b.date ? 1 : -1))
+})
+
+const grouped = computed(() => {
+  const byYear = new Map()
+  for (const p of filtered.value) {
+    const y = p.date.slice(0, 4)
+    if (!byYear.has(y)) byYear.set(y, [])
+    byYear.get(y).push(p)
+  }
+  return [...byYear.entries()]
+    .sort((a, b) => (a[0] < b[0] ? 1 : -1))
+    .map(([year, items]) => ({ year, items }))
+})
 </script>
 
 <style scoped>
-.page-hero {
-  background: var(--gradient-primary);
-  color: white;
-  padding: 140px 0 80px;
-  text-align: center;
+.blog-page {
+  position: relative;
+  min-height: 100vh;
+  color: rgba(255, 255, 255, 0.92);
+  padding: 120px 24px 60px;
 }
 
-.page-hero h1 {
-  color: white;
-  font-size: var(--font-size-5xl);
-  margin-bottom: var(--spacing-md);
+.bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(900px 700px at 20% 10%, rgba(139, 92, 246, 0.22), transparent 60%),
+    radial-gradient(700px 500px at 80% 20%, rgba(59, 130, 246, 0.16), transparent 55%),
+    radial-gradient(800px 700px at 55% 90%, rgba(139, 92, 246, 0.10), transparent 55%),
+    linear-gradient(180deg, #0c0a1d 0%, #1a1333 40%, #0f172a 100%);
 }
 
-.page-hero p {
-  font-size: var(--font-size-xl);
-  opacity: 0.9;
+/* Layout */
+.top,
+.content,
+.footer {
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
-/* Featured Post */
-.featured-post {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-2xl);
-  background: white;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  box-shadow: var(--shadow-lg);
-  margin-bottom: var(--spacing-3xl);
+.kicker {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.8);
+  margin-bottom: 10px;
 }
 
-.post-image {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.title {
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px;
+  font-weight: 650;
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.placeholder-image {
-  height: 100%;
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 64px;
-  color: white;
-  opacity: 0.5;
-}
-
-.placeholder-image.small {
-  min-height: 200px;
-  font-size: 48px;
-}
-
-.featured-icon {
-  height: 100%;
-  min-height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 120px;
-}
-
-.post-badge {
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-}
-
-.post-badge.new {
-  background: var(--color-accent-500);
-  color: white;
-}
-
-.post-content {
-  padding: var(--spacing-2xl);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.post-meta {
-  display: flex;
-  gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
-}
-
-.post-category {
-  background: rgba(102, 126, 234, 0.1);
-  color: var(--color-primary);
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  font-weight: 600;
-}
-
-.post-date {
-  color: var(--color-text-light);
-  font-size: var(--font-size-sm);
-}
-
-.post-content h2 {
-  font-size: var(--font-size-3xl);
-  margin-bottom: var(--spacing-md);
-}
-
-.post-content > p {
-  color: var(--color-text-secondary);
+.desc {
+  margin: 0;
+  max-width: 840px;
   line-height: 1.7;
-  margin-bottom: var(--spacing-xl);
+  color: rgba(196, 181, 253, 0.7);
 }
 
-/* Categories */
-.categories {
+/* Controls */
+.controls {
+  margin-top: 28px;
   display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-xl);
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(26, 19, 51, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  backdrop-filter: blur(12px);
+  min-width: 320px;
+  flex: 1 1 320px;
+  transition: all 0.2s ease;
+}
+
+.search:focus-within {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+}
+
+.search-icon {
+  font-size: 12px;
+  opacity: 0.55;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 8px;
+  padding: 4px 6px;
+  color: rgba(167, 139, 250, 0.8);
+}
+
+.search-input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 14px;
+}
+
+.search-input::placeholder {
+  color: rgba(196, 181, 253, 0.5);
+}
+
+.clear-btn {
+  border: 0;
+  background: rgba(139, 92, 246, 0.2);
+  color: rgba(196, 181, 253, 0.8);
+  width: 26px;
+  height: 26px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.clear-btn:hover {
+  background: rgba(139, 92, 246, 0.4);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chip {
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(26, 19, 51, 0.5);
+  color: rgba(196, 181, 253, 0.72);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.chip:hover {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.chip.active {
+  border-color: rgba(139, 92, 246, 0.6);
+  background: rgba(139, 92, 246, 0.25);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Content */
+.content {
+  margin-top: 36px;
+}
+
+.year-block {
+  margin-top: 32px;
+}
+
+.year-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 14px 4px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.year {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: white;
+}
+
+.year-meta {
+  font-size: 13px;
+  color: rgba(167, 139, 250, 0.6);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.item {
+  margin: 0;
+}
+
+.item-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 20px 4px;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.08);
+  transition: 0.2s ease;
+  border-radius: 8px;
+  margin: 0 -4px;
+}
+
+.item-link:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(139, 92, 246, 0.12),
+    rgba(139, 92, 246, 0.00)
+  );
+  padding-left: 12px;
+}
+
+/* Row */
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: center;
+}
+
+.row-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: white;
+}
+
+.external-icon {
+  font-size: 12px;
+  opacity: 0.5;
+  margin-left: 6px;
+}
+
+.row-sub {
+  margin-top: 6px;
+  font-size: 14px;
+  color: rgba(167, 139, 250, 0.8);
+}
+
+.row-summary {
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(196, 181, 253, 0.6);
+  max-width: 860px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.row-meta {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.meta-text {
+  font-size: 12px;
+  color: rgba(167, 139, 250, 0.55);
+}
+
+.meta-tags {
+  display: inline-flex;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.category-btn {
-  background: white;
-  border: 1px solid #e0e0e0;
-  padding: var(--spacing-sm) var(--spacing-lg);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-sm);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+.tag {
+  font-size: 11px;
+  color: rgba(196, 181, 253, 0.65);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.08);
 }
 
-.category-btn:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+.row-arrow {
+  font-size: 18px;
+  color: rgba(167, 139, 250, 0.3);
+  transform: translateY(-2px);
+  transition: 0.2s ease;
 }
 
-.category-btn.active {
-  background: var(--color-primary);
-  border-color: var(--color-primary);
-  color: white;
+.item-link:hover .row-arrow {
+  color: rgba(167, 139, 250, 0.7);
+  transform: translate(4px, -2px);
 }
 
-/* Posts Grid */
-.posts-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-3xl);
-}
-
-.post-card {
-  background: white;
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  box-shadow: var(--shadow-base);
-  transition: all var(--transition-base);
-}
-
-.post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.post-card-image {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
-}
-
-.post-card-content {
-  padding: var(--spacing-xl);
-}
-
-.post-card h3 {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-sm);
-}
-
-.post-card p {
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
-  line-height: 1.6;
-  margin-bottom: var(--spacing-md);
-}
-
-.read-more {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--color-primary);
-  font-weight: 500;
-  font-size: var(--font-size-sm);
-}
-
-/* Coming Soon Notice */
-.coming-soon-notice {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-lg);
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-xl);
-  margin-bottom: var(--spacing-3xl);
-  border: 2px dashed rgba(102, 126, 234, 0.3);
-}
-
-.coming-soon-notice .el-icon {
-  font-size: 32px;
-  color: var(--color-primary);
-}
-
-.coming-soon-notice h4 {
-  margin-bottom: var(--spacing-xs);
-}
-
-.coming-soon-notice p {
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-/* Newsletter */
-.newsletter {
-  background: var(--color-bg-dark);
-  color: white;
-  padding: var(--spacing-2xl);
-  border-radius: var(--radius-xl);
+/* Empty state */
+.empty {
+  padding: 48px 0;
   text-align: center;
+  border: 1px dashed rgba(139, 92, 246, 0.25);
+  border-radius: 16px;
+  background: rgba(26, 19, 51, 0.4);
 }
 
-.newsletter h3 {
+.empty-title {
+  font-size: 16px;
+  font-weight: 600;
   color: white;
-  margin-bottom: var(--spacing-sm);
 }
 
-.newsletter > p {
-  opacity: 0.8;
-  margin-bottom: var(--spacing-xl);
+.empty-desc {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(196, 181, 253, 0.6);
 }
 
-.newsletter-form {
+/* Footer */
+.footer {
+  margin-top: 48px;
+}
+
+.footer-line {
+  height: 1px;
+  background: rgba(139, 92, 246, 0.15);
+  margin-bottom: 20px;
+}
+
+.footer-text {
+  font-size: 14px;
+  color: rgba(196, 181, 253, 0.6);
   display: flex;
-  gap: var(--spacing-md);
-  max-width: 400px;
-  margin: 0 auto var(--spacing-md);
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
-.newsletter-form .el-input {
-  flex: 1;
+.footer-link {
+  color: rgba(167, 139, 250, 0.9);
+  text-decoration: none;
+  transition: 0.2s ease;
 }
 
-.newsletter-note {
-  font-size: var(--font-size-sm);
-  opacity: 0.5;
-  margin: 0;
+.footer-link:hover {
+  color: #c4b5fd;
+  text-decoration: underline;
 }
 
-@media (max-width: 768px) {
-  .featured-post {
+/* Responsive */
+@media (max-width: 820px) {
+  .blog-page {
+    padding: 100px 16px 40px;
+  }
+
+  .title {
+    font-size: 26px;
+  }
+
+  .search {
+    min-width: 100%;
+  }
+
+  .row {
     grid-template-columns: 1fr;
   }
 
-  .posts-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .newsletter-form {
-    flex-direction: column;
+  .row-arrow {
+    display: none;
   }
 }
 </style>

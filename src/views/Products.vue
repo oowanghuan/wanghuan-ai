@@ -1,21 +1,25 @@
 <template>
-  <div class="products-page">
+  <div class="products-page" ref="pageRef">
+    <!-- Particle Background -->
+    <canvas ref="canvasRef" class="particle-canvas"></canvas>
+
     <!-- Hero -->
     <section class="page-hero">
       <div class="container">
-        <h1>产品</h1>
-        <p>我正在构建的 AI 时代开发工具和平台</p>
+        <h1>{{ $t('products.title') }}</h1>
+        <p>{{ $t('products.subtitle') }}</p>
+        <p class="hero-subtitle">{{ $t('products.systemNote') }}</p>
       </div>
     </section>
 
     <!-- Products Grid -->
     <section class="section">
       <div class="container">
-        <!-- Live Products -->
+        <!-- 🧭 核心项目 -->
         <div class="products-section">
           <h2 class="section-label">
-            <span class="dot live"></span>
-            已上线
+            <span class="section-icon">🧭</span>
+            {{ $t('products.coreProject') }}
           </h2>
 
           <div class="product-card featured">
@@ -24,21 +28,40 @@
                 <div class="product-icon">
                   <el-icon><Promotion /></el-icon>
                 </div>
-                <span class="product-status live">Live</span>
+                <span class="product-status live">{{ $t('products.core') }}</span>
               </div>
-              <h3>AI 时代团队转型蓝图</h3>
+              <h3>{{ $t('products.blueprintTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.blueprintSubtitle') }}</p>
               <p class="product-desc">
-                一份完整的指南，帮助开发团队理解 AI coding 带来的变革，重新定义角色分工、工作流程和协作方式。
-                包含六大核心岗位定义、Spec 驱动开发流程、RACI 矩阵和实战模板。
+                {{ $t('products.blueprintDesc') }}
               </p>
+
+              <ul class="feature-list">
+                <li><span class="feature-icon">👥</span> {{ $t('products.blueprintFeature1') }}</li>
+                <li><span class="feature-icon">📐</span> {{ $t('products.blueprintFeature2') }}</li>
+                <li><span class="feature-icon">🔄</span> {{ $t('products.blueprintFeature3') }}</li>
+                <li><span class="feature-icon">🧠</span> {{ $t('products.blueprintFeature4') }}</li>
+                <li><span class="feature-icon">📦</span> {{ $t('products.blueprintFeature5') }}</li>
+              </ul>
+
+              <div class="target-audience">
+                <h4>{{ $t('products.targetAudience') }}</h4>
+                <div class="audience-tags">
+                  <span>{{ $t('products.audience1') }}</span>
+                  <span>{{ $t('products.audience2') }}</span>
+                  <span>{{ $t('products.audience3') }}</span>
+                </div>
+              </div>
+
               <div class="product-features">
-                <span class="feature-tag">Vue.js</span>
-                <span class="feature-tag">Team Guide</span>
-                <span class="feature-tag">Free</span>
+                <span class="feature-tag">AI Coding</span>
+                <span class="feature-tag">Team Operating System</span>
+                <span class="feature-tag">Spec Driven</span>
+                <span class="feature-tag">Vue 3</span>
               </div>
               <div class="product-actions">
                 <a href="https://ai-coding-org.vercel.app" target="_blank" class="btn btn-primary">
-                  访问项目
+                  {{ $t('products.visitProject') }}
                   <el-icon><TopRight /></el-icon>
                 </a>
                 <a href="https://github.com/oowanghuan/ai-coding-org" target="_blank" class="btn btn-outline">
@@ -48,48 +71,235 @@
               </div>
             </div>
             <div class="product-preview">
-              <img src="https://via.placeholder.com/500x300/667eea/ffffff?text=AI+Team+Blueprint" alt="AI 团队转型蓝图" />
+              <div class="preview-content">
+                <div class="preview-badge">🚀 {{ $t('products.coreProjectBadge') }}</div>
+                <div class="preview-visual">
+                  <div class="orbit-ring"></div>
+                  <div class="orbit-ring delay-1"></div>
+                  <div class="orbit-ring delay-2"></div>
+                  <div class="center-icon">AI</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Coming Soon -->
+        <!-- 🧩 开发工具 & 模板 -->
         <div class="products-section">
           <h2 class="section-label">
-            <span class="dot coming"></span>
-            即将推出
+            <span class="section-icon">🧩</span>
+            {{ $t('products.toolsAndTemplates') }}
+            <span class="section-badge">{{ $t('products.public') }}</span>
           </h2>
 
-          <div class="products-grid">
-            <div class="product-card mini">
+          <div class="products-grid two-col">
+            <div class="product-card tool-card">
               <div class="product-header">
                 <div class="product-icon">
-                  <el-icon><Connection /></el-icon>
+                  <el-icon><Document /></el-icon>
                 </div>
-                <span class="product-status coming">Coming Soon</span>
+                <span class="product-status tool">{{ $t('products.template') }}</span>
               </div>
-              <h3>AI 开发分包平台</h3>
+              <h3>{{ $t('products.aiCodingTemplateTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.aiCodingTemplateSubtitle') }}</p>
               <p class="product-desc">
-                连接 AI 开发者与需求方的平台。让精通 AI 协作开发的开发者可以更高效地接单，
-                让需求方可以找到擅长 AI 开发的人才。
+                {{ $t('products.aiCodingTemplateDesc') }}
               </p>
+              <ul class="mini-feature-list">
+                <li>{{ $t('products.aiCodingTemplateFeature1') }}</li>
+                <li>{{ $t('products.aiCodingTemplateFeature2') }}</li>
+                <li>{{ $t('products.aiCodingTemplateFeature3') }}</li>
+                <li>{{ $t('products.aiCodingTemplateFeature4') }}</li>
+              </ul>
+              <p class="product-note">📌 {{ $t('products.aiCodingTemplateNote') }}</p>
               <div class="product-features">
-                <span class="feature-tag">Marketplace</span>
-                <span class="feature-tag">AI Developers</span>
+                <span class="feature-tag">Claude Code</span>
+                <span class="feature-tag">Workflow</span>
+                <span class="feature-tag">Template</span>
+              </div>
+              <div class="product-actions">
+                <a href="https://github.com/oowanghuan/ai-coding-template" target="_blank" class="btn btn-outline">
+                  <el-icon><Link /></el-icon>
+                  GitHub
+                </a>
               </div>
             </div>
 
-            <div class="product-card mini">
+            <div class="product-card tool-card">
+              <div class="product-header">
+                <div class="product-icon">
+                  <el-icon><Setting /></el-icon>
+                </div>
+                <span class="product-status tool">{{ $t('products.tooling') }}</span>
+              </div>
+              <h3>{{ $t('products.mcpManagerTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.mcpManagerSubtitle') }}</p>
+              <p class="product-desc">
+                {{ $t('products.mcpManagerDesc') }}
+              </p>
+              <ul class="mini-feature-list">
+                <li>{{ $t('products.mcpManagerFeature1') }}</li>
+                <li>{{ $t('products.mcpManagerFeature2') }}</li>
+                <li>{{ $t('products.mcpManagerFeature3') }}</li>
+              </ul>
+              <div class="product-features">
+                <span class="feature-tag">Claude Code</span>
+                <span class="feature-tag">MCP</span>
+                <span class="feature-tag">Tooling</span>
+              </div>
+              <div class="product-actions">
+                <a href="https://github.com/oowanghuan/claude-mcp-manager" target="_blank" class="btn btn-outline">
+                  <el-icon><Link /></el-icon>
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🏗️ 实战型产品 - 已上线 -->
+        <div class="products-section">
+          <h2 class="section-label">
+            <span class="section-icon">🏗️</span>
+            {{ $t('products.practiceProducts') }}
+            <span class="section-badge live">{{ $t('products.live') }}</span>
+          </h2>
+
+          <p class="section-intro">
+            {{ $t('products.practiceIntro') }}
+          </p>
+
+          <div class="products-grid two-col">
+            <div class="product-card tool-card">
+              <div class="product-header">
+                <div class="product-icon">
+                  <el-icon><User /></el-icon>
+                </div>
+                <span class="product-status live">{{ $t('products.live') }}</span>
+              </div>
+              <h3>{{ $t('products.talentFlowTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.talentFlowSubtitle') }}</p>
+              <p class="product-desc">
+                {{ $t('products.talentFlowDesc') }}
+              </p>
+              <div class="product-features">
+                <span class="feature-tag">AI Recruitment</span>
+                <span class="feature-tag">SaaS</span>
+              </div>
+              <div class="product-actions">
+                <a href="https://www.aitalentflow.ai/" target="_blank" class="btn btn-primary">
+                  {{ $t('products.visitProject') }}
+                  <el-icon><TopRight /></el-icon>
+                </a>
+              </div>
+            </div>
+
+            <div class="product-card tool-card">
+              <div class="product-header">
+                <div class="product-icon">
+                  <el-icon><VideoCamera /></el-icon>
+                </div>
+                <span class="product-status live">{{ $t('products.live') }}</span>
+              </div>
+              <h3>{{ $t('products.postVideoTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.postVideoSubtitle') }}</p>
+              <p class="product-desc">
+                {{ $t('products.postVideoDesc') }}
+              </p>
+              <div class="product-features">
+                <span class="feature-tag">Content</span>
+                <span class="feature-tag">Analytics</span>
+              </div>
+              <div class="product-actions">
+                <a href="https://postvideo.vercel.app/" target="_blank" class="btn btn-primary">
+                  {{ $t('products.visitProject') }}
+                  <el-icon><TopRight /></el-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🔧 开发中 -->
+        <div class="products-section">
+          <h2 class="section-label">
+            <span class="section-icon">🔧</span>
+            {{ $t('products.inDevelopment') }}
+            <span class="section-badge dev">{{ $t('products.inDev') }}</span>
+          </h2>
+
+          <div class="products-grid two-col">
+            <div class="product-card mini dev-card">
+              <div class="product-header">
+                <div class="product-icon">
+                  <el-icon><Headset /></el-icon>
+                </div>
+                <span class="product-status dev">{{ $t('products.building') }}</span>
+              </div>
+              <h3>{{ $t('products.soundLibTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.soundLibSubtitle') }}</p>
+              <p class="product-desc">
+                www.beautiday.com
+              </p>
+              <div class="product-features">
+                <span class="feature-tag">Audio</span>
+                <span class="feature-tag">Library</span>
+              </div>
+              <div class="product-actions">
+                <a href="https://github.com/oowanghuan/sound-lib" target="_blank" class="btn btn-outline">
+                  <el-icon><Link /></el-icon>
+                  GitHub
+                </a>
+              </div>
+            </div>
+
+            <div class="product-card mini dev-card">
+              <div class="product-header">
+                <div class="product-icon">
+                  <el-icon><Folder /></el-icon>
+                </div>
+                <span class="product-status dev">{{ $t('products.building') }}</span>
+              </div>
+              <h3>{{ $t('products.contentMgmtTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.contentMgmtSubtitle') }}</p>
+              <p class="product-desc">
+                content-management-sys.vercel.app
+              </p>
+              <div class="product-features">
+                <span class="feature-tag">CMS</span>
+                <span class="feature-tag">Management</span>
+              </div>
+              <div class="product-actions">
+                <a href="https://github.com/oowanghuan/content-management-sys" target="_blank" class="btn btn-outline">
+                  <el-icon><Link /></el-icon>
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 🔮 即将推出 -->
+        <div class="products-section">
+          <h2 class="section-label">
+            <span class="section-icon">🔮</span>
+            {{ $t('products.comingSoon') }}
+          </h2>
+
+          <div class="products-grid two-col">
+            <div class="product-card mini coming-card">
               <div class="product-header">
                 <div class="product-icon">
                   <el-icon><ChatDotRound /></el-icon>
                 </div>
-                <span class="product-status coming">Exploring</span>
+                <span class="product-status coming">{{ $t('products.exploring') }}</span>
               </div>
-              <h3>数字分身</h3>
+              <h3>{{ $t('products.digitalTwinTitle') }}</h3>
               <p class="product-desc">
-                基于我的文章、理念和开发经验训练的 AI 助手。
-                可以回答关于 AI 协作开发、团队转型、Prompt 工程等问题。
+                {{ $t('products.digitalTwinDesc') }}
+              </p>
+              <p class="product-purpose">
+                {{ $t('products.digitalTwinPurpose') }}
               </p>
               <div class="product-features">
                 <span class="feature-tag">AI Assistant</span>
@@ -97,49 +307,21 @@
               </div>
             </div>
 
-            <div class="product-card mini">
+            <div class="product-card mini coming-card">
               <div class="product-header">
                 <div class="product-icon">
                   <el-icon><ChatLineSquare /></el-icon>
                 </div>
-                <span class="product-status coming">Planning</span>
+                <span class="product-status coming">{{ $t('products.planning') }}</span>
               </div>
-              <h3>AI 开发社区</h3>
+              <h3>{{ $t('products.communityTitle') }}</h3>
               <p class="product-desc">
-                一个讨论 AI 时代开发实践的社区。分享经验、解答疑惑、探索最佳实践，
-                共同推动 AI 协作开发的发展。
+                {{ $t('products.communityDesc') }}
               </p>
               <div class="product-features">
                 <span class="feature-tag">Community</span>
                 <span class="feature-tag">Discussion</span>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ideas -->
-        <div class="products-section">
-          <h2 class="section-label">
-            <span class="dot idea"></span>
-            想法库
-          </h2>
-
-          <div class="ideas-list">
-            <div class="idea-item">
-              <el-icon><Aim /></el-icon>
-              <span>AI Pair Programming 工具 - 更好的人机协作 IDE 插件</span>
-            </div>
-            <div class="idea-item">
-              <el-icon><Aim /></el-icon>
-              <span>Spec 生成器 - 从需求文档自动生成结构化 Spec</span>
-            </div>
-            <div class="idea-item">
-              <el-icon><Aim /></el-icon>
-              <span>AI Code Review - 自动化代码审查和改进建议</span>
-            </div>
-            <div class="idea-item">
-              <el-icon><Aim /></el-icon>
-              <span>Prompt 模板市场 - 共享和发现高质量开发 Prompt</span>
             </div>
           </div>
         </div>
@@ -150,11 +332,11 @@
     <section class="section cta-section">
       <div class="container">
         <div class="cta-content">
-          <h2>有想法想要合作？</h2>
-          <p>如果你对这些产品感兴趣，或者有其他合作想法，欢迎联系我</p>
-          <a href="mailto:hi@wanghuan.ai" class="btn btn-primary">
+          <h2>{{ $t('products.ctaTitle') }}</h2>
+          <p>{{ $t('products.ctaDesc') }}</p>
+          <a href="mailto:oowanghuan@gmail.com" class="btn btn-primary">
             <el-icon><Message /></el-icon>
-            联系我
+            {{ $t('products.contactMe') }}
           </a>
         </div>
       </div>
@@ -163,6 +345,8 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted } from 'vue'
+import * as THREE from 'three'
 import {
   Promotion,
   TopRight,
@@ -170,14 +354,221 @@ import {
   Connection,
   ChatDotRound,
   ChatLineSquare,
-  Aim,
-  Message
+  Message,
+  Document,
+  Setting,
+  User,
+  VideoCamera,
+  Lock,
+  Headset,
+  Folder
 } from '@element-plus/icons-vue'
+
+const pageRef = ref(null)
+const canvasRef = ref(null)
+
+let scene, camera, renderer, particles
+let animationId = null
+let mouse = { x: 0, y: 0 }
+
+const initParticles = () => {
+  if (!canvasRef.value || !pageRef.value) return
+
+  // Scene setup
+  scene = new THREE.Scene()
+
+  const width = window.innerWidth
+  const height = pageRef.value.scrollHeight || window.innerHeight
+
+  camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000)
+  camera.position.z = 5
+
+  renderer = new THREE.WebGLRenderer({
+    canvas: canvasRef.value,
+    alpha: true,
+    antialias: true
+  })
+  renderer.setSize(width, height)
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+  // Create particles - visible density for products page
+  const particleCount = 4000
+  const geometry = new THREE.BufferGeometry()
+  const positions = new Float32Array(particleCount * 3)
+  const colors = new Float32Array(particleCount * 3)
+  const sizes = new Float32Array(particleCount)
+
+  // Color palette - purple/blue nebula
+  const colorPalette = [
+    new THREE.Color(0x8b5cf6), // Purple
+    new THREE.Color(0x6366f1), // Indigo
+    new THREE.Color(0x3b82f6), // Blue
+    new THREE.Color(0x06b6d4), // Cyan
+    new THREE.Color(0xa78bfa), // Light purple
+  ]
+
+  for (let i = 0; i < particleCount; i++) {
+    // Spread particles across the full page height
+    positions[i * 3] = (Math.random() - 0.5) * 20
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 30
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 15
+
+    // Random color from palette
+    const color = colorPalette[Math.floor(Math.random() * colorPalette.length)]
+    colors[i * 3] = color.r
+    colors[i * 3 + 1] = color.g
+    colors[i * 3 + 2] = color.b
+
+    sizes[i] = Math.random() * 5 + 3
+  }
+
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
+  geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1))
+
+  // Shader material for colored particles
+  const material = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uMouse: { value: new THREE.Vector2(0, 0) }
+    },
+    vertexShader: `
+      attribute float size;
+      attribute vec3 color;
+      varying vec3 vColor;
+      uniform float uTime;
+      uniform vec2 uMouse;
+
+      void main() {
+        vColor = color;
+
+        vec3 pos = position;
+
+        // Slow floating animation
+        pos.x += sin(uTime * 0.1 + position.y * 0.5) * 0.1;
+        pos.y += cos(uTime * 0.08 + position.x * 0.5) * 0.1;
+        pos.z += sin(uTime * 0.12 + position.z * 0.5) * 0.05;
+
+        // Mouse influence - gentle attraction
+        vec2 mouseInfluence = uMouse * 2.0;
+        float distToMouse = length(vec2(pos.x, pos.y) - mouseInfluence);
+        float influence = smoothstep(3.0, 0.0, distToMouse) * 0.3;
+        pos.xy += normalize(mouseInfluence - pos.xy) * influence;
+
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+        gl_PointSize = size * (4.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vColor;
+
+      void main() {
+        float dist = length(gl_PointCoord - vec2(0.5));
+        if (dist > 0.5) discard;
+
+        float alpha = 1.0 - smoothstep(0.3, 0.5, dist);
+        alpha *= 0.8; // Overall transparency - more visible
+
+        gl_FragColor = vec4(vColor, alpha);
+      }
+    `,
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  })
+
+  particles = new THREE.Points(geometry, material)
+  scene.add(particles)
+
+  // Start animation
+  animate()
+}
+
+const animate = () => {
+  animationId = requestAnimationFrame(animate)
+
+  if (particles) {
+    // Slow rotation
+    particles.rotation.y += 0.0003
+    particles.rotation.x += 0.0001
+
+    // Update time uniform
+    particles.material.uniforms.uTime.value += 0.01
+    particles.material.uniforms.uMouse.value.set(mouse.x, mouse.y)
+  }
+
+  renderer.render(scene, camera)
+}
+
+const handleMouseMove = (e) => {
+  // Normalize mouse position
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
+}
+
+const handleResize = () => {
+  if (!camera || !renderer || !pageRef.value) return
+
+  const width = window.innerWidth
+  const height = pageRef.value.scrollHeight || window.innerHeight
+
+  camera.aspect = width / height
+  camera.updateProjectionMatrix()
+  renderer.setSize(width, height)
+}
+
+onMounted(() => {
+  initParticles()
+  window.addEventListener('mousemove', handleMouseMove)
+  window.addEventListener('resize', handleResize)
+
+  // Update canvas height when page content loads
+  setTimeout(handleResize, 100)
+})
+
+onUnmounted(() => {
+  if (animationId) {
+    cancelAnimationFrame(animationId)
+  }
+  window.removeEventListener('mousemove', handleMouseMove)
+  window.removeEventListener('resize', handleResize)
+
+  // Cleanup Three.js
+  if (renderer) {
+    renderer.dispose()
+  }
+  if (particles) {
+    particles.geometry.dispose()
+    particles.material.dispose()
+  }
+})
 </script>
 
 <style scoped>
+.products-page {
+  position: relative;
+  background: var(--gradient-dark);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.particle-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .page-hero {
-  background: var(--gradient-primary);
+  position: relative;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 1000px 600px at 50% 30%, rgba(139, 92, 246, 0.15), transparent 50%),
+    transparent;
   color: white;
   padding: 140px 0 80px;
   text-align: center;
@@ -187,11 +578,28 @@ import {
   color: white;
   font-size: var(--font-size-5xl);
   margin-bottom: var(--spacing-md);
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .page-hero p {
   font-size: var(--font-size-xl);
-  opacity: 0.9;
+  color: rgba(196, 181, 253, 0.9);
+}
+
+.hero-subtitle {
+  font-size: var(--font-size-lg) !important;
+  color: rgba(196, 181, 253, 0.6) !important;
+  font-style: italic;
+  margin-top: var(--spacing-sm);
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+  padding: var(--spacing-16) 0;
 }
 
 .products-section {
@@ -202,36 +610,70 @@ import {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-xl);
   margin-bottom: var(--spacing-xl);
-  color: var(--color-text-secondary);
+  color: white;
 }
 
-.section-label .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+.section-icon {
+  font-size: 24px;
 }
 
-.dot.live { background: #28c840; }
-.dot.coming { background: #febc2e; }
-.dot.idea { background: var(--color-primary); }
+.section-badge {
+  margin-left: var(--spacing-sm);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
 
+.section-badge.private {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c4b5fd;
+}
+
+.section-badge.live {
+  background: rgba(40, 200, 64, 0.15);
+  color: #4ade80;
+}
+
+.section-badge.dev {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
+}
+
+.section-intro {
+  color: rgba(196, 181, 253, 0.8);
+  margin-bottom: var(--spacing-xl);
+  font-size: var(--font-size-lg);
+}
+
+.section-intro strong {
+  color: #c4b5fd;
+}
+
+/* Product Cards */
 .product-card {
-  background: white;
+  background: rgba(26, 19, 51, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-base);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   transition: all var(--transition-base);
 }
 
 .product-card:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 60px rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.5);
+  transform: translateY(-6px);
 }
 
 .product-card.featured {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 0.8fr;
 }
 
 .product-content {
@@ -248,13 +690,13 @@ import {
 .product-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 24px;
-  color: var(--color-primary);
+  color: #a78bfa;
 }
 
 .product-status {
@@ -265,26 +707,132 @@ import {
 }
 
 .product-status.live {
-  background: rgba(40, 200, 64, 0.1);
-  color: #28c840;
+  background: rgba(40, 200, 64, 0.15);
+  color: #4ade80;
+}
+
+.product-status.tool {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+.product-status.private {
+  background: rgba(168, 85, 247, 0.15);
+  color: #c4b5fd;
 }
 
 .product-status.coming {
-  background: rgba(254, 188, 46, 0.1);
-  color: #d9a100;
+  background: rgba(254, 188, 46, 0.15);
+  color: #fbbf24;
+}
+
+.product-status.dev {
+  background: rgba(6, 182, 212, 0.15);
+  color: #22d3ee;
 }
 
 .product-card h3 {
   font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-sm);
+  color: white;
+}
+
+.product-subtitle {
+  color: #a78bfa;
+  font-weight: 600;
   margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-base);
 }
 
 .product-desc {
-  color: var(--color-text-secondary);
+  color: rgba(196, 181, 253, 0.8);
   line-height: 1.7;
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
 }
 
+.product-purpose {
+  color: rgba(196, 181, 253, 0.6);
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  margin-top: var(--spacing-sm);
+}
+
+.product-note {
+  color: #06b6d4;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin: var(--spacing-md) 0;
+}
+
+/* Feature Lists */
+.feature-list {
+  list-style: none;
+  margin: var(--spacing-lg) 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  color: rgba(196, 181, 253, 0.9);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.feature-icon {
+  flex-shrink: 0;
+}
+
+.mini-feature-list {
+  list-style: none;
+  margin: var(--spacing-md) 0;
+}
+
+.mini-feature-list li {
+  position: relative;
+  padding: var(--spacing-xs) 0 var(--spacing-xs) var(--spacing-lg);
+  color: rgba(196, 181, 253, 0.8);
+  font-size: var(--font-size-sm);
+}
+
+.mini-feature-list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: #a78bfa;
+}
+
+/* Target Audience */
+.target-audience {
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+}
+
+.target-audience h4 {
+  color: rgba(196, 181, 253, 0.9);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.audience-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.audience-tags span {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+}
+
+/* Product Features */
 .product-features {
   display: flex;
   flex-wrap: wrap;
@@ -293,12 +841,13 @@ import {
 }
 
 .feature-tag {
-  background: rgba(102, 126, 234, 0.1);
-  color: var(--color-primary);
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
   padding: 4px 12px;
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: 500;
+  border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
 .product-actions {
@@ -306,24 +855,99 @@ import {
   gap: var(--spacing-md);
 }
 
+/* Preview Section */
 .product-preview {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(99, 102, 241, 0.4) 50%, rgba(59, 130, 246, 0.4) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--spacing-xl);
+  padding: var(--spacing-2xl);
+  position: relative;
+  overflow: hidden;
 }
 
-.product-preview img {
-  width: 100%;
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-xl);
+.preview-content {
+  text-align: center;
+  z-index: 1;
 }
 
+.preview-badge {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  padding: 8px 20px;
+  border-radius: var(--radius-full);
+  color: white;
+  font-weight: 600;
+  margin-bottom: var(--spacing-xl);
+  display: inline-block;
+}
+
+.preview-visual {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.orbit-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  animation: orbit-pulse 3s ease-in-out infinite;
+}
+
+.orbit-ring.delay-1 {
+  inset: 20px;
+  animation-delay: 0.5s;
+}
+
+.orbit-ring.delay-2 {
+  inset: 40px;
+  animation-delay: 1s;
+}
+
+.center-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+}
+
+@keyframes orbit-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* Grid Layouts */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: var(--spacing-xl);
+}
+
+.products-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.products-grid.three-col {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .product-card.mini {
@@ -334,32 +958,51 @@ import {
   font-size: var(--font-size-xl);
 }
 
-.ideas-list {
-  background: white;
-  border-radius: var(--radius-xl);
-  padding: var(--spacing-lg);
-  box-shadow: var(--shadow-base);
+.product-card.tool-card {
+  padding: var(--spacing-xl);
 }
 
-.idea-item {
+.product-card.private-card {
+  border-style: dashed;
+}
+
+.product-card.coming-card {
+  border-color: rgba(254, 188, 46, 0.2);
+}
+
+.product-card.dev-card {
+  border-color: rgba(6, 182, 212, 0.25);
+  padding: var(--spacing-xl);
+}
+
+.product-card.dev-card:hover {
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 40px rgba(6, 182, 212, 0.15);
+}
+
+/* Private Notice */
+.private-notice {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-xl);
   padding: var(--spacing-md);
-  color: var(--color-text-secondary);
-  border-bottom: 1px solid #f0f0f0;
+  background: rgba(168, 85, 247, 0.08);
+  border-radius: var(--radius-lg);
+  color: rgba(196, 181, 253, 0.7);
+  font-size: var(--font-size-sm);
 }
 
-.idea-item:last-child {
-  border-bottom: none;
+.private-notice .el-icon {
+  color: #a78bfa;
 }
 
-.idea-item .el-icon {
-  color: var(--color-primary);
-}
-
+/* CTA Section */
 .cta-section {
-  background: var(--color-bg-dark);
+  background:
+    radial-gradient(ellipse 800px 400px at 50% 50%, rgba(139, 92, 246, 0.2), transparent 60%),
+    rgba(12, 10, 29, 0.9);
   color: white;
 }
 
@@ -370,24 +1013,31 @@ import {
 .cta-content h2 {
   color: white;
   margin-bottom: var(--spacing-md);
+  background: var(--gradient-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .cta-content p {
-  opacity: 0.8;
+  color: rgba(196, 181, 253, 0.8);
   margin-bottom: var(--spacing-xl);
 }
 
+/* Responsive */
 @media (max-width: 968px) {
   .product-card.featured {
     grid-template-columns: 1fr;
   }
 
-  .products-grid {
+  .products-grid.two-col,
+  .products-grid.three-col {
     grid-template-columns: 1fr;
   }
 
   .product-preview {
     order: -1;
+    min-height: 200px;
   }
 }
 </style>

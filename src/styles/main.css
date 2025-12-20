@@ -1,37 +1,37 @@
 /* ========================================
    DESIGN TOKENS - wanghuan.ai
-   Style: 清新自然 (Fresh & Natural)
-   Primary: Teal/Cyan
+   Style: 紫蓝星云 (Purple-Blue Nebula)
+   Primary: Purple/Violet
    ======================================== */
 
 :root {
   /* ========== Color Palette ========== */
 
-  /* Primary - Teal */
-  --color-primary-50: #f0fdfa;
-  --color-primary-100: #ccfbf1;
-  --color-primary-200: #99f6e4;
-  --color-primary-300: #5eead4;
-  --color-primary-400: #2dd4bf;
-  --color-primary-500: #14b8a6;  /* Main primary */
-  --color-primary-600: #0d9488;
-  --color-primary-700: #0f766e;
-  --color-primary-800: #115e59;
-  --color-primary-900: #134e4a;
+  /* Primary - Purple/Violet */
+  --color-primary-50: #faf5ff;
+  --color-primary-100: #f3e8ff;
+  --color-primary-200: #e9d5ff;
+  --color-primary-300: #d8b4fe;
+  --color-primary-400: #c084fc;
+  --color-primary-500: #a855f7;  /* Main primary */
+  --color-primary-600: #9333ea;
+  --color-primary-700: #7c3aed;
+  --color-primary-800: #6b21a8;
+  --color-primary-900: #581c87;
 
-  /* Secondary - Cyan */
-  --color-secondary-400: #22d3ee;
-  --color-secondary-500: #06b6d4;
-  --color-secondary-600: #0891b2;
+  /* Secondary - Blue */
+  --color-secondary-400: #60a5fa;
+  --color-secondary-500: #3b82f6;
+  --color-secondary-600: #2563eb;
 
-  /* Accent - Emerald (for success, highlights) */
-  --color-accent-400: #34d399;
-  --color-accent-500: #10b981;
-  --color-accent-600: #059669;
+  /* Accent - Cyan (for highlights) */
+  --color-accent-400: #22d3ee;
+  --color-accent-500: #06b6d4;
+  --color-accent-600: #0891b2;
 
-  /* Warm Accent - Amber (for warnings, CTAs) */
-  --color-warm-400: #fbbf24;
-  --color-warm-500: #f59e0b;
+  /* Pink Accent (for special highlights) */
+  --color-pink-400: #f472b6;
+  --color-pink-500: #ec4899;
 
   /* Neutral - Slate (cool gray with slight blue) */
   --color-neutral-50: #f8fafc;
@@ -67,11 +67,16 @@
   --color-border-light: var(--color-neutral-100);
 
   /* ========== Gradients ========== */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-secondary-500) 100%);
-  --gradient-primary-soft: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
-  --gradient-hero: linear-gradient(135deg, var(--color-primary-600) 0%, var(--color-secondary-500) 50%, var(--color-accent-400) 100%);
-  --gradient-subtle: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-secondary-500/0.05) 100%);
-  --gradient-dark: linear-gradient(135deg, var(--color-neutral-900) 0%, var(--color-neutral-800) 100%);
+  --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+  --gradient-primary-soft: linear-gradient(135deg, #a78bfa 0%, #818cf8 50%, #60a5fa 100%);
+  --gradient-hero: linear-gradient(135deg, #a78bfa 0%, #818cf8 30%, #06b6d4 70%, #22d3ee 100%);
+  --gradient-subtle: linear-gradient(135deg, #faf5ff 0%, rgba(139, 92, 246, 0.05) 100%);
+  --gradient-dark: linear-gradient(180deg, #0c0a1d 0%, #1a1333 40%, #0f172a 100%);
+  --gradient-nebula:
+    radial-gradient(ellipse 1200px 800px at 30% 25%, rgba(139, 92, 246, 0.18), transparent 55%),
+    radial-gradient(ellipse 1000px 700px at 70% 35%, rgba(59, 130, 246, 0.15), transparent 50%),
+    radial-gradient(ellipse 800px 500px at 55% 70%, rgba(168, 85, 247, 0.12), transparent 45%),
+    radial-gradient(ellipse 600px 400px at 20% 80%, rgba(6, 182, 212, 0.10), transparent 40%);
 
   /* ========== Spacing Scale ========== */
   --spacing-0: 0;
@@ -151,9 +156,11 @@
   --shadow-xl: 0 20px 40px -8px rgba(0, 0, 0, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.04);
   --shadow-2xl: 0 32px 64px -12px rgba(0, 0, 0, 0.15);
 
-  /* Colored shadows */
-  --shadow-primary: 0 8px 24px -4px rgba(20, 184, 166, 0.3);
-  --shadow-primary-lg: 0 16px 40px -8px rgba(20, 184, 166, 0.35);
+  /* Colored shadows - Purple glow */
+  --shadow-primary: 0 8px 24px -4px rgba(139, 92, 246, 0.35);
+  --shadow-primary-lg: 0 16px 40px -8px rgba(139, 92, 246, 0.4);
+  --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.2);
+  --shadow-glow-lg: 0 0 60px rgba(139, 92, 246, 0.25);
 
   /* ========== Transitions ========== */
   --transition-fast: 150ms ease;
@@ -196,7 +203,7 @@ body {
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);
   color: var(--color-text-primary);
-  background-color: var(--color-bg-page);
+  background: #0f172a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -444,8 +451,8 @@ p {
 
 /* ========== Selection ========== */
 ::selection {
-  background: var(--color-primary-200);
-  color: var(--color-primary-900);
+  background: rgba(139, 92, 246, 0.3);
+  color: #581c87;
 }
 
 /* ========== Scrollbar (Webkit) ========== */
