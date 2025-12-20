@@ -70,15 +70,25 @@
                 </a>
               </div>
             </div>
-            <div class="product-preview">
-              <div class="preview-content">
-                <div class="preview-badge">🚀 {{ $t('products.coreProjectBadge') }}</div>
-                <div class="preview-visual">
-                  <div class="orbit-ring"></div>
-                  <div class="orbit-ring delay-1"></div>
-                  <div class="orbit-ring delay-2"></div>
-                  <div class="center-icon">AI</div>
+            <div class="product-preview hero-box" ref="heroBoxRef">
+              <div class="hero-badge"><span class="hero-dot"></span> {{ $t('products.coreProjectBadge') }} · Live</div>
+              <canvas ref="starsCanvasRef" class="stars-canvas"></canvas>
+              <div class="parallax" ref="parallaxRef">
+                <div class="ring r3"></div>
+                <div class="ring r2"></div>
+                <div class="ring r1"></div>
+                <div class="orbit o3"><span class="p"></span><span class="p alt"></span></div>
+                <div class="orbit o2"><span class="p"></span><span class="p alt"></span></div>
+                <div class="orbit o1"><span class="p"></span><span class="p alt"></span></div>
+                <div class="core">
+                  <div class="ai-text">AI</div>
+                  <div class="ai-sub">team operating system</div>
                 </div>
+              </div>
+              <div class="hero-hint">
+                <span>Spec Driven</span>
+                <span>AI Review</span>
+                <span>Multi-Agent</span>
               </div>
             </div>
           </div>
@@ -366,10 +376,19 @@ import {
 
 const pageRef = ref(null)
 const canvasRef = ref(null)
+const heroBoxRef = ref(null)
+const parallaxRef = ref(null)
+const starsCanvasRef = ref(null)
 
 let scene, camera, renderer, particles
 let animationId = null
 let mouse = { x: 0, y: 0 }
+
+// Hero Box 星尘动画
+let starsCtx = null
+let starsW = 0, starsH = 0
+let stars = []
+let starsAnimationId = null
 
 const initParticles = () => {
   if (!canvasRef.value || !pageRef.value) return
@@ -518,8 +537,73 @@ const handleResize = () => {
   renderer.setSize(width, height)
 }
 
+// Hero Box 视差效果
+const initHeroParallax = () => {
+  if (!heroBoxRef.value || !parallaxRef.value) return
+
+  heroBoxRef.value.addEventListener('mousemove', (e) => {
+    const rect = heroBoxRef.value.getBoundingClientRect()
+    const x = (e.clientX - rect.left) / rect.width - 0.5
+    const y = (e.clientY - rect.top) / rect.height - 0.5
+    const rx = (-y * 6).toFixed(2)
+    const ry = (x * 8).toFixed(2)
+    parallaxRef.value.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`
+  })
+
+  heroBoxRef.value.addEventListener('mouseleave', () => {
+    parallaxRef.value.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg)`
+  })
+}
+
+// Hero Box 星尘动画
+const initStarsCanvas = () => {
+  if (!starsCanvasRef.value || !heroBoxRef.value) return
+
+  const c = starsCanvasRef.value
+  starsCtx = c.getContext('2d')
+
+  const resizeStars = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2)
+    starsW = c.width = heroBoxRef.value.clientWidth * dpr
+    starsH = c.height = heroBoxRef.value.clientHeight * dpr
+    c.style.width = heroBoxRef.value.clientWidth + 'px'
+    c.style.height = heroBoxRef.value.clientHeight + 'px'
+
+    const count = Math.floor((heroBoxRef.value.clientWidth * heroBoxRef.value.clientHeight) / 9000)
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * starsW,
+      y: Math.random() * starsH,
+      r: (Math.random() * 1.2 + 0.4) * dpr,
+      vx: (Math.random() * 0.15 + 0.05) * dpr,
+      a: Math.random() * 0.5 + 0.25
+    }))
+  }
+
+  const tickStars = () => {
+    starsAnimationId = requestAnimationFrame(tickStars)
+    if (!starsCtx) return
+
+    starsCtx.clearRect(0, 0, starsW, starsH)
+    starsCtx.fillStyle = 'rgba(255,255,255,0.8)'
+    for (const s of stars) {
+      s.x += s.vx
+      if (s.x > starsW + 20) s.x = -20
+      starsCtx.globalAlpha = s.a
+      starsCtx.beginPath()
+      starsCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2)
+      starsCtx.fill()
+    }
+  }
+
+  resizeStars()
+  tickStars()
+  window.addEventListener('resize', resizeStars)
+}
+
 onMounted(() => {
   initParticles()
+  initHeroParallax()
+  initStarsCanvas()
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('resize', handleResize)
 
@@ -530,6 +614,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (animationId) {
     cancelAnimationFrame(animationId)
+  }
+  if (starsAnimationId) {
+    cancelAnimationFrame(starsAnimationId)
   }
   window.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener('resize', handleResize)
@@ -855,85 +942,199 @@ onUnmounted(() => {
   gap: var(--spacing-md);
 }
 
-/* Preview Section */
-.product-preview {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.4) 0%, rgba(99, 102, 241, 0.4) 50%, rgba(59, 130, 246, 0.4) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-2xl);
+/* Hero Box - AI Rings Animation */
+.hero-box {
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, #0c0a1d 0%, #1a1333 50%, #0f172a 100%);
+  min-height: 380px;
 }
 
-.preview-content {
-  text-align: center;
+.hero-badge {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: rgba(196, 181, 253, 0.8);
+  z-index: 10;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  background: #4ade80;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #4ade80;
+  animation: hero-dot-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hero-dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.stars-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   z-index: 1;
 }
 
-.preview-badge {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  padding: 8px 20px;
-  border-radius: var(--radius-full);
-  color: white;
-  font-weight: 600;
-  margin-bottom: var(--spacing-xl);
-  display: inline-block;
-}
-
-.preview-visual {
+.parallax {
   position: relative;
-  width: 200px;
-  height: 200px;
-  margin: 0 auto;
-}
-
-.orbit-ring {
-  position: absolute;
-  inset: 0;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  animation: orbit-pulse 3s ease-in-out infinite;
-}
-
-.orbit-ring.delay-1 {
-  inset: 20px;
-  animation-delay: 0.5s;
-}
-
-.orbit-ring.delay-2 {
-  inset: 40px;
-  animation-delay: 1s;
-}
-
-.center-icon {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px;
-  height: 80px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  border-radius: 50%;
+  width: 280px;
+  height: 280px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
+  z-index: 2;
 }
 
-@keyframes orbit-pulse {
-  0%, 100% {
-    opacity: 0.3;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.6;
-    transform: scale(1.05);
-  }
+/* Rings */
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(139, 92, 246, 0.25);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.08);
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.ring.r1 {
+  width: 100px;
+  height: 100px;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.ring.r2 {
+  width: 160px;
+  height: 160px;
+  animation-delay: -1.3s;
+}
+
+.ring.r3 {
+  width: 220px;
+  height: 220px;
+  animation-delay: -2.6s;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.04); opacity: 1; }
+}
+
+/* Orbits */
+.orbit {
+  position: absolute;
+  border-radius: 50%;
+  animation: spin 20s linear infinite;
+}
+
+.orbit.o1 {
+  width: 100px;
+  height: 100px;
+  animation-duration: 8s;
+}
+
+.orbit.o2 {
+  width: 160px;
+  height: 160px;
+  animation-duration: 14s;
+  animation-direction: reverse;
+}
+
+.orbit.o3 {
+  width: 220px;
+  height: 220px;
+  animation-duration: 22s;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Orbit particles */
+.orbit .p {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: linear-gradient(135deg, #a78bfa, #06b6d4);
+  border-radius: 50%;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px rgba(167, 139, 250, 0.6);
+}
+
+.orbit .p.alt {
+  left: 100%;
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
+}
+
+/* Core */
+.core {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  z-index: 5;
+}
+
+.ai-text {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #a78bfa 0%, #818cf8 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+}
+
+.ai-sub {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.7);
+  margin-top: 2px;
+}
+
+/* Hero hint tags */
+.hero-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.hero-hint span {
+  padding: 6px 14px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(196, 181, 253, 0.85);
+  letter-spacing: 0.02em;
 }
 
 /* Grid Layouts */
