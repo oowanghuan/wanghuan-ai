@@ -2006,6 +2006,11 @@
       $("btnLangZh").classList.toggle("active", lang === "zh");
       $("btnLangEn").classList.toggle("active", lang === "en");
       applyTranslations();
+      // 同时更新快速报价抽屉翻译
+      if (typeof window.applyQuickTranslations === "function") {
+        window.applyQuickTranslations();
+        if (typeof window.quickCompute === "function") window.quickCompute();
+      }
       compute(); // 重新计算以更新动态文本
     }
 
@@ -2725,6 +2730,99 @@
       const qToNum = (v, d=0) => { const n = Number(v); return Number.isFinite(n) ? n : d; };
       const qFmt = (n) => currentCurrency.symbol + " " + Math.round(n).toLocaleString("zh-CN");
 
+      // 快速报价抽屉的翻译
+      const QUICK_I18N = {
+        zh: {
+          title: "快速报价",
+          workload: "工作量",
+          dailyHours: "日均直播时长（小时）",
+          workDays: "每月工作天数",
+          videoCount: "月视频总条数",
+          profitMargin: "目标利润率（%）",
+          capacity: "产能参数",
+          hostCap: "主播上限（小时/人/天）",
+          editorCap: "编导上限（条/人/天）",
+          salary: "工资标准",
+          managerSalary: "经理月薪",
+          hostSalary: "主播月薪",
+          opsSalary: "运营月薪",
+          editorSalary: "编导月薪",
+          fixedCost: "固定成本（场地/设备/其他 月均）",
+          teamConfig: "反算团队配置",
+          manager: "项目经理",
+          host: "主播",
+          ops: "运营",
+          editor: "编导",
+          laborCost: "人力成本",
+          fixedCostLabel: "固定成本",
+          totalCost: "总成本",
+          suggestedQuote: "💡 建议报价",
+          breakdown: "报价拆分（按时长/条数占比）",
+          liveFee: "直播服务费",
+          dailyRate: "├ Daily 单价",
+          videoFee: "短视频服务费",
+          videoRate: "├ 平均单价",
+          apply: "应用到主表",
+          tip: "点击后将自动填充人数和建议单价到左侧输入区",
+          person: "人",
+          perHour: "/小时",
+          perVideo: "/条"
+        },
+        en: {
+          title: "Quick Quote",
+          workload: "Workload",
+          dailyHours: "Daily Live Hours",
+          workDays: "Work Days / Month",
+          videoCount: "Videos / Month",
+          profitMargin: "Target Margin (%)",
+          capacity: "Capacity Params",
+          hostCap: "Host Cap (hrs/person/day)",
+          editorCap: "Editor Cap (videos/person/day)",
+          salary: "Salary Standards",
+          managerSalary: "Manager Salary",
+          hostSalary: "Host Salary",
+          opsSalary: "Ops Salary",
+          editorSalary: "Editor Salary",
+          fixedCost: "Fixed Cost (venue/equipment/month)",
+          teamConfig: "Calculated Team",
+          manager: "Manager",
+          host: "Host",
+          ops: "Operations",
+          editor: "Editor",
+          laborCost: "Labor Cost",
+          fixedCostLabel: "Fixed Cost",
+          totalCost: "Total Cost",
+          suggestedQuote: "💡 Suggested Quote",
+          breakdown: "Quote Breakdown (by workload ratio)",
+          liveFee: "Live Service Fee",
+          dailyRate: "├ Daily Rate",
+          videoFee: "Video Service Fee",
+          videoRate: "├ Avg Rate",
+          apply: "Apply to Main",
+          tip: "Will auto-fill headcount and rates to the main form",
+          person: "ppl",
+          perHour: "/hr",
+          perVideo: "/video"
+        }
+      };
+
+      function qt(key) {
+        return QUICK_I18N[currentLang]?.[key] || QUICK_I18N.zh[key] || key;
+      }
+
+      function applyQuickTranslations() {
+        document.querySelectorAll("[data-i18n-quick]").forEach(el => {
+          const key = el.getAttribute("data-i18n-quick");
+          if (QUICK_I18N[currentLang]?.[key]) {
+            el.textContent = QUICK_I18N[currentLang][key];
+          }
+        });
+      }
+
+      // 暴露给全局，以便语言切换时调用
+      window.applyQuickTranslations = applyQuickTranslations;
+      window.quickCompute = quickCompute;
+
       function toggleQuickDrawer(open){
         const drawer = document.getElementById("quickDrawer");
         const overlay = document.getElementById("quickOverlay");
@@ -2734,6 +2832,7 @@
           overlay.classList.add("open");
           fab.classList.add("active");
           fab.textContent = "✕";
+          applyQuickTranslations();
         } else {
           drawer.classList.remove("open");
           overlay.classList.remove("open");
@@ -2762,8 +2861,8 @@
         const monthlyHours = dailyHours * workDays;
         const hostNeed = Math.ceil(dailyHours / hostCap);
         const editorNeed = Math.ceil(videoCount / workDays / editorCap);
-        const opsNeed = 1; // 运营一般至少1人
-        const managerNeed = 1; // 经理一般1人
+        const opsNeed = 1;
+        const managerNeed = 1;
 
         // 人力成本
         const laborCost = managerNeed * managerSalary + hostNeed * hostSalary + opsNeed * opsSalary + editorNeed * editorSalary;
@@ -2773,7 +2872,6 @@
         const quote = totalCost * (1 + profitMargin);
 
         // 报价拆分（按工作量占比）
-        // 假设直播占70%，视频占30%（可根据实际调整）
         const liveRatio = 0.7;
         const videoRatio = 0.3;
         const liveFee = quote * liveRatio;
@@ -2781,11 +2879,12 @@
         const dailyRate = monthlyHours > 0 ? liveFee / monthlyHours : 0;
         const videoRate = videoCount > 0 ? videoFee / videoCount : 0;
 
-        // 更新显示
-        document.getElementById("q_result_manager").textContent = managerNeed + " 人";
-        document.getElementById("q_result_host").textContent = hostNeed + " 人";
-        document.getElementById("q_result_ops").textContent = opsNeed + " 人";
-        document.getElementById("q_result_editor").textContent = editorNeed + " 人";
+        // 更新显示（使用翻译）
+        const personUnit = " " + qt("person");
+        document.getElementById("q_result_manager").textContent = managerNeed + personUnit;
+        document.getElementById("q_result_host").textContent = hostNeed + personUnit;
+        document.getElementById("q_result_ops").textContent = opsNeed + personUnit;
+        document.getElementById("q_result_editor").textContent = editorNeed + personUnit;
 
         document.getElementById("q_result_labor").textContent = qFmt(laborCost);
         document.getElementById("q_result_fixed").textContent = qFmt(fixedCost);
@@ -2793,9 +2892,9 @@
         document.getElementById("q_result_quote").textContent = qFmt(quote);
 
         document.getElementById("q_live_fee").textContent = qFmt(liveFee);
-        document.getElementById("q_daily_rate").textContent = qFmt(dailyRate) + "/小时";
+        document.getElementById("q_daily_rate").textContent = qFmt(dailyRate) + qt("perHour");
         document.getElementById("q_video_fee").textContent = qFmt(videoFee);
-        document.getElementById("q_video_rate").textContent = qFmt(videoRate) + "/条";
+        document.getElementById("q_video_rate").textContent = qFmt(videoRate) + qt("perVideo");
 
         // 保存结果供应用
         window.__quickResult__ = {
