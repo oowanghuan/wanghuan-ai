@@ -2599,21 +2599,13 @@
       <button class="quick-drawer-close" id="quickClose">✕</button>
     </div>
     <div class="quick-drawer-body">
-      <!-- 工作量输入 -->
+      <!-- 基础参数 -->
       <div class="quick-section">
-        <div class="quick-section-title">📋 <span data-i18n-quick="workload">工作量</span></div>
+        <div class="quick-section-title">📋 <span data-i18n-quick="basicParams">基础参数</span></div>
         <div class="quick-grid">
-          <div class="quick-field">
-            <label data-i18n-quick="dailyHours">日均直播时长（小时）</label>
-            <input id="q_daily_hours" type="number" value="6" step="0.5">
-          </div>
           <div class="quick-field">
             <label data-i18n-quick="workDays">每月工作天数</label>
             <input id="q_work_days" type="number" value="25">
-          </div>
-          <div class="quick-field">
-            <label data-i18n-quick="videoCount">月视频总条数</label>
-            <input id="q_video_count" type="number" value="48">
           </div>
           <div class="quick-field">
             <label data-i18n-quick="profitMargin">目标利润率（%）</label>
@@ -2622,55 +2614,74 @@
         </div>
       </div>
 
-      <!-- 产能参数（可调） -->
+      <!-- 直播工作量（按级别） -->
       <div class="quick-section">
-        <div class="quick-section-title">⚙️ <span data-i18n-quick="capacity">产能参数</span></div>
+        <div class="quick-section-title">🎬 <span data-i18n-quick="liveWorkload">直播工作量（小时/月）</span></div>
         <div class="quick-grid">
           <div class="quick-field">
-            <label data-i18n-quick="hostCap">主播上限（小时/人/天）</label>
-            <input id="q_host_cap" type="number" value="6" step="0.5">
+            <label>Daily <span style="color:var(--muted);font-size:10px;" data-i18n-quick="dailyDesc">日常</span></label>
+            <input id="q_live_daily" type="number" value="120">
           </div>
           <div class="quick-field">
-            <label data-i18n-quick="editorCap">编导上限（条/人/天）</label>
-            <input id="q_editor_cap" type="number" value="2" step="0.5">
+            <label>S <span style="color:var(--muted);font-size:10px;" data-i18n-quick="sDesc">SBD/Mega</span></label>
+            <input id="q_live_s" type="number" value="24">
+          </div>
+          <div class="quick-field full">
+            <label>A/B <span style="color:var(--muted);font-size:10px;" data-i18n-quick="abDesc">PD/DD</span></label>
+            <input id="q_live_ab" type="number" value="24">
           </div>
         </div>
       </div>
 
-      <!-- 工资标准 -->
+      <!-- 短视频工作量（按级别） -->
       <div class="quick-section">
-        <div class="quick-section-title">💰 <span data-i18n-quick="salary">工资标准</span></div>
+        <div class="quick-section-title">📹 <span data-i18n-quick="videoWorkload">短视频工作量（条/月）</span></div>
         <div class="quick-grid">
           <div class="quick-field">
-            <label data-i18n-quick="managerSalary">经理月薪</label>
-            <input id="q_manager_salary" type="number" value="20000">
+            <label>S <span style="color:var(--muted);font-size:10px;" data-i18n-quick="videoSDesc">创意/爆款</span></label>
+            <input id="q_video_s" type="number" value="6">
           </div>
           <div class="quick-field">
-            <label data-i18n-quick="hostSalary">主播月薪</label>
-            <input id="q_host_salary" type="number" value="12000">
-          </div>
-          <div class="quick-field">
-            <label data-i18n-quick="opsSalary">运营月薪</label>
-            <input id="q_ops_salary" type="number" value="15000">
-          </div>
-          <div class="quick-field">
-            <label data-i18n-quick="editorSalary">编导月薪</label>
-            <input id="q_editor_salary" type="number" value="10000">
+            <label>A/B <span style="color:var(--muted);font-size:10px;" data-i18n-quick="videoABDesc">营销/促销</span></label>
+            <input id="q_video_ab" type="number" value="12">
           </div>
           <div class="quick-field full">
-            <label data-i18n-quick="fixedCost">固定成本（场地/设备/其他 月均）</label>
-            <input id="q_fixed_cost" type="number" value="20000">
+            <label>Daily <span style="color:var(--muted);font-size:10px;" data-i18n-quick="videoDailyDesc">日更基础</span></label>
+            <input id="q_video_daily" type="number" value="30">
+          </div>
+        </div>
+      </div>
+
+      <!-- 从主表读取的参数（只读显示） -->
+      <div class="quick-section">
+        <div class="quick-section-title">📖 <span data-i18n-quick="fromMain">从主表读取</span></div>
+        <div style="background:rgba(122,162,255,.06); border:1px dashed rgba(122,162,255,.25); border-radius:10px; padding:10px; font-size:11px; color:var(--muted);">
+          <div style="display:flex; justify-content:space-between; padding:3px 0;">
+            <span data-i18n-quick="hostCapRead">主播上限</span>
+            <span id="q_read_host_cap" style="color:var(--accent);">-</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0;">
+            <span data-i18n-quick="editorCapRead">编导上限</span>
+            <span id="q_read_editor_cap" style="color:var(--accent);">-</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0;">
+            <span data-i18n-quick="salaryTotal">工资标准合计</span>
+            <span id="q_read_salary" style="color:var(--accent);">-</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0;">
+            <span data-i18n-quick="fixedCostRead">固定成本</span>
+            <span id="q_read_fixed" style="color:var(--accent);">-</span>
           </div>
         </div>
       </div>
 
       <!-- 反算结果：团队配置 -->
       <div class="quick-team" id="quickTeamResult">
-        <div class="quick-section-title" style="margin:0 0 8px 0;">👥 <span data-i18n-quick="teamConfig">反算团队配置</span></div>
+        <div class="quick-section-title" style="margin:0 0 8px 0;">👥 <span data-i18n-quick="teamConfig">反算团队配置</span> <span style="font-size:10px;color:var(--muted);font-weight:400;" data-i18n-quick="pressureNote">（确保压力&lt;90%）</span></div>
         <div class="quick-team-row"><span class="pos" data-i18n-quick="manager">项目经理</span><span class="cnt" id="q_result_manager">1 人</span></div>
-        <div class="quick-team-row"><span class="pos" data-i18n-quick="host">主播</span><span class="cnt" id="q_result_host">- 人</span></div>
-        <div class="quick-team-row"><span class="pos" data-i18n-quick="ops">运营</span><span class="cnt" id="q_result_ops">1 人</span></div>
-        <div class="quick-team-row"><span class="pos" data-i18n-quick="editor">编导</span><span class="cnt" id="q_result_editor">- 人</span></div>
+        <div class="quick-team-row"><span class="pos" data-i18n-quick="host">主播</span><span class="cnt" id="q_result_host">- 人</span><span class="pressure" id="q_pressure_host" style="font-size:10px;margin-left:8px;">-</span></div>
+        <div class="quick-team-row"><span class="pos" data-i18n-quick="ops">运营</span><span class="cnt" id="q_result_ops">1 人</span><span class="pressure" id="q_pressure_ops" style="font-size:10px;margin-left:8px;">-</span></div>
+        <div class="quick-team-row"><span class="pos" data-i18n-quick="editor">编导</span><span class="cnt" id="q_result_editor">- 人</span><span class="pressure" id="q_pressure_editor" style="font-size:10px;margin-left:8px;">-</span></div>
       </div>
 
       <!-- 反算结果：报价 -->
@@ -2693,25 +2704,35 @@
         </div>
       </div>
 
-      <!-- 报价拆分预览 -->
+      <!-- 报价拆分预览（按级别） -->
       <div class="quick-section">
-        <div class="quick-section-title">📊 <span data-i18n-quick="breakdown">报价拆分（按时长/条数占比）</span></div>
+        <div class="quick-section-title">📊 <span data-i18n-quick="breakdown">报价拆分（建议单价）</span></div>
         <div style="background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:10px; padding:12px; font-size:12px;">
-          <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed rgba(255,255,255,.08);">
-            <span style="color:var(--muted);">直播服务费</span>
-            <span style="color:var(--text); font-weight:600;" id="q_live_fee">-</span>
+          <div style="font-weight:600; color:var(--text); margin-bottom:6px;" data-i18n-quick="liveBreakdown">直播服务费</div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
+            <span style="color:var(--muted);">Daily</span>
+            <span style="color:var(--accent);" id="q_rate_live_daily">-/h</span>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed rgba(255,255,255,.08);">
-            <span style="color:var(--muted);">├ Daily 单价</span>
-            <span style="color:var(--accent);" id="q_daily_rate">-/小时</span>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
+            <span style="color:var(--muted);">S</span>
+            <span style="color:var(--accent);" id="q_rate_live_s">-/h</span>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed rgba(255,255,255,.08);">
-            <span style="color:var(--muted);">短视频服务费</span>
-            <span style="color:var(--text); font-weight:600;" id="q_video_fee">-</span>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px; border-bottom:1px dashed rgba(255,255,255,.08); margin-bottom:8px; padding-bottom:8px;">
+            <span style="color:var(--muted);">A/B</span>
+            <span style="color:var(--accent);" id="q_rate_live_ab">-/h</span>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:4px 0;">
-            <span style="color:var(--muted);">├ 平均单价</span>
-            <span style="color:var(--accent);" id="q_video_rate">-/条</span>
+          <div style="font-weight:600; color:var(--text); margin-bottom:6px;" data-i18n-quick="videoBreakdown">短视频服务费</div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
+            <span style="color:var(--muted);">S</span>
+            <span style="color:var(--accent);" id="q_rate_video_s">-/条</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
+            <span style="color:var(--muted);">A/B</span>
+            <span style="color:var(--accent);" id="q_rate_video_ab">-/条</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
+            <span style="color:var(--muted);">Daily</span>
+            <span style="color:var(--accent);" id="q_rate_video_daily">-/条</span>
           </div>
         </div>
       </div>
@@ -2734,21 +2755,24 @@
       const QUICK_I18N = {
         zh: {
           title: "快速报价",
-          workload: "工作量",
-          dailyHours: "日均直播时长（小时）",
+          basicParams: "基础参数",
           workDays: "每月工作天数",
-          videoCount: "月视频总条数",
           profitMargin: "目标利润率（%）",
-          capacity: "产能参数",
-          hostCap: "主播上限（小时/人/天）",
-          editorCap: "编导上限（条/人/天）",
-          salary: "工资标准",
-          managerSalary: "经理月薪",
-          hostSalary: "主播月薪",
-          opsSalary: "运营月薪",
-          editorSalary: "编导月薪",
-          fixedCost: "固定成本（场地/设备/其他 月均）",
+          liveWorkload: "直播工作量（小时/月）",
+          dailyDesc: "日常",
+          sDesc: "SBD/Mega",
+          abDesc: "PD/DD",
+          videoWorkload: "短视频工作量（条/月）",
+          videoSDesc: "创意/爆款",
+          videoABDesc: "营销/促销",
+          videoDailyDesc: "日更基础",
+          fromMain: "从主表读取",
+          hostCapRead: "主播上限",
+          editorCapRead: "编导上限",
+          salaryTotal: "工资标准合计",
+          fixedCostRead: "固定成本",
           teamConfig: "反算团队配置",
+          pressureNote: "（确保压力<90%）",
           manager: "项目经理",
           host: "主播",
           ops: "运营",
@@ -2757,34 +2781,37 @@
           fixedCostLabel: "固定成本",
           totalCost: "总成本",
           suggestedQuote: "💡 建议报价",
-          breakdown: "报价拆分（按时长/条数占比）",
-          liveFee: "直播服务费",
-          dailyRate: "├ Daily 单价",
-          videoFee: "短视频服务费",
-          videoRate: "├ 平均单价",
+          breakdown: "报价拆分（建议单价）",
+          liveBreakdown: "直播服务费",
+          videoBreakdown: "短视频服务费",
           apply: "应用到主表",
           tip: "点击后将自动填充人数和建议单价到左侧输入区",
           person: "人",
           perHour: "/小时",
-          perVideo: "/条"
+          perVideo: "/条",
+          pressureOk: "压力正常",
+          pressureWarn: "压力>90%"
         },
         en: {
           title: "Quick Quote",
-          workload: "Workload",
-          dailyHours: "Daily Live Hours",
+          basicParams: "Basic Params",
           workDays: "Work Days / Month",
-          videoCount: "Videos / Month",
           profitMargin: "Target Margin (%)",
-          capacity: "Capacity Params",
-          hostCap: "Host Cap (hrs/person/day)",
-          editorCap: "Editor Cap (videos/person/day)",
-          salary: "Salary Standards",
-          managerSalary: "Manager Salary",
-          hostSalary: "Host Salary",
-          opsSalary: "Ops Salary",
-          editorSalary: "Editor Salary",
-          fixedCost: "Fixed Cost (venue/equipment/month)",
+          liveWorkload: "Live Workload (hrs/month)",
+          dailyDesc: "Daily",
+          sDesc: "SBD/Mega",
+          abDesc: "PD/DD",
+          videoWorkload: "Video Workload (videos/month)",
+          videoSDesc: "Creative/Viral",
+          videoABDesc: "Marketing/Promo",
+          videoDailyDesc: "Daily Basic",
+          fromMain: "Read from Main",
+          hostCapRead: "Host Cap",
+          editorCapRead: "Editor Cap",
+          salaryTotal: "Salary Total",
+          fixedCostRead: "Fixed Cost",
           teamConfig: "Calculated Team",
+          pressureNote: "(ensure <90% pressure)",
           manager: "Manager",
           host: "Host",
           ops: "Operations",
@@ -2793,16 +2820,16 @@
           fixedCostLabel: "Fixed Cost",
           totalCost: "Total Cost",
           suggestedQuote: "💡 Suggested Quote",
-          breakdown: "Quote Breakdown (by workload ratio)",
-          liveFee: "Live Service Fee",
-          dailyRate: "├ Daily Rate",
-          videoFee: "Video Service Fee",
-          videoRate: "├ Avg Rate",
+          breakdown: "Quote Breakdown (suggested rates)",
+          liveBreakdown: "Live Service Fee",
+          videoBreakdown: "Video Service Fee",
           apply: "Apply to Main",
           tip: "Will auto-fill headcount and rates to the main form",
           person: "ppl",
           perHour: "/hr",
-          perVideo: "/video"
+          perVideo: "/video",
+          pressureOk: "OK",
+          pressureWarn: ">90%"
         }
       };
 
@@ -2842,27 +2869,77 @@
       }
 
       function quickCompute(){
-        // 输入
-        const dailyHours = qToNum(document.getElementById("q_daily_hours").value, 6);
+        // 从抽屉读取：基础参数
         const workDays = qToNum(document.getElementById("q_work_days").value, 25);
-        const videoCount = qToNum(document.getElementById("q_video_count").value, 48);
         const profitMargin = qToNum(document.getElementById("q_profit_margin").value, 30) / 100;
 
-        const hostCap = qToNum(document.getElementById("q_host_cap").value, 6);
-        const editorCap = qToNum(document.getElementById("q_editor_cap").value, 2);
+        // 从抽屉读取：直播工作量（按级别）
+        const liveDailyH = qToNum(document.getElementById("q_live_daily").value, 0);
+        const liveSH = qToNum(document.getElementById("q_live_s").value, 0);
+        const liveABH = qToNum(document.getElementById("q_live_ab").value, 0);
+        const totalLiveHours = liveDailyH + liveSH + liveABH;
 
-        const managerSalary = qToNum(document.getElementById("q_manager_salary").value, 20000);
-        const hostSalary = qToNum(document.getElementById("q_host_salary").value, 12000);
-        const opsSalary = qToNum(document.getElementById("q_ops_salary").value, 15000);
-        const editorSalary = qToNum(document.getElementById("q_editor_salary").value, 10000);
-        const fixedCost = qToNum(document.getElementById("q_fixed_cost").value, 20000);
+        // 从抽屉读取：短视频工作量（按级别）
+        const videoSC = qToNum(document.getElementById("q_video_s").value, 0);
+        const videoABC = qToNum(document.getElementById("q_video_ab").value, 0);
+        const videoDC = qToNum(document.getElementById("q_video_daily").value, 0);
+        const totalVideoCount = videoSC + videoABC + videoDC;
 
-        // 反算团队人数
-        const monthlyHours = dailyHours * workDays;
-        const hostNeed = Math.ceil(dailyHours / hostCap);
-        const editorNeed = Math.ceil(videoCount / workDays / editorCap);
-        const opsNeed = 1;
+        // 从主表读取：产能上限
+        const hostCap = qToNum(document.getElementById("host_cap_per_day").value, 6);
+        const opsCap = qToNum(document.getElementById("ops_cap_per_day").value, 8);
+        const editorCap = qToNum(document.getElementById("editor_cap_per_day").value, 2);
+
+        // 从主表读取：工资
+        const managerSalary = qToNum(document.getElementById("manager_cost").value, 20000);
+        const hostSalary = qToNum(document.getElementById("host_cost").value, 12000);
+        const opsSalary = qToNum(document.getElementById("ops_cost").value, 15000);
+        const editorSalary = qToNum(document.getElementById("editor_cost").value, 10000);
+
+        // 从主表读取：固定成本
+        const areaM2 = qToNum(document.getElementById("area_m2").value, 0);
+        const rentPerM2 = qToNum(document.getElementById("rent_per_m2").value, 0);
+        const utilities = qToNum(document.getElementById("utilities").value, 0);
+        const networkCost = qToNum(document.getElementById("network_cost").value, 0);
+        const assetTotal = qToNum(document.getElementById("asset_total").value, 0);
+        const assetMonths = Math.max(1, qToNum(document.getElementById("asset_months").value, 24));
+        const setObsTotal = qToNum(document.getElementById("set_obs_total")?.value, 0);
+        const setRealTotal = qToNum(document.getElementById("set_real_total")?.value, 0);
+        const setMonths = Math.max(1, qToNum(document.getElementById("set_months")?.value, 6));
+        const reimburseMonthly = qToNum(document.getElementById("reimburse_monthly")?.value, 0);
+
+        const venueCost = areaM2 * rentPerM2 + utilities + networkCost;
+        const depreciation = assetTotal / assetMonths;
+        const setAmortization = (setObsTotal + setRealTotal) / setMonths;
+        const fixedCost = venueCost + depreciation + setAmortization + reimburseMonthly;
+
+        // 更新"从主表读取"区域显示
+        document.getElementById("q_read_host_cap").textContent = hostCap + "h/人/天";
+        document.getElementById("q_read_editor_cap").textContent = editorCap + "条/人/天";
+        const salaryTotal = managerSalary + hostSalary + opsSalary + editorSalary;
+        document.getElementById("q_read_salary").textContent = qFmt(salaryTotal);
+        document.getElementById("q_read_fixed").textContent = qFmt(fixedCost);
+
+        // 反算团队人数：确保压力 < 90%（即用 0.9 作为上限系数）
+        const PRESSURE_LIMIT = 0.9;
         const managerNeed = 1;
+
+        // 主播人数：按日均直播时长计算，需确保压力 < 90%
+        // 日均直播时长 = totalLiveHours / workDays
+        const dailyLiveHours = totalLiveHours / workDays;
+        // 压力 = dailyLiveHours / (hostCnt * hostCap)
+        // 要使 压力 < 0.9，则 hostCnt > dailyLiveHours / (hostCap * 0.9)
+        const hostNeed = Math.max(1, Math.ceil(dailyLiveHours / (hostCap * PRESSURE_LIMIT)));
+        const hostPressure = hostCap > 0 ? (dailyLiveHours / (hostNeed * hostCap)) : 0;
+
+        // 运营人数：按日均直播时长作为代理指标
+        const opsNeed = Math.max(1, Math.ceil(dailyLiveHours / (opsCap * PRESSURE_LIMIT)));
+        const opsPressure = opsCap > 0 ? (dailyLiveHours / (opsNeed * opsCap)) : 0;
+
+        // 编导人数：按日均视频条数计算
+        const dailyVideoCount = totalVideoCount / workDays;
+        const editorNeed = Math.max(1, Math.ceil(dailyVideoCount / (editorCap * PRESSURE_LIMIT)));
+        const editorPressure = editorCap > 0 ? (dailyVideoCount / (editorNeed * editorCap)) : 0;
 
         // 人力成本
         const laborCost = managerNeed * managerSalary + hostNeed * hostSalary + opsNeed * opsSalary + editorNeed * editorSalary;
@@ -2871,37 +2948,74 @@
         // 建议报价 = 总成本 × (1 + 利润率)
         const quote = totalCost * (1 + profitMargin);
 
-        // 报价拆分（按工作量占比）
+        // 报价拆分：直播70% / 短视频30%，再按级别内部分配
         const liveRatio = 0.7;
         const videoRatio = 0.3;
         const liveFee = quote * liveRatio;
         const videoFee = quote * videoRatio;
-        const dailyRate = monthlyHours > 0 ? liveFee / monthlyHours : 0;
-        const videoRate = videoCount > 0 ? videoFee / videoCount : 0;
 
-        // 更新显示（使用翻译）
+        // 直播各级别单价：按工作量占比分配，再除以小时数得单价
+        const liveDailyRate = liveDailyH > 0 ? (liveFee * (liveDailyH / totalLiveHours) / liveDailyH) : 0;
+        const liveSRate = liveSH > 0 ? (liveFee * (liveSH / totalLiveHours) / liveSH) * 1.5 : 0;  // S级溢价50%
+        const liveABRate = liveABH > 0 ? (liveFee * (liveABH / totalLiveHours) / liveABH) * 1.2 : 0;  // A/B级溢价20%
+
+        // 为了让总价=liveFee，需要重新调整：
+        // 简化：直接用工作量加权均价，然后按级别系数调整
+        const liveBaseRate = totalLiveHours > 0 ? liveFee / totalLiveHours : 0;
+        // 级别系数：Daily 1.0, A/B 1.2, S 1.5
+        const totalWeightedHours = liveDailyH * 1.0 + liveABH * 1.2 + liveSH * 1.5;
+        const adjustedBaseRate = totalWeightedHours > 0 ? liveFee / totalWeightedHours : 0;
+        const rateLiveDaily = adjustedBaseRate * 1.0;
+        const rateLiveAB = adjustedBaseRate * 1.2;
+        const rateLiveS = adjustedBaseRate * 1.5;
+
+        // 短视频各级别单价：Daily 1.0, A/B 1.5, S 2.5
+        const totalWeightedVideos = videoDC * 1.0 + videoABC * 1.5 + videoSC * 2.5;
+        const adjustedVideoBase = totalWeightedVideos > 0 ? videoFee / totalWeightedVideos : 0;
+        const rateVideoDaily = adjustedVideoBase * 1.0;
+        const rateVideoAB = adjustedVideoBase * 1.5;
+        const rateVideoS = adjustedVideoBase * 2.5;
+
+        // 更新显示：团队人数及压力
         const personUnit = " " + qt("person");
-        document.getElementById("q_result_manager").textContent = managerNeed + personUnit;
-        document.getElementById("q_result_host").textContent = hostNeed + personUnit;
-        document.getElementById("q_result_ops").textContent = opsNeed + personUnit;
-        document.getElementById("q_result_editor").textContent = editorNeed + personUnit;
+        const formatPressure = (p) => {
+          const pct = Math.round(p * 100);
+          if (p >= PRESSURE_LIMIT) {
+            return `<span style="color:var(--bad);">${pct}% ⚠</span>`;
+          }
+          return `<span style="color:var(--good);">${pct}%</span>`;
+        };
 
+        document.getElementById("q_result_manager").textContent = managerNeed + personUnit;
+        document.getElementById("q_result_host").innerHTML = hostNeed + personUnit;
+        document.getElementById("q_pressure_host").innerHTML = formatPressure(hostPressure);
+        document.getElementById("q_result_ops").innerHTML = opsNeed + personUnit;
+        document.getElementById("q_pressure_ops").innerHTML = formatPressure(opsPressure);
+        document.getElementById("q_result_editor").innerHTML = editorNeed + personUnit;
+        document.getElementById("q_pressure_editor").innerHTML = formatPressure(editorPressure);
+
+        // 更新显示：成本与报价
         document.getElementById("q_result_labor").textContent = qFmt(laborCost);
         document.getElementById("q_result_fixed").textContent = qFmt(fixedCost);
         document.getElementById("q_result_total_cost").textContent = qFmt(totalCost);
         document.getElementById("q_result_quote").textContent = qFmt(quote);
 
-        document.getElementById("q_live_fee").textContent = qFmt(liveFee);
-        document.getElementById("q_daily_rate").textContent = qFmt(dailyRate) + qt("perHour");
-        document.getElementById("q_video_fee").textContent = qFmt(videoFee);
-        document.getElementById("q_video_rate").textContent = qFmt(videoRate) + qt("perVideo");
+        // 更新显示：按级别的单价
+        document.getElementById("q_rate_live_daily").textContent = qFmt(rateLiveDaily) + qt("perHour");
+        document.getElementById("q_rate_live_s").textContent = qFmt(rateLiveS) + qt("perHour");
+        document.getElementById("q_rate_live_ab").textContent = qFmt(rateLiveAB) + qt("perHour");
+        document.getElementById("q_rate_video_s").textContent = qFmt(rateVideoS) + qt("perVideo");
+        document.getElementById("q_rate_video_ab").textContent = qFmt(rateVideoAB) + qt("perVideo");
+        document.getElementById("q_rate_video_daily").textContent = qFmt(rateVideoDaily) + qt("perVideo");
 
         // 保存结果供应用
         window.__quickResult__ = {
           managerNeed, hostNeed, opsNeed, editorNeed,
-          monthlyHours, videoCount, dailyRate, videoRate,
-          workDays, fixedCost,
-          managerSalary, hostSalary, opsSalary, editorSalary
+          workDays,
+          liveDailyH, liveSH, liveABH,
+          videoDC, videoABC, videoSC,
+          rateLiveDaily, rateLiveS, rateLiveAB,
+          rateVideoDaily, rateVideoAB, rateVideoS
         };
       }
 
@@ -2915,26 +3029,24 @@
         document.getElementById("ops_cnt").value = r.opsNeed;
         document.getElementById("editor_cnt").value = r.editorNeed;
 
-        // 填充工资
-        document.getElementById("manager_cost").value = r.managerSalary;
-        document.getElementById("host_cost").value = r.hostSalary;
-        document.getElementById("ops_cost").value = r.opsSalary;
-        document.getElementById("editor_cost").value = r.editorSalary;
-
-        // 填充直播时长和单价（全部归到 Daily 层级）
-        document.getElementById("live_daily_hours").value = r.monthlyHours;
-        document.getElementById("live_daily_rate").value = Math.round(r.dailyRate);
-        document.getElementById("live_s_hours").value = 0;
-        document.getElementById("live_ab_hours").value = 0;
-
-        // 填充短视频条数和单价（全部归到 Daily 层级）
-        document.getElementById("video_daily_cnt").value = r.videoCount;
-        document.getElementById("video_daily_rate").value = Math.round(r.videoRate);
-        document.getElementById("video_s_cnt").value = 0;
-        document.getElementById("video_ab_cnt").value = 0;
-
         // 填充工作天数
         document.getElementById("work_days").value = r.workDays;
+
+        // 填充直播时长和单价（按级别）
+        document.getElementById("live_daily_hours").value = r.liveDailyH;
+        document.getElementById("live_daily_rate").value = Math.round(r.rateLiveDaily);
+        document.getElementById("live_s_hours").value = r.liveSH;
+        document.getElementById("live_s_rate").value = Math.round(r.rateLiveS);
+        document.getElementById("live_ab_hours").value = r.liveABH;
+        document.getElementById("live_ab_rate").value = Math.round(r.rateLiveAB);
+
+        // 填充短视频条数和单价（按级别）
+        document.getElementById("video_s_cnt").value = r.videoSC;
+        document.getElementById("video_s_rate").value = Math.round(r.rateVideoS);
+        document.getElementById("video_ab_cnt").value = r.videoABC;
+        document.getElementById("video_ab_rate").value = Math.round(r.rateVideoAB);
+        document.getElementById("video_daily_cnt").value = r.videoDC;
+        document.getElementById("video_daily_rate").value = Math.round(r.rateVideoDaily);
 
         // 触发主表重新计算
         if(typeof compute === "function") compute();
@@ -2964,9 +3076,9 @@
       document.getElementById("quickApply").addEventListener("click", applyToMain);
 
       // 输入变化时实时计算
-      ["q_daily_hours","q_work_days","q_video_count","q_profit_margin",
-       "q_host_cap","q_editor_cap",
-       "q_manager_salary","q_host_salary","q_ops_salary","q_editor_salary","q_fixed_cost"
+      ["q_work_days","q_profit_margin",
+       "q_live_daily","q_live_s","q_live_ab",
+       "q_video_s","q_video_ab","q_video_daily"
       ].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener("input", quickCompute);
