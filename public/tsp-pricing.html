@@ -850,9 +850,9 @@
               </div>
 
               <div class="field">
-                <label><span data-i18n="adsBudget">预测 Ads Budget（元/月）</span> <span class="muted" data-i18n="adsBudgetHint">自动计算</span></label>
-                <input id="ads_budget" type="text" readonly style="background:rgba(122,162,255,.08);cursor:default;">
-                <div class="hint" data-i18n="adsBudgetTip">预测广告预算 = 结算GMV / ROAS。供参考，实际以投放计划为准。</div>
+                <label><span data-i18n="adsBudgetEst">预测 Ads Budget（元/月）</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
+                <input id="ads_budget_est" type="text" readonly style="background:rgba(122,162,255,.08);cursor:default;">
+                <div class="hint" data-i18n="adsBudgetEstTip">预测广告预算 = 结算GMV / ROAS。供参考，实际以投放计划为准。</div>
               </div>
             </div>
           </div>
@@ -1453,9 +1453,8 @@
         roas: "ROAS",
         roasHint: "广告投产比 = GMV / Ads Budget",
         roasTip: "Return on Ad Spend。常见范围 3~10，越高表示投放效率越好。",
-        adsBudget: "预测 Ads Budget（元/月）",
-        adsBudgetHint: "自动计算",
-        adsBudgetTip: "预测广告预算 = 结算GMV / ROAS。供参考，实际以投放计划为准。",
+        adsBudgetEst: "预测 Ads Budget（元/月）",
+        adsBudgetEstTip: "预测广告预算 = 结算GMV / ROAS。供参考，实际以投放计划为准。",
         // 成本模块
         costModule: "成本模块",
         costDesc: "人力成本 + 场地能耗 + 设备折旧 + 其他费用",
@@ -1762,9 +1761,8 @@
         roas: "ROAS",
         roasHint: "Return on Ad Spend = GMV / Ads Budget",
         roasTip: "Return on Ad Spend. Typical range 3~10, higher is better.",
-        adsBudget: "Est. Ads Budget (/month)",
-        adsBudgetHint: "Auto-calculated",
-        adsBudgetTip: "Estimated ads budget = GMV / ROAS. For reference only.",
+        adsBudgetEst: "Est. Ads Budget (/month)",
+        adsBudgetEstTip: "Estimated ads budget = GMV / ROAS. For reference only.",
         // Cost Module
         costModule: "Cost Module",
         costDesc: "Labor + Facility + Equipment + Other",
@@ -2180,10 +2178,10 @@
       const videoCntSum = videoSC + videoABC + videoDC;
       $("video_cnt_total").value = videoCntSum + " " + t("videoUnit");
 
-      // ROAS & Ads Budget
+      // ROAS & Ads Budget Estimate
       const roas = Math.max(0.1, toNum($("roas").value, 5));
-      const adsBudget = roas > 0 ? (netGMV / roas) : 0;
-      $("ads_budget").value = fmtMoney(adsBudget);
+      const adsBudgetEst = roas > 0 ? (netGMV / roas) : 0;
+      $("ads_budget_est").value = fmtMoney(adsBudgetEst);
 
       // commission
       const commission = netGMV * commissionRate;
