@@ -1142,19 +1142,31 @@
         <div class="sub-panel">
           <div class="sub-hd">
             <div class="sub-title" data-i18n="clientView">📈 商户视角（甲方）</div>
-            <span class="pill" data-i18n="clientViewPill">GMV / 支付给我们的费用</span>
+            <span class="pill" data-i18n="clientViewPill">GMV / 商户总投入</span>
           </div>
           <div class="sub-bd">
             <div class="grid2" style="margin-bottom:12px;">
               <div class="field">
-                <label><span data-i18n="clientTargetRoi">商户目标 ROI</span> <span class="muted" data-i18n="clientTargetRoiHint">建议 ≥ 5</span></label>
-                <input id="target_roi_client" type="number" value="5" step="0.5">
-                <div class="hint" data-i18n="clientRoiFormula">商户 ROI = GMV / (服务费 + 分佣)。商户花 1 元能带来多少 GMV。</div>
+                <label><span data-i18n="adsBudget">广告预算（月）</span></label>
+                <input id="ads_budget" type="number" value="50000">
+                <div class="hint" data-i18n="adsBudgetHint">商户每月投放的广告费用（投流预算）</div>
+              </div>
+              <div class="field">
+                <label><span data-i18n="clientTotalInvest">商户总投入</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
+                <div id="clientTotalInvestBox" class="roi-result-box" style="font-size:14px;">-</div>
+                <div class="hint" data-i18n="clientTotalInvestHint">服务费 + 分佣 + 广告费</div>
+              </div>
+            </div>
+            <div class="grid2" style="margin-bottom:12px;">
+              <div class="field">
+                <label><span data-i18n="clientTargetRoi">商户目标 ROI</span> <span class="muted" data-i18n="clientTargetRoiHint">建议 ≥ 3</span></label>
+                <input id="target_roi_client" type="number" value="3" step="0.5">
+                <div class="hint" data-i18n="clientRoiFormula">商户 ROI = GMV / (服务费 + 分佣 + 广告费)</div>
               </div>
               <div class="field">
                 <label><span data-i18n="clientActualRoi">实际商户 ROI</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
                 <div id="clientRoiBox" class="roi-result-box">-</div>
-                <div class="hint" data-i18n="clientRoiMono">GMV / (服务费 + 分佣)</div>
+                <div class="hint" data-i18n="clientRoiMono">GMV / (服务费 + 分佣 + 广告费)</div>
               </div>
             </div>
             <div class="smallnote" id="clientCoachText">-</div>
@@ -1572,11 +1584,16 @@
         bizCheck: "经营校验",
         bizCheckDesc: "运营本体 ROI（服务费保本）+ 全口径 ROI（分佣即利润）",
         clientView: "📈 商户视角（甲方）",
-        clientViewPill: "GMV / 支付给我们的费用",
+        clientViewPill: "GMV / 商户总投入",
+        adsBudget: "广告预算（月）",
+        adsBudgetHint: "商户每月投放的广告费用（投流预算）",
+        clientTotalInvest: "商户总投入",
+        clientTotalInvestHint: "服务费 + 分佣 + 广告费",
         clientTargetRoi: "商户目标 ROI",
-        clientTargetRoiHint: "建议 ≥ 5",
-        clientTargetRoiTip: "商户 ROI = GMV / (服务费 + 分佣)。商户花 1 元能带来多少 GMV。",
-        clientRoiFormula: "商户 ROI = GMV / (服务费 + 分佣)。商户花 1 元能带来多少 GMV。",
+        clientTargetRoiHint: "建议 ≥ 3",
+        clientTargetRoiTip: "商户 ROI = GMV / (服务费 + 分佣 + 广告费)。商户花 1 元能带来多少 GMV。",
+        clientRoiFormula: "商户 ROI = GMV / (服务费 + 分佣 + 广告费)",
+        clientRoiMono: "GMV / (服务费 + 分佣 + 广告费)",
         clientRoiLabel: "商户 ROI：",
         clientActualRoi: "实际商户 ROI",
         autoCalc: "自动计算",
@@ -1676,10 +1693,10 @@
         coachRoiFailSuggestion: "。优先考虑提高分佣率（或做阶梯分佣）、提升结算GMV、或压缩固定成本。",
         coachRoiOk: "全口径ROI达标：可继续用「分佣利润池」放大GMV；扩张时以「压力>90%」作为加人信号。",
         coachProfitNeg: "全口径净利润为负：不建议按该参数签约。建议先把运营本体ROI拉回到 1.0 附近。",
-        coachClientOk: "商户花 1 元服务费+分佣，能带来 ",
+        coachClientOk: "商户每投入 1 元（服务费+分佣+广告费），能带来 ",
         coachClientOkTip: " 元 GMV，对商户而言投产比健康。",
         coachClientLow: "商户 ROI 偏低（",
-        coachClientLowTip: "），商户可能觉得「不划算」。建议：提升 GMV 或降低服务费/分佣比例。",
+        coachClientLowTip: "），商户可能觉得「不划算」。建议：提升 GMV 或降低总投入。",
         // 动态文本单位
         hourUnit: "小时",
         videoUnit: "条",
@@ -1876,12 +1893,18 @@
         bizCheck: "Business Validation",
         bizCheckDesc: "Core ROI (service fee break-even) + Full ROI (commission = profit)",
         clientView: "📈 Client View (Merchant)",
-        clientViewPill: "GMV / Paid to us",
+        clientViewPill: "GMV / Client Total Investment",
+        adsBudget: "Ads Budget (Monthly)",
+        adsBudgetHint: "Monthly advertising spend (traffic budget)",
+        clientTotalInvest: "Client Total Investment",
+        clientTotalInvestHint: "Service Fee + Commission + Ads",
         clientTargetRoi: "Client Target ROI",
-        clientTargetRoiHint: "Recommended ≥ 5",
-        clientTargetRoiTip: "Client ROI = GMV / (Service Fee + Commission). GMV per 1 yuan spent.",
-        clientRoiFormula: "Client ROI = GMV / (Service Fee + Commission). GMV per 1 yuan spent.",
+        clientTargetRoiHint: "Recommended ≥ 3",
+        clientTargetRoiTip: "Client ROI = GMV / (Service Fee + Commission + Ads). GMV per 1 yuan spent.",
+        clientRoiFormula: "Client ROI = GMV / (Service Fee + Commission + Ads)",
+        clientRoiMono: "GMV / (Service Fee + Commission + Ads)",
         clientRoiLabel: "Client ROI:",
+        clientActualRoi: "Actual Client ROI",
         vendorView: "💼 Provider View (Us)",
         vendorViewPill: "Revenue / Our Cost",
         providerView: "💼 Provider View (Us)",
@@ -1972,10 +1995,10 @@
         coachRoiFailSuggestion: ". Prioritize: increase commission rate (or tiered), boost GMV, or cut fixed costs.",
         coachRoiOk: 'Full ROI on target: Continue using "commission profit pool" to scale GMV; use "pressure>90%" as hiring signal when expanding.',
         coachProfitNeg: "Full profit is negative: Not recommended to sign with these parameters. Suggest bringing Core ROI back to ~1.0 first.",
-        coachClientOk: "Client spends 1 yuan on service fee + commission, gets ",
+        coachClientOk: "Client invests 1 yuan (service fee + commission + ads), gets ",
         coachClientOkTip: " yuan GMV. Good ROI for client.",
         coachClientLow: "Client ROI is low (",
-        coachClientLowTip: "), client may feel it's \"not worth it\". Suggest: boost GMV or reduce fees.",
+        coachClientLowTip: "), client may feel it's \"not worth it\". Suggest: boost GMV or reduce total investment.",
         // Dynamic text units
         hourUnit: "hours",
         videoUnit: "videos",
@@ -2341,9 +2364,15 @@
       $("calc_editor_formula").textContent = `${calcTargetVideos} ${videoUnitText} ÷ ${editorCapPerDay} ${videoUnitText}/${personText}`;
 
       // ========== CLIENT (商户) ROI ==========
-      const targetROIClient = toNum($("target_roi_client").value, 5);
-      // 商户 ROI = GMV / (服务费 + 分佣)  -- 商户花 1 元能带来多少 GMV
-      const clientROI = totalRevenue > 0 ? (netGMV / totalRevenue) : 0;
+      const targetROIClient = toNum($("target_roi_client").value, 3);
+      const adsBudget = toNum($("ads_budget").value, 0);
+      // 商户总投入 = 服务费 + 分佣 + 广告费
+      const clientTotalInvest = totalRevenue + adsBudget;
+      // 商户 ROI = GMV / (服务费 + 分佣 + 广告费)  -- 商户花 1 元能带来多少 GMV
+      const clientROI = clientTotalInvest > 0 ? (netGMV / clientTotalInvest) : 0;
+
+      // 显示商户总投入
+      $("clientTotalInvestBox").textContent = fmtMoney(clientTotalInvest, true);
 
       // Helper function to update ROI box with color class
       const updateRoiBox = (el, status, value) => {
