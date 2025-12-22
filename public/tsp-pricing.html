@@ -2652,6 +2652,29 @@
         </div>
       </div>
 
+      <!-- 工资标准 -->
+      <div class="quick-section">
+        <div class="quick-section-title">💰 <span data-i18n-quick="salary">工资标准</span></div>
+        <div class="quick-grid">
+          <div class="quick-field">
+            <label data-i18n-quick="managerSalary">经理月薪</label>
+            <input id="q_manager_salary" type="number" value="20000">
+          </div>
+          <div class="quick-field">
+            <label data-i18n-quick="hostSalary">主播月薪</label>
+            <input id="q_host_salary" type="number" value="12000">
+          </div>
+          <div class="quick-field">
+            <label data-i18n-quick="opsSalary">运营月薪</label>
+            <input id="q_ops_salary" type="number" value="15000">
+          </div>
+          <div class="quick-field">
+            <label data-i18n-quick="editorSalary">编导月薪</label>
+            <input id="q_editor_salary" type="number" value="10000">
+          </div>
+        </div>
+      </div>
+
       <!-- 从主表读取的参数（只读显示） -->
       <div class="quick-section">
         <div class="quick-section-title">📖 <span data-i18n-quick="fromMain">从主表读取</span></div>
@@ -2663,10 +2686,6 @@
           <div style="display:flex; justify-content:space-between; padding:3px 0;">
             <span data-i18n-quick="editorCapRead">编导上限</span>
             <span id="q_read_editor_cap" style="color:var(--accent);">-</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; padding:3px 0;">
-            <span data-i18n-quick="salaryTotal">工资标准合计</span>
-            <span id="q_read_salary" style="color:var(--accent);">-</span>
           </div>
           <div style="display:flex; justify-content:space-between; padding:3px 0;">
             <span data-i18n-quick="fixedCostRead">固定成本</span>
@@ -2766,6 +2785,11 @@
           videoSDesc: "创意/爆款",
           videoABDesc: "营销/促销",
           videoDailyDesc: "日更基础",
+          salary: "工资标准",
+          managerSalary: "经理月薪",
+          hostSalary: "主播月薪",
+          opsSalary: "运营月薪",
+          editorSalary: "编导月薪",
           fromMain: "从主表读取",
           hostCapRead: "主播上限",
           editorCapRead: "编导上限",
@@ -2805,6 +2829,11 @@
           videoSDesc: "Creative/Viral",
           videoABDesc: "Marketing/Promo",
           videoDailyDesc: "Daily Basic",
+          salary: "Salary Standards",
+          managerSalary: "Manager Salary",
+          hostSalary: "Host Salary",
+          opsSalary: "Ops Salary",
+          editorSalary: "Editor Salary",
           fromMain: "Read from Main",
           hostCapRead: "Host Cap",
           editorCapRead: "Editor Cap",
@@ -2890,11 +2919,11 @@
         const opsCap = qToNum(document.getElementById("ops_cap_per_day").value, 8);
         const editorCap = qToNum(document.getElementById("editor_cap_per_day").value, 2);
 
-        // 从主表读取：工资
-        const managerSalary = qToNum(document.getElementById("manager_cost").value, 20000);
-        const hostSalary = qToNum(document.getElementById("host_cost").value, 12000);
-        const opsSalary = qToNum(document.getElementById("ops_cost").value, 15000);
-        const editorSalary = qToNum(document.getElementById("editor_cost").value, 10000);
+        // 从抽屉读取：工资标准
+        const managerSalary = qToNum(document.getElementById("q_manager_salary").value, 20000);
+        const hostSalary = qToNum(document.getElementById("q_host_salary").value, 12000);
+        const opsSalary = qToNum(document.getElementById("q_ops_salary").value, 15000);
+        const editorSalary = qToNum(document.getElementById("q_editor_salary").value, 10000);
 
         // 从主表读取：固定成本
         const areaM2 = qToNum(document.getElementById("area_m2").value, 0);
@@ -2916,8 +2945,6 @@
         // 更新"从主表读取"区域显示
         document.getElementById("q_read_host_cap").textContent = hostCap + "h/人/天";
         document.getElementById("q_read_editor_cap").textContent = editorCap + "条/人/天";
-        const salaryTotal = managerSalary + hostSalary + opsSalary + editorSalary;
-        document.getElementById("q_read_salary").textContent = qFmt(salaryTotal);
         document.getElementById("q_read_fixed").textContent = qFmt(fixedCost);
 
         // 反算团队人数：确保压力 < 90%（即用 0.9 作为上限系数）
@@ -3078,7 +3105,8 @@
       // 输入变化时实时计算
       ["q_work_days","q_profit_margin",
        "q_live_daily","q_live_s","q_live_ab",
-       "q_video_s","q_video_ab","q_video_daily"
+       "q_video_s","q_video_ab","q_video_daily",
+       "q_manager_salary","q_host_salary","q_ops_salary","q_editor_salary"
       ].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.addEventListener("input", quickCompute);
