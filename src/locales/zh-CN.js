@@ -118,6 +118,13 @@ export default {
     postVideoTitle: 'PostVideo',
     postVideoSubtitle: '内容 & 数据监控系统',
     postVideoDesc: '用于验证 AI + 内容生产 + 运营闭环',
+    tspPricingTitle: 'TSP 报价测算器',
+    tspPricingSubtitle: '直播代运营财务建模工具',
+    tspPricingDesc: '面向 DP/TSP 服务商的报价与成本测算工具，内置产能压力预警',
+    tspPricingFeature1: '直播服务费 + 短视频服务费 + 分佣测算',
+    tspPricingFeature2: '人力/场地/设备成本明细',
+    tspPricingFeature3: '产能压力预警（>90%）',
+    tspPricingFeature4: '多国货币 & 中英双语',
 
     // In Development
     soundLibTitle: 'Sound Library',

@@ -1,0 +1,2348 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>直播代运营报价测算工具（DP/TSP v2.5）</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111a33;
+      --card:#0f1730;
+      --muted:#9fb0d0;
+      --text:#eaf0ff;
+      --line:rgba(255,255,255,.10);
+      --good:#30d158;
+      --warn:#ffd60a;
+      --bad:#ff453a;
+      --accent:#7aa2ff;
+      --accent2:#a78bfa;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "PingFang SC","Microsoft YaHei", Arial;
+      background: radial-gradient(1000px 700px at 10% 0%, rgba(122,162,255,.18), transparent 60%),
+                  radial-gradient(900px 650px at 90% 10%, rgba(167,139,250,.14), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      padding:22px 18px 6px;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:20px;
+      letter-spacing:.2px;
+    }
+    .sub{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .wrap{
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px 18px 28px;
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .wrap{grid-template-columns: 1fr}
+    }
+
+    .panel{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    .panel .hd{
+      padding:12px 14px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+    }
+    .panel .hd .title{
+      font-weight:650;
+      font-size:13px;
+      color:#dbe6ff;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .pill{
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      color:var(--muted);
+      background: rgba(255,255,255,.02);
+      white-space:nowrap;
+    }
+    .panel .bd{ padding:12px 14px; }
+
+    .grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    @media (max-width: 520px){ .grid2{grid-template-columns:1fr} }
+
+    .field{
+      background: rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 10px 8px;
+    }
+    .field label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .field input, .field select{
+      width:100%;
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,16,34,.65);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    .field input[type="number"], .field input[type="text"]{
+      text-align:right;
+      font-variant-numeric: tabular-nums;
+    }
+    .roi-result-box{
+      width:100%;
+      padding:10px 10px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(10,16,34,.65);
+      color:var(--text);
+      font-size:14px;
+      text-align:right;
+      font-weight:700;
+      font-variant-numeric: tabular-nums;
+    }
+    .roi-result-box.good{
+      color:var(--good);
+      border-color: rgba(48,209,88,.35);
+      background: rgba(48,209,88,.08);
+    }
+    .roi-result-box.warn{
+      color:var(--warn);
+      border-color: rgba(255,214,10,.35);
+      background: rgba(255,214,10,.08);
+    }
+    .roi-result-box.bad{
+      color:var(--bad);
+      border-color: rgba(255,69,58,.35);
+      background: rgba(255,69,58,.08);
+    }
+    .field input:focus, .field select:focus{
+      border-color: rgba(122,162,255,.6);
+      box-shadow:0 0 0 3px rgba(122,162,255,.18);
+    }
+    .hint{
+      margin-top:6px;
+      font-size:11px;
+      color:rgba(159,176,208,.85);
+      line-height:1.35;
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(255,255,255,.02);
+    }
+    th, td{
+      padding:10px 10px;
+      font-size:12px;
+      border-bottom:1px solid var(--line);
+      vertical-align:middle;
+    }
+    th{ color:#cfe0ff; text-align:left; background: rgba(255,255,255,.03); font-weight:650;}
+    tr:last-child td{ border-bottom:none; }
+    .num{ text-align:right; font-variant-numeric: tabular-nums; }
+    .num input[type="number"]{
+      text-align:right;
+      font-variant-numeric: tabular-nums;
+    }
+    .rowtitle{ color:#eaf0ff; font-weight:600; }
+
+    .kpis{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 520px){ .kpis{grid-template-columns:1fr} }
+
+    .kpi{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      background: rgba(255,255,255,.02);
+    }
+    .kpi .k{ color:var(--muted); font-size:12px; }
+    .kpi .v{ margin-top:6px; font-size:18px; font-weight:750; letter-spacing:.2px; }
+    .kpi .s{ margin-top:6px; font-size:11px; color:rgba(159,176,208,.9); line-height:1.35;}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
+      border-radius:999px;
+      font-size:11px;
+      border:1px solid var(--line);
+      margin-left:8px;
+      transform: translateY(-1px);
+      white-space:nowrap;
+    }
+    .dot{width:8px;height:8px;border-radius:99px;background:var(--muted)}
+    .good{ color:var(--good); border-color: rgba(48,209,88,.25); background: rgba(48,209,88,.08); }
+    .good .dot{ background: var(--good); }
+    .warn{ color:var(--warn); border-color: rgba(255,214,10,.28); background: rgba(255,214,10,.08); }
+    .warn .dot{ background: var(--warn); }
+    .bad{ color:var(--bad); border-color: rgba(255,69,58,.28); background: rgba(255,69,58,.08); }
+    .bad .dot{ background: var(--bad); }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+    button{
+      cursor:pointer;
+      border:none;
+      padding:10px 12px;
+      border-radius:12px;
+      background: rgba(122,162,255,.18);
+      color:var(--text);
+      border:1px solid rgba(122,162,255,.35);
+      font-weight:650;
+      font-size:12px;
+    }
+    button:hover{ filter:brightness(1.08); }
+    button.secondary{
+      background: rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      color:#dbe6ff;
+      font-weight:600;
+    }
+    .smallnote{
+      margin-top:10px;
+      color:rgba(159,176,208,.9);
+      font-size:11px;
+      line-height:1.45;
+    }
+
+    .footer{
+      max-width:1200px;
+      margin:0 auto;
+      padding:0 18px 26px;
+      color:rgba(159,176,208,.85);
+      font-size:11px;
+    }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .split{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+    .muted{ color:var(--muted); }
+
+    /* 一级标题（大模块分隔） */
+.section-header{
+  margin: 20px 0 14px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-header:first-child{
+  margin-top: 0;
+}
+.section-header .icon{
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.section-header .icon.revenue{ background: linear-gradient(135deg, rgba(48,209,88,.25), rgba(48,209,88,.08)); }
+.section-header .icon.cost{ background: linear-gradient(135deg, rgba(255,159,10,.25), rgba(255,159,10,.08)); }
+.section-header .icon.check{ background: linear-gradient(135deg, rgba(122,162,255,.25), rgba(122,162,255,.08)); }
+.section-header .text{
+  flex: 1;
+}
+.section-header .title{
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .3px;
+}
+.section-header .desc{
+  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(159,176,208,.85);
+}
+.section-divider{
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.12) 20%, rgba(255,255,255,.12) 80%, transparent);
+  margin: 16px 0;
+}
+
+/* 二级标题（子模块） */
+.sub-panel{
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sub-panel:last-child{
+  margin-bottom: 0;
+}
+.sub-panel .sub-hd{
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255,255,255,.03);
+  border-bottom: 1px solid var(--line);
+}
+.sub-panel .sub-title{
+  font-size: 13px;
+  font-weight: 650;
+  color: #cfe0ff;
+}
+.sub-panel .sub-bd{
+  padding: 12px;
+}
+
+/* 三级标题（分组标题） */
+.h2{
+  margin: 12px 2px 10px;
+  font-size: 13px;
+  font-weight: 750;
+  color: #dbe6ff;
+  letter-spacing: .2px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.h2::before{
+  content:"";
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background: rgba(122,162,255,.75);
+  box-shadow: 0 0 0 4px rgba(122,162,255,.12);
+}
+.h2 .hint2{
+  margin-left:auto;
+  font-size:11px;
+  color: rgba(159,176,208,.85);
+  font-weight: 600;
+}
+.group{
+  padding: 10px 10px 12px;
+  border: 1px dashed rgba(255,255,255,.14);
+  background: rgba(255,255,255,.015);
+  border-radius: 14px;
+}
+.group + .group{ margin-top: 12px; }
+
+/* 语言切换按钮 */
+.lang-btn{
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+}
+.lang-btn:hover{
+  color: var(--text);
+  background: rgba(255,255,255,.08);
+}
+.lang-btn.active{
+  background: rgba(122,162,255,.25);
+  color: #fff;
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+      <div style="flex:1;">
+        <h1 data-i18n="title">直播代运营报价测算工具 <span class="pill">DP/TSP 财务模型 v2.5</span></h1>
+        <div class="sub" data-i18n="subtitle">
+          核心哲学：<b>服务费保本</b>（直播+短视频≈总成本）｜<b>分佣即利润</b>｜拆分两套口径：<b>运营本体（不含分佣）</b> vs <b>全口径（含分佣）</b>｜并内置<b>产能压力预警</b>（>90% 触发）。
+        </div>
+      </div>
+      <div style="display:flex; gap:4px; background:rgba(255,255,255,.06); border:1px solid var(--line); border-radius:8px; padding:4px;">
+        <button id="btnLangZh" class="lang-btn active" onclick="setLang('zh')">中文</button>
+        <button id="btnLangEn" class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <!-- LEFT: INPUTS -->
+    <section class="panel">
+      <div class="hd">
+        <div class="title" data-i18n="inputPanel">输入区（报价 & 核算参数）</div>
+        <div class="actions">
+          <button class="secondary" id="btnReset" data-i18n="btnReset">重置示例</button>
+          <button class="secondary" id="btnExport" data-i18n="btnExport">导出 JSON</button>
+          <button class="secondary" id="btnImport" data-i18n="btnImport">导入 JSON</button>
+          <button id="btnPrint" data-i18n="btnPrint">打印/导出PDF</button>
+        </div>
+      </div>
+
+      <div class="bd">
+        <!-- ==================== 国家/货币设置 ==================== -->
+        <div class="sub-panel" style="margin-bottom:14px; background:linear-gradient(135deg, rgba(122,162,255,.08), rgba(167,139,250,.05));">
+          <div class="sub-hd" style="background:transparent; border-bottom:1px dashed rgba(255,255,255,.12);">
+            <div class="sub-title" data-i18n="countryCurrency">🌏 国家与货币</div>
+            <span class="pill" data-i18n="affectGlobal">影响全局金额显示</span>
+          </div>
+          <div class="sub-bd">
+            <div class="grid2">
+              <div class="field">
+                <label data-i18n="countryLabel">国家/地区</label>
+                <select id="country_select">
+                  <option value="CN">🇨🇳 中国 / China</option>
+                  <option value="TH">🇹🇭 泰国 / Thailand</option>
+                  <option value="VN">🇻🇳 越南 / Vietnam</option>
+                  <option value="ID">🇮🇩 印尼 / Indonesia</option>
+                  <option value="MY">🇲🇾 马来 / Malaysia</option>
+                  <option value="PH">🇵🇭 菲律宾 / Philippines</option>
+                  <option value="SG">🇸🇬 新加坡 / Singapore</option>
+                  <option value="US">🇺🇸 美国 / USA</option>
+                  <option value="JP">🇯🇵 日本 / Japan</option>
+                  <option value="KR">🇰🇷 韩国 / Korea</option>
+                </select>
+              </div>
+              <div class="field">
+                <label><span data-i18n="currencyLabel">货币单位</span> <span class="muted" id="currency_display">CNY (¥)</span></label>
+                <input id="currency_code" type="text" value="CNY" readonly style="background:rgba(122,162,255,.08);cursor:default;">
+              </div>
+              <div class="field">
+                <label><span data-i18n="exchangeRateLabel">参考汇率</span> <span class="muted" data-i18n="exchangeRateHint">1 本币 = ? CNY</span></label>
+                <input id="exchange_rate" type="number" value="1" step="0.0001" min="0.0001">
+                <div class="hint" data-i18n="exchangeRateTip">用于折算 CNY 参考值。如泰铢 1 THB ≈ 0.20 CNY。</div>
+              </div>
+              <div class="field" style="background:rgba(48,209,88,.06);">
+                <label data-i18n="currencySymbolLabel">当前货币符号</label>
+                <input id="currency_symbol" type="text" value="¥" readonly style="background:transparent;cursor:default;font-size:18px;font-weight:700;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 收入模块 ==================== -->
+        <div class="section-header">
+          <div class="icon revenue">💰</div>
+          <div class="text">
+            <div class="title" data-i18n="revenueModule">收入模块</div>
+            <div class="desc" data-i18n="revenueDesc">直播服务费 + 短视频服务费 + 全店结算分佣</div>
+          </div>
+        </div>
+
+        <!-- 收入 1: 直播服务费 -->
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="liveServiceFee">直播服务费（按级别）</div>
+            <span class="pill" data-i18n="liveServicePill">基础时长费 + 大促阶梯</span>
+          </div>
+          <div class="sub-bd">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="level">级别</th>
+                  <th class="num" data-i18n="hoursMonth">小时/月</th>
+                  <th class="num" data-i18n="pricePerHour">单价（/小时）</th>
+                  <th class="num" data-i18n="subtotal">小计</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="rowtitle" data-i18n="daily">Daily（日常）</td>
+                  <td class="num"><input id="live_daily_hours" type="number" value="120" style="width:110px"></td>
+                  <td class="num"><input id="live_daily_rate" type="number" value="300" style="width:110px"></td>
+                  <td class="num mono" id="live_daily_sub">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="sLevel">S（SBD / Mega）</td>
+                  <td class="num"><input id="live_s_hours" type="number" value="24" style="width:110px"></td>
+                  <td class="num"><input id="live_s_rate" type="number" value="800" style="width:110px"></td>
+                  <td class="num mono" id="live_s_sub">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="abLevel">A/B（PD / DD）</td>
+                  <td class="num"><input id="live_ab_hours" type="number" value="24" style="width:110px"></td>
+                  <td class="num"><input id="live_ab_rate" type="number" value="500" style="width:110px"></td>
+                  <td class="num mono" id="live_ab_sub">-</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="3" data-i18n="liveTotal">直播服务费合计</th>
+                  <th class="num mono" id="live_total">-</th>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="grid2" style="margin-top:10px;">
+              <div class="field" style="background:rgba(122,162,255,.06);">
+                <label><span data-i18n="liveTotalHours">直播总时长（小时/月）</span> <span class="muted" data-i18n="autoSum">自动汇总</span></label>
+                <input id="live_hours_total" type="text" readonly style="background:transparent;cursor:default;font-weight:600;">
+              </div>
+              <div class="field" style="background:rgba(122,162,255,.06);">
+                <label><span data-i18n="liveDailyHours">日均直播时长（小时/天）</span> <span class="muted" data-i18n="byWorkDays">按有效工作天数</span></label>
+                <input id="live_hours_daily" type="text" readonly style="background:transparent;cursor:default;font-weight:600;">
+              </div>
+            </div>
+            <div class="smallnote" data-i18n="liveTip">提示：如果你更喜欢"按场次×单场时长"输入，也可以把小时/月当作汇总后的结果。</div>
+          </div>
+        </div>
+
+        <!-- 收入 2: 短视频服务费 -->
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="videoServiceFee">短视频服务费（按级别）</div>
+            <span class="pill" data-i18n="videoPill">内容复杂度分级</span>
+          </div>
+          <div class="sub-bd">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="level">级别</th>
+                  <th class="num" data-i18n="countMonth">条数/月</th>
+                  <th class="num" data-i18n="pricePerVideo">单价（/条）</th>
+                  <th class="num" data-i18n="subtotal">小计</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="rowtitle" data-i18n="videoS">S（创意/爆款）</td>
+                  <td class="num"><input id="video_s_cnt" type="number" value="6" style="width:110px"></td>
+                  <td class="num"><input id="video_s_rate" type="number" value="3000" style="width:110px"></td>
+                  <td class="num mono" id="video_s_sub">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="videoAB">A/B（营销/促销）</td>
+                  <td class="num"><input id="video_ab_cnt" type="number" value="12" style="width:110px"></td>
+                  <td class="num"><input id="video_ab_rate" type="number" value="1200" style="width:110px"></td>
+                  <td class="num mono" id="video_ab_sub">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="videoDaily">Daily（日更基础）</td>
+                  <td class="num"><input id="video_daily_cnt" type="number" value="30" style="width:110px"></td>
+                  <td class="num"><input id="video_daily_rate" type="number" value="300" style="width:110px"></td>
+                  <td class="num mono" id="video_daily_sub">-</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="3" data-i18n="videoTotal">短视频服务费合计</th>
+                  <th class="num mono" id="video_total">-</th>
+                </tr>
+              </tfoot>
+            </table>
+            <div class="grid2" style="margin-top:10px;">
+              <div class="field" style="background:rgba(122,162,255,.06);">
+                <label><span data-i18n="videoTotalCount">短视频总条数（条/月）</span> <span class="muted" data-i18n="autoSum">自动汇总</span></label>
+                <input id="video_cnt_total" type="text" readonly style="background:transparent;cursor:default;font-weight:600;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 收入 3: 全店结算分佣 -->
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="commission">全店结算分佣</div>
+            <span class="pill" data-i18n="commissionPill">分佣 = 结算GMV × 分佣比例</span>
+          </div>
+          <div class="sub-bd">
+            <div class="grid2">
+              <div class="field">
+                <label><span data-i18n="commissionRate">分佣比例（%）</span> <span class="muted" data-i18n="commissionRateHint">如 5 表示 5%</span></label>
+                <input id="commission_rate" type="number" value="5">
+                <div class="hint" data-i18n="commissionRateTip">全店结算分佣比例。分佣是项目的核心利润来源。</div>
+              </div>
+
+              <div class="field">
+                <label><span data-i18n="netGmv">结算 GMV（元/月）</span> <span class="muted" data-i18n="netGmvHint">扣除退款后的实际成交额</span></label>
+                <input id="net_gmv" type="number" value="3000000">
+                <div class="hint" data-i18n="netGmvTip">用于计算分佣金额 = GMV × 分佣比例。也用于人效/坪效指标。</div>
+              </div>
+
+              <div class="field">
+                <label>ROAS <span class="muted" data-i18n="roasHint">广告投产比 = GMV / Ads Budget</span></label>
+                <input id="roas" type="number" value="5" step="0.1">
+                <div class="hint" data-i18n="roasTip">Return on Ad Spend。常见范围 3~10，越高表示投放效率越好。</div>
+              </div>
+
+              <div class="field">
+                <label><span data-i18n="adsBudget">预测 Ads Budget（元/月）</span> <span class="muted" data-i18n="adsBudgetHint">自动计算</span></label>
+                <input id="ads_budget" type="text" readonly style="background:rgba(122,162,255,.08);cursor:default;">
+                <div class="hint" data-i18n="adsBudgetTip">预测广告预算 = 结算GMV / ROAS。供参考，实际以投放计划为准。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== 成本模块 ==================== -->
+        <div class="section-divider"></div>
+        <div class="section-header">
+          <div class="icon cost">📊</div>
+          <div class="text">
+            <div class="title" data-i18n="costModule">成本模块</div>
+            <div class="desc" data-i18n="costDesc">人力成本 + 场地能耗 + 设备折旧 + 其他费用</div>
+          </div>
+        </div>
+
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="costDetail">成本明细</div>
+            <span class="pill" data-i18n="withCapacityWarning">含产能压力预警</span>
+          </div>
+          <div class="sub-bd">
+
+  <!-- 产能参数 -->
+  <div class="group">
+    <div class="h2"><span data-i18n="capacityParams">产能上限参数</span> <span class="hint2" data-i18n="capacityParamsHint">用于压力预警（>90%）</span></div>
+    <div class="grid2">
+      <div class="field">
+        <label><span data-i18n="workDays">每月有效工作天数</span> <span class="muted" data-i18n="workDaysUnit">30 - 休息天数</span></label>
+        <input id="work_days" type="number" value="25">
+        <div class="hint" data-i18n="workDaysHint">默认 25 天（每月休 5 天）。</div>
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="hostCapPerDay">主播人均播出上限</span> <span class="muted" data-i18n="hostCapUnit">小时/人/天</span></label>
+        <input id="host_cap_per_day" type="number" value="6" step="0.5">
+        <div class="hint" data-i18n="hostCapHint">主播每人每天最大直播时长。</div>
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="opsCapPerDay">运营工作时长上限</span> <span class="muted" data-i18n="opsCapUnit">小时/人/天</span></label>
+        <input id="ops_cap_per_day" type="number" value="8" step="0.5">
+        <div class="hint" data-i18n="opsCapHint">运营每人每天最大工作时长。</div>
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="editorCapPerDay">编拍剪产能上限</span> <span class="muted" data-i18n="editorCapUnit">条/人/天</span></label>
+        <input id="editor_cap_per_day" type="number" value="2" step="0.5">
+        <div class="hint" data-i18n="editorCapHint">编导+拍摄+剪辑，每人每天最大产出条数。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 人力成本 -->
+  <div class="group">
+    <div class="h2"><span data-i18n="laborCost">人力成本</span> <span class="hint2" data-i18n="laborCostHint">人数 × 单人成本 = 月成本</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="position">岗位</th>
+          <th class="num" data-i18n="headcount">人数</th>
+          <th class="num" data-i18n="costPerPerson">单人月成本</th>
+          <th class="num" data-i18n="monthlyCostSub">月成本小计</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="rowtitle" data-i18n="manager">项目及管理经理</td>
+          <td class="num"><input id="manager_cnt" type="number" value="1" style="width:80px"></td>
+          <td class="num"><input id="manager_cost" type="number" value="20000" style="width:110px"></td>
+          <td class="num mono" id="manager_cost_sub">-</td>
+        </tr>
+        <tr>
+          <td class="rowtitle" data-i18n="host">主播</td>
+          <td class="num"><input id="host_cnt" type="number" value="2" style="width:80px"></td>
+          <td class="num"><input id="host_cost" type="number" value="12000" style="width:110px"></td>
+          <td class="num mono" id="host_cost_sub">-</td>
+        </tr>
+        <tr>
+          <td class="rowtitle" data-i18n="ops">运营</td>
+          <td class="num"><input id="ops_cnt" type="number" value="1" style="width:80px"></td>
+          <td class="num"><input id="ops_cost" type="number" value="15000" style="width:110px"></td>
+          <td class="num mono" id="ops_cost_sub">-</td>
+        </tr>
+        <tr>
+          <td class="rowtitle" data-i18n="editor">剪辑</td>
+          <td class="num"><input id="editor_cnt" type="number" value="1" style="width:80px"></td>
+          <td class="num"><input id="editor_cost" type="number" value="10000" style="width:110px"></td>
+          <td class="num mono" id="editor_cost_sub">-</td>
+        </tr>
+        <tr>
+          <td class="rowtitle"><span data-i18n="outsourcing">兼职/外包</span> <span class="muted" style="font-weight:400" data-i18n="optional">（可选）</span></td>
+          <td class="num"><input id="outsourcing_cnt" type="number" value="0" style="width:80px"></td>
+          <td class="num"><input id="outsourcing_cost" type="number" value="5000" style="width:110px"></td>
+          <td class="num mono" id="outsourcing_cost_sub">-</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="3" data-i18n="laborCostTotal">人力成本合计</th>
+          <th class="num mono" id="labor_cost_total">-</th>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- 产能压力预览（紧跟人力成本） -->
+    <div style="margin-top:12px; padding:10px; background:rgba(255,255,255,.02); border:1px dashed rgba(255,255,255,.12); border-radius:10px;">
+      <div style="font-size:12px; color:#cfe0ff; font-weight:600; margin-bottom:8px;">
+        <span data-i18n="capacityPressure">产能压力预览</span> <span style="color:var(--muted); font-weight:400;" data-i18n="pressureWarning">（>90% 预警）</span>
+      </div>
+      <table style="margin:0;">
+        <thead>
+          <tr>
+            <th data-i18n="position">岗位</th>
+            <th class="num" data-i18n="actualLoad">实际量</th>
+            <th class="num" data-i18n="ratedCapacity">额定产能</th>
+            <th class="num" data-i18n="pressure">压力</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="rowtitle" data-i18n="hostHours">主播（小时）</td>
+            <td class="num mono" id="cap_host_actual2">-</td>
+            <td class="num mono" id="cap_host_cap2">-</td>
+            <td class="num" id="cap_host_badge2">-</td>
+          </tr>
+          <tr>
+            <td class="rowtitle" data-i18n="opsHours">运营（小时）</td>
+            <td class="num mono" id="cap_ops_actual2">-</td>
+            <td class="num mono" id="cap_ops_cap2">-</td>
+            <td class="num" id="cap_ops_badge2">-</td>
+          </tr>
+          <tr>
+            <td class="rowtitle" data-i18n="editorCount">编拍剪（条）</td>
+            <td class="num mono" id="cap_editor_actual2">-</td>
+            <td class="num mono" id="cap_editor_cap2">-</td>
+            <td class="num" id="cap_editor_badge2">-</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 人力需求试算（可收起） -->
+    <div style="margin-top:12px; background:rgba(122,162,255,.04); border:1px dashed rgba(122,162,255,.25); border-radius:10px; overflow:hidden;">
+      <div id="calcToggle" style="padding:10px; cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="toggleCalc()">
+        <div style="font-size:12px; color:#cfe0ff; font-weight:600;">
+          🧮 <span data-i18n="laborCalc">人力需求试算</span> <span style="color:var(--muted); font-weight:400;" data-i18n="laborCalcHint">根据目标任务量反算人数</span>
+        </div>
+        <div id="calcArrow" style="color:var(--muted); font-size:10px; transition:transform .2s;">▼</div>
+      </div>
+      <div id="calcBody" style="display:none; padding:0 10px 10px; border-top:1px dashed rgba(122,162,255,.15);">
+        <div class="grid2" style="margin:10px 0;">
+          <div class="field" style="margin:0;">
+            <label><span data-i18n="targetDailyHours">目标日均播出</span> <span class="muted" data-i18n="hoursPerDay">小时/天</span></label>
+            <input id="calc_target_hours" type="number" value="8" step="0.5">
+          </div>
+          <div class="field" style="margin:0;">
+            <label><span data-i18n="targetDailyVideos">目标日均视频</span> <span class="muted" data-i18n="videosPerDay">条/天</span></label>
+            <input id="calc_target_videos" type="number" value="2" step="1">
+          </div>
+        </div>
+        <table style="margin:0;">
+          <thead>
+            <tr>
+              <th data-i18n="position">岗位</th>
+              <th class="num" data-i18n="requiredHeadcount">需求人数</th>
+              <th class="num" data-i18n="calcBasis">计算依据</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rowtitle" data-i18n="host">主播</td>
+              <td class="num mono" id="calc_host_need">-</td>
+              <td class="num muted" id="calc_host_formula">-</td>
+            </tr>
+            <tr>
+              <td class="rowtitle" data-i18n="ops">运营</td>
+              <td class="num mono" id="calc_ops_need">-</td>
+              <td class="num muted" id="calc_ops_formula">-</td>
+            </tr>
+            <tr>
+              <td class="rowtitle" data-i18n="editorShort">编拍剪</td>
+              <td class="num mono" id="calc_editor_need">-</td>
+              <td class="num muted" id="calc_editor_formula">-</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="smallnote" style="margin-top:8px;">
+          公式：需求人数 = 目标日均量 / 人均产能上限（向上取整）<br/>
+          <span style="color:var(--accent);">+1人</span> 为储备主播，随时可用，应对突发请假/调休/状态不佳等情况。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 场地与能耗 -->
+  <div class="group">
+    <div class="h2"><span data-i18n="venueCost">场地与能耗</span> <span class="hint2" data-i18n="venueCostHint">租金 + 水电 + 网络</span></div>
+    <div class="grid2">
+      <div class="field">
+        <label><span data-i18n="areaM2">场地面积（㎡）</span> <span class="muted" data-i18n="forEffCalc">用于坪效计算</span></label>
+        <input id="area_m2" type="number" value="80">
+        <div class="hint" data-i18n="areaM2Hint">场地总面积，用于计算场地成本和坪效（GMV/㎡）。</div>
+      </div>
+
+      <div class="field">
+        <label data-i18n="rentPerM2">单位租金（元/㎡/月）</label>
+        <input id="rent_per_m2" type="number" value="120">
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="utilities">水电杂费（月）</span> <span class="muted" data-i18n="utilitiesHint">灯光/空调/物流等</span></label>
+        <input id="utilities" type="number" value="2000">
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="networkCost">直播专线网费（月）</span> <span class="muted" data-i18n="networkHint">稳定上行带宽</span></label>
+        <input id="network_cost" type="number" value="3000">
+        <div class="hint" data-i18n="networkTip">直播对上行带宽要求高，建议专线保障。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 设备折旧 -->
+  <div class="group">
+    <div class="h2"><span data-i18n="equipmentDepr">设备折旧</span> <span class="hint2" data-i18n="equipmentDeprHint">一次性投入按月摊销</span></div>
+    <div class="grid2">
+      <div class="field">
+        <label data-i18n="assetTotal">硬件总投入（一次性）</label>
+        <input id="asset_total" type="number" value="120000">
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="assetMonths">折旧周期（月）</span> <span class="muted" data-i18n="assetMonthsHint">如 24</span></label>
+        <input id="asset_months" type="number" value="24">
+      </div>
+    </div>
+  </div>
+
+  <!-- 其他可选项 -->
+  <div class="group">
+    <div class="h2"><span data-i18n="otherOptions">其他可选项</span> <span class="hint2" data-i18n="otherOptionsHint">可为 0；制景可选虚拟/真实；实报实销按月计入成本</span></div>
+    <div class="grid2">
+      <div class="field">
+        <label><span data-i18n="setObsTotal">直播间制景 - 虚拟 OBS 景（一次性）</span> <span class="muted" data-i18n="optional">可选</span></label>
+        <input id="set_obs_total" type="number" value="0">
+        <div class="hint" data-i18n="setObsHint">如：OBS 虚拟场景设计/动效/包装等。一次性费用会按"摊销月数"折算成月成本。</div>
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="setRealTotal">直播间制景 - 真实制景（一次性）</span> <span class="muted" data-i18n="optional">可选</span></label>
+        <input id="set_real_total" type="number" value="0">
+        <div class="hint" data-i18n="setRealHint">如：搭景、道具、背景板等。一次性费用会按「摊销月数」折算成月成本。</div>
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="setMonths">制景摊销月数</span> <span class="muted" data-i18n="setMonthsHint">如 6 / 12</span></label>
+        <input id="set_months" type="number" value="6">
+        <div class="hint" data-i18n="setMonthsTip">制景属于"项目定制资产"，与硬件折旧分开摊销。</div>
+      </div>
+
+      <div class="field">
+        <label><span data-i18n="reimburseMonthly">其他运营费用（实报实销/月）</span> <span class="muted" data-i18n="clientRequired">甲方要求</span></label>
+        <input id="reimburse_monthly" type="number" value="0">
+        <div class="hint" data-i18n="reimburseHint">如：额外物流/差旅/临时活动物料/临时采买等（按月计入成本）。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="smallnote" data-i18n="capacityNote">
+    产能压力公式：<span class="mono">压力 = 实际任务量 / (人数 × 上限 × 有效工作天数)</span>，当压力 &gt; 90% 触发预警（建议加人/兼职/涨价/降任务）。<br/>
+    注意：运营压力的「实际任务量」难量化时，可先用 <span class="mono">直播总小时</span> 作为代理指标（每小时直播至少需要运营跟进）。
+  </div>
+          </div>
+        </div>
+
+        <!-- ==================== 经营校验 ==================== -->
+        <div class="section-divider"></div>
+        <div class="section-header">
+          <div class="icon check">✅</div>
+          <div class="text">
+            <div class="title" data-i18n="bizValidation">经营校验</div>
+            <div class="desc" data-i18n="bizValidationDesc">运营本体 ROI（服务费保本）+ 全口径 ROI（分佣即利润）</div>
+          </div>
+        </div>
+
+        <!-- 商户视角 ROI -->
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="clientView">📈 商户视角（甲方）</div>
+            <span class="pill" data-i18n="clientViewPill">GMV / 支付给我们的费用</span>
+          </div>
+          <div class="sub-bd">
+            <div class="grid2" style="margin-bottom:12px;">
+              <div class="field">
+                <label><span data-i18n="clientTargetRoi">商户目标 ROI</span> <span class="muted" data-i18n="clientTargetRoiHint">建议 ≥ 5</span></label>
+                <input id="target_roi_client" type="number" value="5" step="0.5">
+                <div class="hint" data-i18n="clientRoiFormula">商户 ROI = GMV / (服务费 + 分佣)。商户花 1 元能带来多少 GMV。</div>
+              </div>
+              <div class="field">
+                <label><span data-i18n="clientActualRoi">实际商户 ROI</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
+                <div id="clientRoiBox" class="roi-result-box">-</div>
+                <div class="hint" data-i18n="clientRoiMono">GMV / (服务费 + 分佣)</div>
+              </div>
+            </div>
+            <div class="smallnote" id="clientCoachText">-</div>
+          </div>
+        </div>
+
+        <!-- 服务商视角 ROI -->
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="vendorView">💼 服务商视角（我们）</div>
+            <span class="pill" data-i18n="vendorViewPill">收入 / 我们的成本</span>
+          </div>
+          <div class="sub-bd">
+            <!-- 运营本体 ROI -->
+            <div class="grid2" style="margin-bottom:12px;">
+              <div class="field">
+                <label><span data-i18n="targetCoreRoi">目标运营本体 ROI</span> <span class="muted" data-i18n="targetCoreRoiHint">建议 ≈ 1.0</span></label>
+                <input id="target_core_roi" type="number" value="1.00" step="0.1" readonly style="background:rgba(122,162,255,.08);cursor:default;">
+                <div class="hint" data-i18n="coreRoiMono">(直播费 + 视频费) / 总成本</div>
+              </div>
+              <div class="field">
+                <label><span data-i18n="actualCoreRoi">实际运营本体 ROI</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
+                <div id="coreRoiBox" class="roi-result-box">-</div>
+                <div class="hint" data-i18n="coreRoiDesc">服务费能否覆盖成本</div>
+              </div>
+            </div>
+            <!-- 全口径 ROI -->
+            <div class="grid2" style="margin-bottom:12px;">
+              <div class="field">
+                <label><span data-i18n="targetFullRoi">目标全口径 ROI</span> <span class="muted" data-i18n="targetFullRoiHint">建议 ≥ 1.5</span></label>
+                <input id="target_roi" type="number" value="1.50" step="0.1">
+                <div class="hint" data-i18n="fullRoiMono">(直播费 + 视频费 + 分佣) / 总成本</div>
+              </div>
+              <div class="field">
+                <label><span data-i18n="actualFullRoi">实际全口径 ROI</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
+                <div id="fullRoiBox" class="roi-result-box">-</div>
+                <div class="hint" data-i18n="fullRoiDesc">含分佣的整体收益</div>
+              </div>
+            </div>
+            <div class="smallnote" id="coachText">-</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT: OUTPUTS -->
+    <aside class="panel">
+      <div class="hd">
+        <div class="title" data-i18n="resultPanel">结果区（报价汇总 & ROI）</div>
+        <span class="pill" id="result_currency_pill">CNY ¥</span>
+      </div>
+
+      <div class="bd">
+        <!-- CNY 折算提示（非 CNY 时显示） -->
+        <div id="cny_notice" style="display:none; margin-bottom:12px; padding:8px 10px; background:rgba(122,162,255,.08); border:1px dashed rgba(122,162,255,.3); border-radius:8px; font-size:11px; color:var(--muted);">
+          💡 <span data-i18n="cnyNotice">当前货币：</span><span id="cny_notice_currency">-</span><span data-i18n="cnyNoticeRate">，汇率 </span><span id="cny_notice_rate">-</span><span data-i18n="cnyNoticeTip">。下方灰色小字为折合 CNY 参考值。</span>
+        </div>
+
+        <!-- ========== 客户报价单（对外） ========== -->
+        <div class="sub-panel" style="margin-bottom:14px;">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="quoteTitle">📄 客户报价单</div>
+            <span class="pill" data-i18n="quoteExternal">对外</span>
+          </div>
+          <div class="sub-bd" style="padding:12px;">
+            <table style="width:100%;">
+              <tbody>
+                <tr>
+                  <td class="rowtitle" data-i18n="quoteLive">直播代运营</td>
+                  <td class="num mono" id="quote_live_hours">-</td>
+                  <td class="num mono" id="quote_live_fee">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="quoteVideo">短视频制作</td>
+                  <td class="num mono" id="quote_video_count">-</td>
+                  <td class="num mono" id="quote_video_fee">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="quoteCommission">业绩分佣</td>
+                  <td class="num mono" id="quote_commission_rate">-</td>
+                  <td class="num mono" style="color:var(--muted);" data-i18n="quoteByGmv">按结算GMV</td>
+                </tr>
+                <tr style="border-top:1px dashed var(--line);">
+                  <td class="rowtitle" style="font-weight:600;" data-i18n="quoteServiceTotal">服务费合计</td>
+                  <td></td>
+                  <td class="num mono" style="font-weight:600; color:var(--accent);" id="quote_service_total">-</td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:10px; padding-top:8px; border-top:1px solid var(--line); font-size:11px; color:var(--muted);" data-i18n="quoteNote">
+              💡 以上报价不含税，税点另计。分佣按月结算GMV计算。
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== 内部数据（对内） ========== -->
+        <div class="sub-panel">
+          <div class="sub-hd">
+            <div class="sub-title" data-i18n="internalTitle">📊 内部数据</div>
+            <span class="pill" data-i18n="internalOnly">仅内部</span>
+          </div>
+          <div class="sub-bd" style="padding:12px;">
+            <table style="width:100%; font-size:12px;">
+              <tbody>
+                <!-- 一、收入 -->
+                <tr>
+                  <td colspan="2" style="font-weight:600; color:var(--accent); padding:4px 0 2px;" data-i18n="plRevenue">一、收入</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plServiceFee">服务费（直播+视频）</td>
+                  <td class="num mono" id="pl_service_fee">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plCommission">分佣</td>
+                  <td class="num mono" id="pl_commission">-</td>
+                </tr>
+                <tr style="border-top:1px dashed var(--line);">
+                  <td class="rowtitle" style="font-weight:600;" data-i18n="plTotalRevenue">总收入</td>
+                  <td class="num mono" style="font-weight:600; color:var(--accent);" id="pl_total_revenue">-</td>
+                </tr>
+
+                <!-- 二、成本 -->
+                <tr>
+                  <td colspan="2" style="font-weight:600; color:var(--accent); padding:12px 0 2px;" data-i18n="plCost">二、成本</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plLaborCost">人力成本</td>
+                  <td class="num mono" id="pl_labor_cost">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plVenueCost">场地能耗</td>
+                  <td class="num mono" id="pl_venue_cost">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plOtherCost">其他（设备折旧等）</td>
+                  <td class="num mono" id="pl_other_cost">-</td>
+                </tr>
+                <tr style="border-top:1px dashed var(--line);">
+                  <td class="rowtitle" style="font-weight:600;" data-i18n="plTotalCost">总成本</td>
+                  <td class="num mono" style="font-weight:600;" id="pl_total_cost">-</td>
+                </tr>
+
+                <!-- 三、利润 -->
+                <tr>
+                  <td colspan="2" style="font-weight:600; color:var(--accent); padding:12px 0 2px;" data-i18n="plProfit">三、利润</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plCoreProfit">运营本体净利润（不含分佣）</td>
+                  <td class="num mono" id="pl_core_profit">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plFullProfit">全口径净利润（含分佣）</td>
+                  <td class="num mono" id="pl_full_profit">-</td>
+                </tr>
+
+                <!-- 四、ROI指标 -->
+                <tr>
+                  <td colspan="2" style="font-weight:600; color:var(--accent); padding:12px 0 2px;" data-i18n="plRoi">四、ROI指标</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plCoreRoi">运营本体 ROI</td>
+                  <td class="num mono" id="pl_core_roi">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plFullRoi">全口径 ROI</td>
+                  <td class="num mono" id="pl_full_roi">-</td>
+                </tr>
+
+                <!-- 五、效率指标 -->
+                <tr>
+                  <td colspan="2" style="font-weight:600; color:var(--accent); padding:12px 0 2px;" data-i18n="plEfficiency">五、效率指标</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plGmvPerPerson">人效（GMV/人）</td>
+                  <td class="num mono" id="pl_gmv_per_person">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" style="padding-left:12px;" data-i18n="plGmvPerM2">坪效（GMV/㎡）</td>
+                  <td class="num mono" id="pl_gmv_per_m2">-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 口径摘要 -->
+        <div class="formula-summary" style="margin-top:16px; padding:12px 14px; background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:10px; font-size:11px; color:var(--muted); line-height:1.8;">
+          <div style="font-weight:600; color:var(--text); margin-bottom:8px; font-size:12px;" data-i18n="formulaTitle">📐 口径摘要</div>
+          <div class="mono" style="display:flex; flex-direction:column; gap:4px;">
+            <div data-i18n="formulaCoreRoi"><span style="color:var(--accent);">运营本体 ROI</span> = (直播费 + 视频费) / 总成本</div>
+            <div data-i18n="formulaFullRoi"><span style="color:var(--accent);">全口径 ROI</span> = (直播费 + 视频费 + 分佣) / 总成本</div>
+            <div data-i18n="formulaCommission"><span style="color:var(--accent);">分佣</span> = 结算 GMV × 分佣率</div>
+            <div data-i18n="formulaCoreProfit"><span style="color:var(--accent);">运营本体净利润</span> = 服务费 − 成本</div>
+            <div data-i18n="formulaFullProfit"><span style="color:var(--accent);">全口径净利润</span> = 总收入 − 成本</div>
+            <div data-i18n="formulaPressure"><span style="color:var(--accent);">压力</span> = 实际量 / (人数 × 上限 × 有效工作天数)</div>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // ---------- helpers ----------
+    const $ = (id) => document.getElementById(id);
+
+    // ---------- 国家/货币预设数据 ----------
+    const COUNTRY_CURRENCY = {
+      CN: { code: "CNY", symbol: "¥", name: "人民币", rate: 1.0 },
+      TH: { code: "THB", symbol: "฿", name: "泰铢", rate: 0.20 },
+      VN: { code: "VND", symbol: "₫", name: "越南盾", rate: 0.00029 },
+      ID: { code: "IDR", symbol: "Rp", name: "印尼盾", rate: 0.00045 },
+      MY: { code: "MYR", symbol: "RM", name: "林吉特", rate: 1.55 },
+      PH: { code: "PHP", symbol: "₱", name: "菲律宾比索", rate: 0.125 },
+      SG: { code: "SGD", symbol: "S$", name: "新加坡元", rate: 5.35 },
+      US: { code: "USD", symbol: "$", name: "美元", rate: 7.20 },
+      JP: { code: "JPY", symbol: "¥", name: "日元", rate: 0.048 },
+      KR: { code: "KRW", symbol: "₩", name: "韩元", rate: 0.0052 }
+    };
+
+    // 当前货币配置（全局）
+    let currentCurrency = { code: "CNY", symbol: "¥", rate: 1.0 };
+
+    // 当前语言
+    let currentLang = "zh";
+
+    // ---------- 中英文翻译字典 ----------
+    const I18N = {
+      zh: {
+        title: '直播代运营报价测算工具 <span class="pill">DP/TSP 财务模型 v2.5</span>',
+        subtitle: '核心哲学：<b>服务费保本</b>（直播+短视频≈总成本）｜<b>分佣即利润</b>｜拆分两套口径：<b>运营本体（不含分佣）</b> vs <b>全口径（含分佣）</b>｜并内置<b>产能压力预警</b>（>90% 触发）。',
+        inputPanel: "输入区（报价 & 核算参数）",
+        btnReset: "重置示例",
+        btnExport: "导出 JSON",
+        btnImport: "导入 JSON",
+        btnPrint: "打印/导出PDF",
+        // 国家货币
+        countryCurrency: "🌏 国家与货币",
+        countryLabel: "国家/地区",
+        currencyLabel: "货币单位",
+        exchangeRateLabel: "参考汇率",
+        exchangeRateHint: "1 本币 = ? CNY",
+        exchangeRateTip: "用于折算 CNY 参考值。如泰铢 1 THB ≈ 0.20 CNY。",
+        currencySymbolLabel: "当前货币符号",
+        affectGlobal: "影响全局金额显示",
+        // 收入模块
+        revenueModule: "收入模块",
+        revenueDesc: "直播服务费 + 短视频服务费 + 全店结算分佣",
+        liveServiceFee: "直播服务费（按级别）",
+        liveServicePill: "基础时长费 + 大促阶梯",
+        level: "级别",
+        hoursMonth: "小时/月",
+        pricePerHour: "单价（/小时）",
+        subtotal: "小计",
+        daily: "Daily（日常）",
+        sLevel: "S（SBD / Mega）",
+        abLevel: "A/B（PD / DD）",
+        liveTotal: "直播服务费合计",
+        liveTotalHours: "直播总时长（小时/月）",
+        liveDailyHours: "日均直播时长（小时/天）",
+        autoSum: "自动汇总",
+        byWorkDays: "按有效工作天数",
+        liveTip: "提示：如果你更喜欢「按场次×单场时长」输入，也可以把小时/月当作汇总后的结果。",
+        // 短视频
+        videoServiceFee: "短视频服务费（按级别）",
+        videoPill: "内容复杂度分级",
+        countMonth: "条数/月",
+        pricePerVideo: "单价（/条）",
+        videoS: "S（创意/爆款）",
+        videoAB: "A/B（营销/促销）",
+        videoDaily: "Daily（日更基础）",
+        videoTotal: "短视频服务费合计",
+        videoTotalCount: "短视频总条数（条/月）",
+        // 分佣
+        commission: "全店结算分佣",
+        commissionPill: "分佣 = 结算GMV × 分佣比例",
+        commissionRate: "分佣比例（%）",
+        commissionRateHint: "如 5 表示 5%",
+        commissionRateTip: "全店结算分佣比例。分佣是项目的核心利润来源。",
+        netGmv: "结算 GMV（元/月）",
+        netGmvHint: "扣除退款后的实际成交额",
+        netGmvTip: "用于计算分佣金额 = GMV × 分佣比例。也用于人效/坪效指标。",
+        roas: "ROAS",
+        roasHint: "广告投产比 = GMV / Ads Budget",
+        roasTip: "Return on Ad Spend。常见范围 3~10，越高表示投放效率越好。",
+        adsBudget: "预测 Ads Budget（元/月）",
+        adsBudgetHint: "自动计算",
+        adsBudgetTip: "预测广告预算 = 结算GMV / ROAS。供参考，实际以投放计划为准。",
+        // 成本模块
+        costModule: "成本模块",
+        costDesc: "人力成本 + 场地能耗 + 设备折旧 + 其他费用",
+        costDetail: "成本明细",
+        withCapacityWarning: "含产能压力预警",
+        // 产能参数
+        capacityParams: "产能上限参数",
+        capacityParamsHint: "用于压力预警（>90%）",
+        capacityHint: "用于压力预警（>90%）",
+        workDays: "每月有效工作天数",
+        workDaysUnit: "30 - 休息天数",
+        workDaysHint: "默认 25 天（每月休 5 天）。",
+        workDaysTip: "默认 25 天（每月休 5 天）。",
+        hostCapPerDay: "主播人均播出上限",
+        hostCapLabel: "主播人均播出上限",
+        hostCapUnit: "小时/人/天",
+        hostCapHint: "主播每人每天最大直播时长。",
+        hostCapTip: "主播每人每天最大直播时长。",
+        opsCapPerDay: "运营工作时长上限",
+        opsCapLabel: "运营工作时长上限",
+        opsCapUnit: "小时/人/天",
+        opsCapHint: "运营每人每天最大工作时长。",
+        opsCapTip: "运营每人每天最大工作时长。",
+        editorCapPerDay: "编拍剪产能上限",
+        editorCapLabel: "编拍剪产能上限",
+        editorCapUnit: "条/人/天",
+        editorCapHint: "编导+拍摄+剪辑，每人每天最大产出条数。",
+        editorCapTip: "编导+拍摄+剪辑，每人每天最大产出条数。",
+        // 人力成本
+        laborCost: "人力成本",
+        laborCostHint: "人数 × 单人成本 = 月成本",
+        position: "岗位",
+        headcount: "人数",
+        costPerPerson: "单人月成本",
+        monthlyCost: "月成本小计",
+        monthlyCostSub: "月成本小计",
+        manager: "项目及管理经理",
+        host: "主播",
+        ops: "运营",
+        editor: "剪辑",
+        editorShort: "编拍剪",
+        outsourcing: "兼职/外包",
+        optional: "（可选）",
+        laborTotal: "人力成本合计",
+        laborCostTotal: "人力成本合计",
+        // 产能压力
+        capacityPressure: "产能压力预览",
+        capacityPreview: "产能压力预览",
+        pressureWarning: "（>90% 预警）",
+        over90Warning: "（>90% 预警）",
+        actualLoad: "实际量",
+        actual: "实际量",
+        ratedCapacity: "额定产能",
+        capacity: "额定产能",
+        pressure: "压力",
+        hostHours: "主播（小时）",
+        opsHours: "运营（小时）",
+        editorCount: "编拍剪（条）",
+        editorVideos: "编拍剪（条）",
+        // 人力试算
+        laborCalc: "人力需求试算",
+        laborCalcHint: "根据目标任务量反算人数",
+        manpowerCalc: "🧮 人力需求试算",
+        manpowerCalcHint: "根据目标任务量反算人数",
+        targetDailyHours: "目标日均播出",
+        targetDailyVideos: "目标日均视频",
+        hoursPerDay: "小时/天",
+        videosPerDay: "条/天",
+        requiredHeadcount: "需求人数",
+        calcBasis: "计算依据",
+        calcFormula: "公式：需求人数 = 目标日均量 / 人均产能上限（向上取整）",
+        reserveHost: "为储备主播，随时可用，应对突发请假/调休/状态不佳等情况。",
+        // 场地
+        venueCost: "场地与能耗",
+        venueCostHint: "租金 + 水电 + 网络",
+        facility: "场地与能耗",
+        facilityHint: "租金 + 水电 + 网络",
+        areaM2: "场地面积（㎡）",
+        forEffCalc: "用于坪效计算",
+        areaM2Hint: "场地总面积，用于计算场地成本和坪效（GMV/㎡）。",
+        areaLabel: "场地面积（㎡）",
+        areaHint: "用于坪效计算",
+        areaTip: "场地总面积，用于计算场地成本和坪效（GMV/㎡）。",
+        rentPerM2: "单位租金（元/㎡/月）",
+        rentLabel: "单位租金（元/㎡/月）",
+        utilities: "水电杂费（月）",
+        utilitiesLabel: "水电杂费（月）",
+        utilitiesHint: "灯光/空调/物流等",
+        networkCost: "直播专线网费（月）",
+        networkLabel: "直播专线网费（月）",
+        networkHint: "稳定上行带宽",
+        networkTip: "直播对上行带宽要求高，建议专线保障。",
+        // 设备
+        equipmentDepr: "设备折旧",
+        equipmentDeprHint: "一次性投入按月摊销",
+        equipment: "设备折旧",
+        equipmentHint: "一次性投入按月摊销",
+        assetTotal: "硬件总投入（一次性）",
+        assetMonths: "折旧周期（月）",
+        assetMonthsHint: "如 24",
+        // 其他
+        otherOptions: "其他可选项",
+        otherOptionsHint: "可为 0；制景可选虚拟/真实；实报实销按月计入成本",
+        otherCosts: "其他可选项",
+        otherCostsHint: "可为 0；制景可选虚拟/真实；实报实销按月计入成本",
+        setObsTotal: "直播间制景 - 虚拟 OBS 景（一次性）",
+        setObsHint: "如：OBS 虚拟场景设计/动效/包装等。一次性费用会按「摊销月数」折算成月成本。",
+        setObs: "直播间制景 - 虚拟 OBS 景（一次性）",
+        setObsTip: "如：OBS 虚拟场景设计/动效/包装等。一次性费用会按「摊销月数」折算成月成本。",
+        setRealTotal: "直播间制景 - 真实制景（一次性）",
+        setRealHint: "如：搭景、道具、背景板等。一次性费用会按「摊销月数」折算成月成本。",
+        setReal: "直播间制景 - 真实制景（一次性）",
+        setRealTip: "如：搭景、道具、背景板等。一次性费用会按「摊销月数」折算成月成本。",
+        setMonths: "制景摊销月数",
+        setMonthsHint: "如 6 / 12",
+        setMonthsTip: "制景属于「项目定制资产」，与硬件折旧分开摊销。",
+        reimburseMonthly: "其他运营费用（实报实销/月）",
+        clientRequired: "甲方要求",
+        reimburse: "其他运营费用（实报实销/月）",
+        reimburseHint: "如：额外物流/差旅/临时活动物料/临时采买等（按月计入成本）",
+        reimburseTip: "如：额外物流/差旅/临时活动物料/临时采买等（按月计入成本）。",
+        capacityNote: "产能压力公式：<span class=\"mono\">压力 = 实际任务量 / (人数 × 上限 × 有效工作天数)</span>，当压力 > 90% 触发预警（建议加人/兼职/涨价/降任务）。<br/>注意：运营压力的「实际任务量」难量化时，可先用 <span class=\"mono\">直播总小时</span> 作为代理指标（每小时直播至少需要运营跟进）。",
+        // 经营校验
+        bizValidation: "经营校验",
+        bizValidationDesc: "运营本体 ROI（服务费保本）+ 全口径 ROI（分佣即利润）",
+        bizCheck: "经营校验",
+        bizCheckDesc: "运营本体 ROI（服务费保本）+ 全口径 ROI（分佣即利润）",
+        clientView: "📈 商户视角（甲方）",
+        clientViewPill: "GMV / 支付给我们的费用",
+        clientTargetRoi: "商户目标 ROI",
+        clientTargetRoiHint: "建议 ≥ 5",
+        clientTargetRoiTip: "商户 ROI = GMV / (服务费 + 分佣)。商户花 1 元能带来多少 GMV。",
+        clientRoiFormula: "商户 ROI = GMV / (服务费 + 分佣)。商户花 1 元能带来多少 GMV。",
+        clientRoiLabel: "商户 ROI：",
+        clientActualRoi: "实际商户 ROI",
+        autoCalc: "自动计算",
+        vendorView: "💼 服务商视角（我们）",
+        vendorViewPill: "收入 / 我们的成本",
+        providerView: "💼 服务商视角（我们）",
+        providerViewPill: "收入 / 我们的成本",
+        targetCoreRoi: "目标运营本体 ROI",
+        targetCoreRoiHint: "建议 ≈ 1.0",
+        actualCoreRoi: "实际运营本体 ROI",
+        coreRoiDesc: "服务费能否覆盖成本",
+        targetFullRoi: "目标全口径 ROI",
+        targetFullRoiHint: "建议 ≥ 1.5",
+        actualFullRoi: "实际全口径 ROI",
+        fullRoiDesc: "含分佣的整体收益",
+        vendorRoiFormula: "我们的 ROI = (服务费 + 分佣) / 总成本。我们投入 1 元能赚多少收入。",
+        targetRoi: "目标全口径 ROI",
+        targetRoiHint: "建议 ≥ 1.5",
+        targetRoiTip: "我们的 ROI = (服务费 + 分佣) / 总成本。我们投入 1 元能赚多少收入。",
+        coreRoiLabel: "运营本体 ROI（建议 ≈ 1.0）：",
+        coreRoiFormula: "(直播费 + 视频费) / 总成本",
+        fullRoiLabel: "全口径 ROI（对比目标）：",
+        fullRoiFormula: "(直播费 + 视频费 + 分佣) / 总成本",
+        clientRoiMono: "GMV / (服务费 + 分佣)",
+        coreRoiMono: "(直播费 + 视频费) / 总成本",
+        fullRoiMono: "(直播费 + 视频费 + 分佣) / 总成本",
+        // 结果区
+        resultPanel: "结果区（报价汇总 & ROI）",
+        cnyNotice: "当前货币：",
+        cnyNoticeRate: "，汇率 ",
+        cnyNoticeTip: "。下方灰色小字为折合 CNY 参考值。",
+        // 客户报价单
+        quoteTitle: "📄 客户报价单",
+        quoteExternal: "对外",
+        quoteLive: "直播代运营",
+        quoteVideo: "短视频制作",
+        quoteCommission: "业绩分佣",
+        quoteByGmv: "按结算GMV",
+        quoteServiceTotal: "服务费合计",
+        quoteNote: "💡 以上报价不含税，税点另计。分佣按月结算GMV计算。",
+        // 内部数据
+        internalTitle: "📊 内部数据",
+        internalOnly: "仅内部",
+        // 利润表结构
+        plRevenue: "一、收入",
+        plServiceFee: "服务费（直播+视频）",
+        plCommission: "分佣",
+        plTotalRevenue: "总收入",
+        plCost: "二、成本",
+        plLaborCost: "人力成本",
+        plVenueCost: "场地能耗",
+        plOtherCost: "其他（设备折旧等）",
+        plTotalCost: "总成本",
+        plProfit: "三、利润",
+        plCoreProfit: "运营本体净利润（不含分佣）",
+        plFullProfit: "全口径净利润（含分佣）",
+        plRoi: "四、ROI指标",
+        plCoreRoi: "运营本体 ROI",
+        plFullRoi: "全口径 ROI",
+        plEfficiency: "五、效率指标",
+        plGmvPerPerson: "人效（GMV/人）",
+        plGmvPerM2: "坪效（GMV/㎡）",
+        // Formula Summary
+        formulaTitle: "📐 口径摘要",
+        formulaCoreRoi: '<span style="color:var(--accent);">运营本体 ROI</span> = (直播费 + 视频费) / 总成本',
+        formulaFullRoi: '<span style="color:var(--accent);">全口径 ROI</span> = (直播费 + 视频费 + 分佣) / 总成本',
+        formulaCommission: '<span style="color:var(--accent);">分佣</span> = 结算 GMV × 分佣率',
+        formulaCoreProfit: '<span style="color:var(--accent);">运营本体净利润</span> = 服务费 − 成本',
+        formulaFullProfit: '<span style="color:var(--accent);">全口径净利润</span> = 总收入 − 成本',
+        formulaPressure: '<span style="color:var(--accent);">压力</span> = 实际量 / (人数 × 上限 × 有效工作天数)',
+        // 动态文本
+        breakeven_ok: "保本OK",
+        breakeven_low: "略偏低",
+        breakeven_high: "略偏高",
+        breakeven_risk: "亏损风险",
+        breakeven_surplus: "盈利冗余",
+        coreRoi: "运营本体ROI",
+        fullRoi: "全口径ROI(含分佣)",
+        clientRoi: "商户ROI",
+        targetLabel: "目标",
+        person: "人",
+        reserve: "+1人",
+        // Coach 文本
+        coachCoreLoss: "运营本体处于亏损：运营本体ROI=",
+        coachCoreLossTip: "（< 1），运营本体净利润=",
+        coachCoreLossSuggestion: "。建议：提升服务费单价/减少低效时长或条数/降低固定成本。",
+        coachCoreOk: "运营本体为正：运营本体ROI=",
+        coachCoreOkTip: "（≥ 1），运营本体净利润=",
+        coachCoreOkPhilosophy: "。符合「服务费保本」的哲学。",
+        coachPressureHigh: "压力",
+        coachPressure90: " > 90%：建议加人/兼职或涨价/降量，否则交付质量风险上升。",
+        coachPressure75: "：进入高压区，注意排班与质量。",
+        coachPressureSafe: "当前产能压力均在安全区（按有效工作天数=",
+        coachPressureDays: "天计算）。",
+        coachRoiFail: "全口径ROI未达标：当前=",
+        coachRoiFailTip: "，目标=",
+        coachRoiFailSuggestion: "。优先考虑提高分佣率（或做阶梯分佣）、提升结算GMV、或压缩固定成本。",
+        coachRoiOk: "全口径ROI达标：可继续用「分佣利润池」放大GMV；扩张时以「压力>90%」作为加人信号。",
+        coachProfitNeg: "全口径净利润为负：不建议按该参数签约。建议先把运营本体ROI拉回到 1.0 附近。",
+        coachClientOk: "商户花 1 元服务费+分佣，能带来 ",
+        coachClientOkTip: " 元 GMV，对商户而言投产比健康。",
+        coachClientLow: "商户 ROI 偏低（",
+        coachClientLowTip: "），商户可能觉得「不划算」。建议：提升 GMV 或降低服务费/分佣比例。",
+        // 动态文本单位
+        hourUnit: "小时",
+        videoUnit: "条",
+        hostText: "主播",
+        opsText: "运营",
+        editorText: "剪辑",
+        daysText: "天"
+      },
+      en: {
+        title: 'Live-Commerce Pricing Calculator <span class="pill">DP/TSP Finance Model v2.5</span>',
+        subtitle: 'Core philosophy: <b>Service Fee Break-even</b> (Live + Video ≈ Total Cost) | <b>Commission = Profit</b> | Two calibers: <b>Core (excl. commission)</b> vs <b>Full (incl. commission)</b> | Built-in <b>Capacity Alert</b> (>90% trigger).',
+        inputPanel: "Input (Pricing & Cost Parameters)",
+        btnReset: "Reset Example",
+        btnExport: "Export JSON",
+        btnImport: "Import JSON",
+        btnPrint: "Print/Export PDF",
+        // Country/Currency
+        countryCurrency: "🌏 Country & Currency",
+        countryLabel: "Country/Region",
+        currencyLabel: "Currency",
+        exchangeRateLabel: "Exchange Rate",
+        exchangeRateHint: "1 Local = ? CNY",
+        exchangeRateTip: "For CNY conversion reference. e.g. 1 THB ≈ 0.20 CNY.",
+        currencySymbolLabel: "Currency Symbol",
+        affectGlobal: "Affects all amounts",
+        // Revenue Module
+        revenueModule: "Revenue Module",
+        revenueDesc: "Live Service Fee + Video Service Fee + Commission",
+        liveServiceFee: "Live Service Fee (by Level)",
+        liveServicePill: "Base hourly + Promo tiers",
+        level: "Level",
+        hoursMonth: "Hours/Month",
+        pricePerHour: "Price (/Hour)",
+        subtotal: "Subtotal",
+        daily: "Daily (Regular)",
+        sLevel: "S (SBD / Mega)",
+        abLevel: "A/B (PD / DD)",
+        liveTotal: "Live Service Fee Total",
+        liveTotalHours: "Total Live Hours (hrs/month)",
+        liveDailyHours: "Daily Avg Hours (hrs/day)",
+        autoSum: "Auto-sum",
+        byWorkDays: "By work days",
+        liveTip: "Tip: You can also input session count × duration, then use the total hours here.",
+        // Video
+        videoServiceFee: "Video Service Fee (by Level)",
+        videoPill: "Content complexity tiers",
+        countMonth: "Count/Month",
+        pricePerVideo: "Price (/Video)",
+        videoS: "S (Creative/Viral)",
+        videoAB: "A/B (Marketing/Promo)",
+        videoDaily: "Daily (Basic)",
+        videoTotal: "Video Service Fee Total",
+        videoTotalCount: "Total Videos (count/month)",
+        // Commission
+        commission: "Store-wide Commission",
+        commissionPill: "Commission = Settled GMV × Rate",
+        commissionRate: "Commission Rate (%)",
+        commissionRateHint: "e.g. 5 means 5%",
+        commissionRateTip: "Store-wide commission rate. Commission is the core profit source.",
+        netGmv: "Settled GMV (/month)",
+        netGmvHint: "Actual sales after refunds",
+        netGmvTip: "For commission calc = GMV × Rate. Also for efficiency metrics.",
+        roas: "ROAS",
+        roasHint: "Return on Ad Spend = GMV / Ads Budget",
+        roasTip: "Return on Ad Spend. Typical range 3~10, higher is better.",
+        adsBudget: "Est. Ads Budget (/month)",
+        adsBudgetHint: "Auto-calculated",
+        adsBudgetTip: "Estimated ads budget = GMV / ROAS. For reference only.",
+        // Cost Module
+        costModule: "Cost Module",
+        costDesc: "Labor + Facility + Equipment + Other",
+        costDetail: "Cost Breakdown",
+        withCapacityWarning: "With capacity alerts",
+        // Capacity Params
+        capacityParams: "Capacity Limits",
+        capacityParamsHint: "For pressure alerts (>90%)",
+        capacityHint: "For pressure alerts (>90%)",
+        workDays: "Work Days / Month",
+        workDaysUnit: "30 - rest days",
+        workDaysHint: "Default 25 days (5 days off per month).",
+        workDaysTip: "Default 25 days (5 days off per month).",
+        hostCapPerDay: "Host Max Hours",
+        hostCapLabel: "Host Max Hours",
+        hostCapUnit: "hrs/person/day",
+        hostCapHint: "Max live hours per host per day.",
+        hostCapTip: "Max live hours per host per day.",
+        opsCapPerDay: "Ops Max Hours",
+        opsCapLabel: "Ops Max Hours",
+        opsCapUnit: "hrs/person/day",
+        opsCapHint: "Max work hours per ops staff per day.",
+        opsCapTip: "Max work hours per ops staff per day.",
+        editorCapPerDay: "Editor Capacity",
+        editorCapLabel: "Editor Capacity",
+        editorCapUnit: "videos/person/day",
+        editorCapHint: "Max videos per editor per day.",
+        editorCapTip: "Max videos per editor per day.",
+        // Labor
+        laborCost: "Labor Cost",
+        laborCostHint: "Headcount × Cost = Monthly",
+        position: "Position",
+        headcount: "Count",
+        costPerPerson: "Cost/Person",
+        monthlyCost: "Monthly Total",
+        monthlyCostSub: "Monthly Total",
+        manager: "Project & Account Manager",
+        host: "Host",
+        ops: "Operations",
+        editor: "Editor",
+        editorShort: "Editor Team",
+        outsourcing: "Freelance/Outsource",
+        optional: "(optional)",
+        laborTotal: "Labor Cost Total",
+        laborCostTotal: "Labor Cost Total",
+        // Capacity Pressure
+        capacityPressure: "Capacity Pressure Preview",
+        capacityPreview: "Capacity Pressure Preview",
+        pressureWarning: "(>90% Alert)",
+        over90Warning: "(>90% Alert)",
+        actualLoad: "Actual",
+        actual: "Actual",
+        ratedCapacity: "Capacity",
+        capacity: "Capacity",
+        pressure: "Pressure",
+        hostHours: "Host (hours)",
+        opsHours: "Ops (hours)",
+        editorCount: "Editor (videos)",
+        editorVideos: "Editor (videos)",
+        // Manpower Calc
+        laborCalc: "Manpower Calculator",
+        laborCalcHint: "Reverse calc from target workload",
+        manpowerCalc: "🧮 Manpower Calculator",
+        manpowerCalcHint: "Reverse calc from target workload",
+        targetDailyHours: "Target Daily Hours",
+        targetDailyVideos: "Target Daily Videos",
+        hoursPerDay: "hrs/day",
+        videosPerDay: "videos/day",
+        requiredHeadcount: "Required",
+        calcBasis: "Calculation Basis",
+        calcFormula: "Formula: Required = Target Daily / Capacity per person (rounded up)",
+        reserveHost: "is reserve host, ready for emergencies (sick leave, off days, etc).",
+        // Facility
+        venueCost: "Facility & Utilities",
+        venueCostHint: "Rent + Utilities + Network",
+        facility: "Facility & Utilities",
+        facilityHint: "Rent + Utilities + Network",
+        areaM2: "Area (㎡)",
+        forEffCalc: "For efficiency calc",
+        areaM2Hint: "Total area for rent cost and GMV/㎡ calculation.",
+        areaLabel: "Area (㎡)",
+        areaHint: "For efficiency calc",
+        areaTip: "Total area for rent cost and GMV/㎡ calculation.",
+        rentPerM2: "Rent (/㎡/month)",
+        rentLabel: "Rent (/㎡/month)",
+        utilities: "Utilities (/month)",
+        utilitiesLabel: "Utilities (/month)",
+        utilitiesHint: "Lighting/AC/Logistics etc.",
+        networkCost: "Dedicated Network (/month)",
+        networkLabel: "Dedicated Network (/month)",
+        networkHint: "Stable uplink bandwidth",
+        networkTip: "Live streaming requires high upload bandwidth. Dedicated line recommended.",
+        // Equipment
+        equipmentDepr: "Equipment Depreciation",
+        equipmentDeprHint: "One-time investment amortized monthly",
+        equipment: "Equipment Depreciation",
+        equipmentHint: "One-time investment amortized monthly",
+        assetTotal: "Hardware Investment (one-time)",
+        assetMonths: "Depreciation Period (months)",
+        assetMonthsHint: "e.g. 24",
+        // Other
+        otherOptions: "Other Options",
+        otherOptionsHint: "Can be 0; Set design virtual/real; Reimbursable monthly",
+        otherCosts: "Other Options",
+        otherCostsHint: "Can be 0; Set design virtual/real; Reimbursable monthly",
+        setObsTotal: "Virtual OBS Set (one-time)",
+        setObsHint: "e.g. OBS virtual scene design/effects. One-time cost amortized monthly.",
+        setObs: "Virtual OBS Set (one-time)",
+        setObsTip: "e.g. OBS virtual scene design/effects. One-time cost amortized monthly.",
+        setRealTotal: "Physical Set Design (one-time)",
+        setRealHint: "e.g. Set construction, props, backdrop. Amortized monthly.",
+        setReal: "Physical Set Design (one-time)",
+        setRealTip: "e.g. Set construction, props, backdrop. Amortized monthly.",
+        setMonths: "Set Amortization Period",
+        setMonthsHint: "e.g. 6 / 12",
+        setMonthsTip: "Set design is project-specific asset, amortized separately from hardware.",
+        reimburseMonthly: "Other Reimbursable (/month)",
+        clientRequired: "Client required",
+        reimburse: "Other Reimbursable (/month)",
+        reimburseHint: "e.g. Extra logistics/travel/event materials (monthly cost).",
+        reimburseTip: "e.g. Extra logistics/travel/event materials (monthly cost).",
+        capacityNote: 'Capacity formula: <span class="mono">Pressure = Actual / (Headcount × Limit × Work Days)</span>. Alert when >90% (consider hiring/freelance/price increase/reduce workload).<br/>Note: When ops workload is hard to quantify, use <span class="mono">Total Live Hours</span> as proxy (each live hour needs ops support).',
+        // Biz Check
+        bizValidation: "Business Validation",
+        bizValidationDesc: "Core ROI (service fee break-even) + Full ROI (commission = profit)",
+        bizCheck: "Business Validation",
+        bizCheckDesc: "Core ROI (service fee break-even) + Full ROI (commission = profit)",
+        clientView: "📈 Client View (Merchant)",
+        clientViewPill: "GMV / Paid to us",
+        clientTargetRoi: "Client Target ROI",
+        clientTargetRoiHint: "Recommended ≥ 5",
+        clientTargetRoiTip: "Client ROI = GMV / (Service Fee + Commission). GMV per 1 yuan spent.",
+        clientRoiFormula: "Client ROI = GMV / (Service Fee + Commission). GMV per 1 yuan spent.",
+        clientRoiLabel: "Client ROI:",
+        vendorView: "💼 Provider View (Us)",
+        vendorViewPill: "Revenue / Our Cost",
+        providerView: "💼 Provider View (Us)",
+        providerViewPill: "Revenue / Our Cost",
+        targetFullRoi: "Target Full ROI",
+        targetFullRoiHint: "Recommended ≥ 1.5",
+        vendorRoiFormula: "Our ROI = (Service Fee + Commission) / Total Cost. Revenue per 1 yuan invested.",
+        targetRoi: "Target Full ROI",
+        targetRoiHint: "Recommended ≥ 1.5",
+        targetRoiTip: "Our ROI = (Service Fee + Commission) / Total Cost. Revenue per 1 yuan invested.",
+        coreRoiLabel: "Core ROI (target ≈ 1.0):",
+        coreRoiFormula: "(Live + Video) / Total Cost",
+        fullRoiLabel: "Full ROI (vs target):",
+        fullRoiFormula: "(Live + Video + Commission) / Total Cost",
+        clientRoiMono: "GMV / (Service Fee + Commission)",
+        coreRoiMono: "(Live + Video) / Total Cost",
+        fullRoiMono: "(Live + Video + Commission) / Total Cost",
+        // Results
+        resultPanel: "Results (Pricing Summary & ROI)",
+        cnyNotice: "Currency: ",
+        cnyNoticeRate: ", Rate ",
+        cnyNoticeTip: ". Gray text below shows CNY equivalent.",
+        // Client Quote
+        quoteTitle: "📄 Client Quote",
+        quoteExternal: "External",
+        quoteLive: "Live Operations",
+        quoteVideo: "Video Production",
+        quoteCommission: "Commission",
+        quoteByGmv: "By settled GMV",
+        quoteServiceTotal: "Service Fee Total",
+        quoteNote: "💡 Prices exclude tax. Commission calculated on monthly settled GMV.",
+        // Internal Data
+        internalTitle: "📊 Internal Data",
+        internalOnly: "Internal",
+        // Profit & Loss structure
+        plRevenue: "1. Revenue",
+        plServiceFee: "Service Fee (Live + Video)",
+        plCommission: "Commission",
+        plTotalRevenue: "Total Revenue",
+        plCost: "2. Cost",
+        plLaborCost: "Labor Cost",
+        plVenueCost: "Facility & Utilities",
+        plOtherCost: "Other (Equipment etc.)",
+        plTotalCost: "Total Cost",
+        plProfit: "3. Profit",
+        plCoreProfit: "Core Profit (excl. commission)",
+        plFullProfit: "Full Profit (incl. commission)",
+        plRoi: "4. ROI Metrics",
+        plCoreRoi: "Core ROI",
+        plFullRoi: "Full ROI",
+        plEfficiency: "5. Efficiency",
+        plGmvPerPerson: "GMV per Person",
+        plGmvPerM2: "GMV per ㎡",
+        // Formula Summary
+        formulaTitle: "📐 Formula Summary",
+        formulaCoreRoi: '<span style="color:var(--accent);">Core ROI</span> = (Live Fee + Video Fee) / Total Cost',
+        formulaFullRoi: '<span style="color:var(--accent);">Full ROI</span> = (Live Fee + Video Fee + Commission) / Total Cost',
+        formulaCommission: '<span style="color:var(--accent);">Commission</span> = Settled GMV × Rate',
+        formulaCoreProfit: '<span style="color:var(--accent);">Core Profit</span> = Service Fee − Cost',
+        formulaFullProfit: '<span style="color:var(--accent);">Full Profit</span> = Total Revenue − Cost',
+        formulaPressure: '<span style="color:var(--accent);">Pressure</span> = Actual / (Headcount × Limit × Work Days)',
+        // Dynamic text
+        breakeven_ok: "Break-even OK",
+        breakeven_low: "Slightly low",
+        breakeven_high: "Slightly high",
+        breakeven_risk: "Loss risk",
+        breakeven_surplus: "Profit surplus",
+        coreRoi: "Core ROI",
+        fullRoi: "Full ROI (w/ commission)",
+        clientRoi: "Client ROI",
+        targetLabel: "Target",
+        person: "ppl",
+        reserve: "+1 ppl",
+        // Coach text
+        coachCoreLoss: "Core is at loss: Core ROI=",
+        coachCoreLossTip: " (< 1), Core Profit=",
+        coachCoreLossSuggestion: ". Suggest: Increase service fee / reduce inefficient hours or videos / cut fixed costs.",
+        coachCoreOk: "Core is positive: Core ROI=",
+        coachCoreOkTip: " (≥ 1), Core Profit=",
+        coachCoreOkPhilosophy: '. Follows "Service Fee Break-even" philosophy.',
+        coachPressureHigh: " Pressure",
+        coachPressure90: " > 90%: Consider hiring/freelance or increase price/reduce workload, otherwise delivery quality at risk.",
+        coachPressure75: ": Entering high-pressure zone, watch scheduling & quality.",
+        coachPressureSafe: "All capacity pressures are in safe zone (based on work days=",
+        coachPressureDays: ").",
+        coachRoiFail: "Full ROI below target: Current=",
+        coachRoiFailTip: ", Target=",
+        coachRoiFailSuggestion: ". Prioritize: increase commission rate (or tiered), boost GMV, or cut fixed costs.",
+        coachRoiOk: 'Full ROI on target: Continue using "commission profit pool" to scale GMV; use "pressure>90%" as hiring signal when expanding.',
+        coachProfitNeg: "Full profit is negative: Not recommended to sign with these parameters. Suggest bringing Core ROI back to ~1.0 first.",
+        coachClientOk: "Client spends 1 yuan on service fee + commission, gets ",
+        coachClientOkTip: " yuan GMV. Good ROI for client.",
+        coachClientLow: "Client ROI is low (",
+        coachClientLowTip: "), client may feel it's \"not worth it\". Suggest: boost GMV or reduce fees.",
+        // Dynamic text units
+        hourUnit: "hours",
+        videoUnit: "videos",
+        hostText: "Host",
+        opsText: "Ops",
+        editorText: "Editor",
+        daysText: "days",
+        // ROI box labels
+        clientActualRoi: "Actual Client ROI",
+        autoCalc: "Auto-calculated",
+        targetCoreRoi: "Target Core ROI",
+        targetCoreRoiHint: "Recommended ≈ 1.0",
+        actualCoreRoi: "Actual Core ROI",
+        coreRoiDesc: "Can service fee cover costs?",
+        actualFullRoi: "Actual Full ROI",
+        fullRoiDesc: "Total return incl. commission"
+      }
+    };
+
+    // 获取翻译文本
+    function t(key) {
+      return I18N[currentLang][key] || I18N.zh[key] || key;
+    }
+
+    // 设置语言
+    function setLang(lang) {
+      currentLang = lang;
+      $("btnLangZh").classList.toggle("active", lang === "zh");
+      $("btnLangEn").classList.toggle("active", lang === "en");
+      applyTranslations();
+      compute(); // 重新计算以更新动态文本
+    }
+
+    // 应用翻译到所有 data-i18n 元素
+    function applyTranslations() {
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const key = el.getAttribute("data-i18n");
+        if (I18N[currentLang][key]) {
+          el.innerHTML = I18N[currentLang][key];
+        }
+      });
+    }
+
+    // 国家选择变更处理
+    function onCountryChange() {
+      const country = $("country_select").value;
+      const preset = COUNTRY_CURRENCY[country];
+      if (preset) {
+        $("currency_code").value = preset.code;
+        $("currency_symbol").value = preset.symbol;
+        $("exchange_rate").value = preset.rate;
+        $("currency_display").textContent = `${preset.code} (${preset.symbol})`;
+        currentCurrency = { code: preset.code, symbol: preset.symbol, rate: preset.rate };
+      }
+      compute();
+    }
+
+    // 汇率手动修改
+    function onExchangeRateChange() {
+      currentCurrency.rate = toNum($("exchange_rate").value, 1);
+      compute();
+    }
+
+    // ---------- toggle calc panel ----------
+    function toggleCalc(){
+      const body = $("calcBody");
+      const arrow = $("calcArrow");
+      if (body.style.display === "none") {
+        body.style.display = "block";
+        arrow.style.transform = "rotate(180deg)";
+      } else {
+        body.style.display = "none";
+        arrow.style.transform = "rotate(0deg)";
+      }
+    }
+    const toNum = (v, d=0) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : d;
+    };
+    // 格式化金额（带货币符号）
+    const fmtMoney = (n, withSymbol = false) => {
+      const x = Number.isFinite(n) ? n : 0;
+      const formatted = x.toLocaleString("zh-CN", {maximumFractionDigits: 0});
+      return withSymbol ? `${currentCurrency.symbol} ${formatted}` : formatted;
+    };
+    // 格式化金额（带2位小数）
+    const fmtMoney2 = (n, withSymbol = false) => {
+      const x = Number.isFinite(n) ? n : 0;
+      const formatted = x.toLocaleString("zh-CN", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      return withSymbol ? `${currentCurrency.symbol} ${formatted}` : formatted;
+    };
+    // 折算为 CNY
+    const toCNY = (n) => {
+      const x = Number.isFinite(n) ? n : 0;
+      return x * currentCurrency.rate;
+    };
+    // 格式化 CNY 折算值
+    const fmtCNY = (n) => {
+      const cny = toCNY(n);
+      if (currentCurrency.code === "CNY") return ""; // 本币就是 CNY，不显示折算
+      return `≈ ¥ ${cny.toLocaleString("zh-CN", {maximumFractionDigits: 0})}`;
+    };
+    const fmtPct = (n) => {
+      const x = Number.isFinite(n) ? n : 0;
+      return (x*100).toFixed(1) + "%";
+    };
+    function mkPressureCell(el, ratio){
+      const r = Number.isFinite(ratio) ? ratio : 0;
+      let cls = "good";
+      if (r >= 0.90) cls = "bad";
+      else if (r >= 0.75) cls = "warn";
+      el.innerHTML = `<span class="badge ${cls}" style="margin-left:0"><span class="dot"></span><span class="mono">${fmtPct(r)}</span></span>`;
+    }
+    function mkBadge(el, status, text){
+      el.className = "badge " + status;
+      el.innerHTML = `<span class="dot"></span><span class="mono">${text}</span>`;
+    }
+
+    // ---------- core compute ----------
+    function compute(){
+      // base
+      const targetROI = toNum($("target_roi").value, 1.5); // full-caliber target
+      const commissionRatePct = toNum($("commission_rate").value, 0);
+      const commissionRate = commissionRatePct / 100.0;
+      const netGMV = toNum($("net_gmv").value, 0);
+      const areaM2 = toNum($("area_m2").value, 1);
+
+      // NEW: effective work days (capacity only)
+      const workDays = Math.max(1, toNum($("work_days").value, 25));
+
+      // live fees
+      const liveDailyH = toNum($("live_daily_hours").value, 0);
+      const liveDailyR = toNum($("live_daily_rate").value, 0);
+      const liveSH = toNum($("live_s_hours").value, 0);
+      const liveSR = toNum($("live_s_rate").value, 0);
+      const liveABH = toNum($("live_ab_hours").value, 0);
+      const liveABR = toNum($("live_ab_rate").value, 0);
+
+      const liveDailySub = liveDailyH * liveDailyR;
+      const liveSSub = liveSH * liveSR;
+      const liveABSub = liveABH * liveABR;
+      const liveTotal = liveDailySub + liveSSub + liveABSub;
+
+      $("live_daily_sub").textContent = fmtMoney(liveDailySub);
+      $("live_s_sub").textContent = fmtMoney(liveSSub);
+      $("live_ab_sub").textContent = fmtMoney(liveABSub);
+      $("live_total").textContent = fmtMoney(liveTotal);
+
+      // 直播时长汇总
+      const liveHoursSum = liveDailyH + liveSH + liveABH;
+      const liveHoursPerDay = workDays > 0 ? (liveHoursSum / workDays) : 0;
+      $("live_hours_total").value = fmtMoney2(liveHoursSum) + " " + t("hourUnit");
+      $("live_hours_daily").value = fmtMoney2(liveHoursPerDay) + " " + t("hourUnit");
+
+      // video fees
+      const videoSC = toNum($("video_s_cnt").value, 0);
+      const videoSR = toNum($("video_s_rate").value, 0);
+      const videoABC = toNum($("video_ab_cnt").value, 0);
+      const videoABR = toNum($("video_ab_rate").value, 0);
+      const videoDC = toNum($("video_daily_cnt").value, 0);
+      const videoDR = toNum($("video_daily_rate").value, 0);
+
+      const videoSSub = videoSC * videoSR;
+      const videoABSub = videoABC * videoABR;
+      const videoDSub = videoDC * videoDR;
+      const videoTotal = videoSSub + videoABSub + videoDSub;
+
+      $("video_s_sub").textContent = fmtMoney(videoSSub);
+      $("video_ab_sub").textContent = fmtMoney(videoABSub);
+      $("video_daily_sub").textContent = fmtMoney(videoDSub);
+      $("video_total").textContent = fmtMoney(videoTotal);
+
+      // 短视频条数汇总
+      const videoCntSum = videoSC + videoABC + videoDC;
+      $("video_cnt_total").value = videoCntSum + " " + t("videoUnit");
+
+      // ROAS & Ads Budget
+      const roas = Math.max(0.1, toNum($("roas").value, 5));
+      const adsBudget = roas > 0 ? (netGMV / roas) : 0;
+      $("ads_budget").value = fmtMoney(adsBudget);
+
+      // commission
+      const commission = netGMV * commissionRate;
+
+      // costs - labor (with subtotals display)
+      const managerCnt = toNum($("manager_cnt")?.value, 0);
+      const managerCostVal = toNum($("manager_cost")?.value, 0);
+      const managerCostSub = managerCnt * managerCostVal;
+
+      const hostCnt = toNum($("host_cnt").value, 0);
+      const hostCost = toNum($("host_cost").value, 0);
+      const hostCostSub = hostCnt * hostCost;
+
+      const opsCnt = toNum($("ops_cnt").value, 0);
+      const opsCost = toNum($("ops_cost").value, 0);
+      const opsCostSub = opsCnt * opsCost;
+
+      const editorCnt = toNum($("editor_cnt").value, 0);
+      const editorCost = toNum($("editor_cost").value, 0);
+      const editorCostSub = editorCnt * editorCost;
+
+      const outsourcingCnt = toNum($("outsourcing_cnt")?.value, 0);
+      const outsourcingUnitCost = toNum($("outsourcing_cost")?.value, 0);
+      const outsourcingCostSub = outsourcingCnt * outsourcingUnitCost;
+      const laborCost = managerCostSub + hostCostSub + opsCostSub + editorCostSub + outsourcingCostSub;
+
+      // Display labor cost subtotals
+      $("manager_cost_sub").textContent = fmtMoney(managerCostSub);
+      $("host_cost_sub").textContent = fmtMoney(hostCostSub);
+      $("ops_cost_sub").textContent = fmtMoney(opsCostSub);
+      $("editor_cost_sub").textContent = fmtMoney(editorCostSub);
+      $("outsourcing_cost_sub").textContent = fmtMoney(outsourcingCostSub);
+      $("labor_cost_total").textContent = fmtMoney(laborCost);
+
+      // facility
+      const rentPerM2 = toNum($("rent_per_m2").value, 0);
+      const utilities = toNum($("utilities").value, 0);
+      const networkCost = toNum($("network_cost").value, 0);
+      const rentCost = areaM2 * rentPerM2;
+
+      // depreciation
+      const assetTotal = toNum($("asset_total").value, 0);
+      const assetMonths = Math.max(1, toNum($("asset_months").value, 24));
+      const depreciation = assetTotal / assetMonths;
+
+      // set dressing (NEW)
+      const setObsTotal = toNum($("set_obs_total")?.value, 0);
+      const setRealTotal = toNum($("set_real_total")?.value, 0);
+      const setMonths = Math.max(1, toNum($("set_months")?.value, 6));
+      const setAmortization = (setObsTotal + setRealTotal) / setMonths;
+
+      // reimburse (NEW)
+      const reimburseMonthly = toNum($("reimburse_monthly")?.value, 0);
+
+      const venueCost = rentCost + utilities + networkCost;
+      const otherCost = depreciation + setAmortization + reimburseMonthly;
+      const totalCost = laborCost + venueCost + otherCost;
+
+      // revenues
+      const serviceFee = liveTotal + videoTotal;                 // core (no commission)
+      const totalRevenue = serviceFee + commission;              // full (with commission)
+
+      // profits (split!)
+      const coreProfit = serviceFee - totalCost;                 // NEW
+      const profit = totalRevenue - totalCost;                   // full
+
+      // ROIs (split!)
+      const coreROI = totalCost > 0 ? (serviceFee / totalCost) : 0;     // core ROI (no commission)
+      const totalROI = totalCost > 0 ? (totalRevenue / totalCost) : 0;  // full ROI (with commission)
+
+      // efficiency
+      const headcount = managerCnt + hostCnt + opsCnt + editorCnt;
+      const gmvPerPerson = headcount > 0 ? (netGMV / headcount) : 0;
+      const gmvPerM2 = areaM2 > 0 ? (netGMV / areaM2) : 0;
+
+      // 更新货币显示
+      $("result_currency_pill").textContent = `${currentCurrency.code} ${currentCurrency.symbol}`;
+      if (currentCurrency.code !== "CNY") {
+        $("cny_notice").style.display = "block";
+        $("cny_notice_currency").textContent = `${currentCurrency.code} (${currentCurrency.symbol})`;
+        $("cny_notice_rate").textContent = `1 ${currentCurrency.code} = ${currentCurrency.rate} CNY`;
+      } else {
+        $("cny_notice").style.display = "none";
+      }
+
+      // ========== 客户报价单（对外） ==========
+      const totalLiveHours = liveDailyH + liveSH + liveABH;
+      const totalVideoCount = videoSC + videoABC + videoDC;
+      $("quote_live_hours").textContent = totalLiveHours + " " + t("hourUnit") + "/月";
+      $("quote_live_fee").textContent = fmtMoney(liveTotal, true);
+      $("quote_video_count").textContent = totalVideoCount + " " + t("videoUnit") + "/月";
+      $("quote_video_fee").textContent = fmtMoney(videoTotal, true);
+      $("quote_commission_rate").textContent = commissionRatePct + "%";
+      $("quote_service_total").textContent = fmtMoney(serviceFee, true);
+
+      // ========== 内部数据 - 利润表 ==========
+      // 一、收入
+      $("pl_service_fee").textContent = fmtMoney(serviceFee, true);
+      $("pl_commission").textContent = fmtMoney(commission, true);
+      $("pl_total_revenue").textContent = fmtMoney(totalRevenue, true);
+      // 二、成本
+      $("pl_labor_cost").textContent = fmtMoney(laborCost, true);
+      $("pl_venue_cost").textContent = fmtMoney(venueCost, true);
+      $("pl_other_cost").textContent = fmtMoney(otherCost, true);
+      $("pl_total_cost").textContent = fmtMoney(totalCost, true);
+      // 三、利润（带颜色）
+      const plCoreProfitEl = $("pl_core_profit");
+      plCoreProfitEl.textContent = fmtMoney(coreProfit, true);
+      plCoreProfitEl.style.color = coreProfit >= 0 ? "var(--good)" : "var(--bad)";
+      const plFullProfitEl = $("pl_full_profit");
+      plFullProfitEl.textContent = fmtMoney(profit, true);
+      plFullProfitEl.style.color = profit >= 0 ? "var(--good)" : "var(--bad)";
+      // 四、ROI（带颜色）
+      const plCoreRoiEl = $("pl_core_roi");
+      plCoreRoiEl.textContent = coreROI.toFixed(2);
+      plCoreRoiEl.style.color = coreROI >= 1 ? "var(--good)" : (coreROI >= 0.8 ? "var(--warn)" : "var(--bad)");
+      const plFullRoiEl = $("pl_full_roi");
+      plFullRoiEl.textContent = totalROI.toFixed(2);
+      plFullRoiEl.style.color = totalROI >= targetROI ? "var(--good)" : (totalROI >= targetROI * 0.8 ? "var(--warn)" : "var(--bad)");
+      // 五、效率
+      $("pl_gmv_per_person").textContent = fmtMoney(gmvPerPerson, true);
+      $("pl_gmv_per_m2").textContent = fmtMoney2(gmvPerM2, true);
+
+      // Capacity pressures (use effective workDays and editable caps)
+      const liveHoursTotal = liveDailyH + liveSH + liveABH;
+
+      // Read capacity limits from inputs
+      const hostCapPerDay = toNum($("host_cap_per_day").value, 6);
+      const opsCapPerDay = toNum($("ops_cap_per_day").value, 8);
+      const editorCapPerDay = toNum($("editor_cap_per_day").value, 2);
+
+      // host capacity
+      const hostCap = hostCnt * hostCapPerDay * workDays;
+      const hostActual = liveHoursTotal;
+      const hostPressure = hostCap > 0 ? hostActual / hostCap : 0;
+
+      // ops capacity (actual by proxy = liveHoursTotal)
+      const opsCap = opsCnt * opsCapPerDay * workDays;
+      const opsActual = liveHoursTotal; // proxy
+      const opsPressure = opsCap > 0 ? opsActual / opsCap : 0;
+
+      // editor capacity
+      const editorCap = editorCnt * editorCapPerDay * workDays;
+      const editorActual = videoSC + videoABC + videoDC;
+      const editorPressure = editorCap > 0 ? editorActual / editorCap : 0;
+
+      // Update capacity displays (inline preview under labor cost)
+      $("cap_host_actual2").textContent = fmtMoney2(hostActual);
+      $("cap_host_cap2").textContent = fmtMoney2(hostCap);
+      mkPressureCell($("cap_host_badge2"), hostPressure);
+
+      $("cap_ops_actual2").textContent = fmtMoney2(opsActual);
+      $("cap_ops_cap2").textContent = fmtMoney2(opsCap);
+      mkPressureCell($("cap_ops_badge2"), opsPressure);
+
+      $("cap_editor_actual2").textContent = fmtMoney2(editorActual);
+      $("cap_editor_cap2").textContent = fmtMoney2(editorCap);
+      mkPressureCell($("cap_editor_badge2"), editorPressure);
+
+      // Manpower calculator (reverse calculation)
+      const calcTargetHours = toNum($("calc_target_hours").value, 0);
+      const calcTargetVideos = toNum($("calc_target_videos").value, 0);
+
+      const calcHostNeed = hostCapPerDay > 0 ? Math.ceil(calcTargetHours / hostCapPerDay) : 0;
+      const calcOpsNeed = opsCapPerDay > 0 ? Math.ceil(calcTargetHours / opsCapPerDay) : 0;
+      const calcEditorNeed = editorCapPerDay > 0 ? Math.ceil(calcTargetVideos / editorCapPerDay) : 0;
+
+      const personText = t("person");
+      const reserveText = t("reserve");
+      const videoUnitText = t("videoUnit");
+      $("calc_host_need").innerHTML = `${calcHostNeed} ${personText} <span style="color:var(--accent);">${reserveText}</span>`;
+      $("calc_host_formula").textContent = `${calcTargetHours}h ÷ ${hostCapPerDay}h/${personText} (+1 ${t("reserveHost")?.split(",")[0] || t("hostText")})`;
+
+      $("calc_ops_need").textContent = calcOpsNeed + " " + personText;
+      $("calc_ops_formula").textContent = `${calcTargetHours}h ÷ ${opsCapPerDay}h/${personText}`;
+
+      $("calc_editor_need").textContent = calcEditorNeed + " " + personText;
+      $("calc_editor_formula").textContent = `${calcTargetVideos} ${videoUnitText} ÷ ${editorCapPerDay} ${videoUnitText}/${personText}`;
+
+      // ========== CLIENT (商户) ROI ==========
+      const targetROIClient = toNum($("target_roi_client").value, 5);
+      // 商户 ROI = GMV / (服务费 + 分佣)  -- 商户花 1 元能带来多少 GMV
+      const clientROI = totalRevenue > 0 ? (netGMV / totalRevenue) : 0;
+
+      // Helper function to update ROI box with color class
+      const updateRoiBox = (el, status, value) => {
+        if (!el) return;
+        el.textContent = value;
+        el.classList.remove("good", "warn", "bad");
+        el.classList.add(status);
+      };
+
+      // Client ROI box display
+      const clientRoiBox = $("clientRoiBox");
+      if (clientROI >= targetROIClient) {
+        updateRoiBox(clientRoiBox, "good", clientROI.toFixed(1));
+      } else if (clientROI >= targetROIClient * 0.8) {
+        updateRoiBox(clientRoiBox, "warn", clientROI.toFixed(1));
+      } else {
+        updateRoiBox(clientRoiBox, "bad", clientROI.toFixed(1));
+      }
+
+      // Client coaching text
+      const clientTips = [];
+      if (clientROI >= targetROIClient) {
+        clientTips.push(I18N[currentLang].coachClientOk + clientROI.toFixed(1) + I18N[currentLang].coachClientOkTip);
+      } else {
+        clientTips.push(I18N[currentLang].coachClientLow + clientROI.toFixed(1) + " < " + targetROIClient + I18N[currentLang].coachClientLowTip);
+      }
+      $("clientCoachText").innerHTML = clientTips.map(tip => `<div>• ${tip}</div>`).join("");
+
+      // ========== PROVIDER (服务商/我们) ROI ==========
+      // Core ROI box: coreROI ≈ 1.0 (treat 0.95~1.10 as healthy)
+      const be = coreROI;
+      const coreRoiBox = $("coreRoiBox");
+      if (be >= 0.95 && be <= 1.10) updateRoiBox(coreRoiBox, "good", be.toFixed(2));
+      else if (be >= 0.85 && be < 0.95) updateRoiBox(coreRoiBox, "warn", be.toFixed(2));
+      else if (be > 1.10 && be <= 1.30) updateRoiBox(coreRoiBox, "warn", be.toFixed(2));
+      else if (be < 0.85) updateRoiBox(coreRoiBox, "bad", be.toFixed(2));
+      else updateRoiBox(coreRoiBox, "good", be.toFixed(2));
+
+      // Full ROI box: compare to target
+      const roi = totalROI;
+      const fullRoiBox = $("fullRoiBox");
+      if (roi >= targetROI) updateRoiBox(fullRoiBox, "good", roi.toFixed(2));
+      else if (roi >= targetROI * 0.85) updateRoiBox(fullRoiBox, "warn", roi.toFixed(2));
+      else updateRoiBox(fullRoiBox, "bad", roi.toFixed(2));
+
+      // Coaching text
+      const tips = [];
+
+      // Core profit/ROI truth (no commission)
+      if (coreROI < 1){
+        tips.push(`• ${t("coachCoreLoss")}${coreROI.toFixed(2)}${t("coachCoreLossTip")}${fmtMoney(coreProfit)}${t("coachCoreLossSuggestion")}`);
+      } else {
+        tips.push(`• ${t("coachCoreOk")}${coreROI.toFixed(2)}${t("coachCoreOkTip")}${fmtMoney(coreProfit)}${t("coachCoreOkPhilosophy")}`);
+      }
+
+      // Pressure warnings
+      const pressureMsgs = [];
+      const mkPMsg = (name, p) => {
+        if (p >= 0.90) pressureMsgs.push(`• ${name}${t("coachPressureHigh")} ${fmtPct(p)}${t("coachPressure90")}`);
+        else if (p >= 0.75) pressureMsgs.push(`• ${name}${t("coachPressureHigh")} ${fmtPct(p)}${t("coachPressure75")}`);
+      };
+      mkPMsg(t("hostText"), hostPressure);
+      mkPMsg(t("opsText"), opsPressure);
+      mkPMsg(t("editorText"), editorPressure);
+      if (pressureMsgs.length) tips.push(...pressureMsgs);
+      else tips.push(`• ${t("coachPressureSafe")}${workDays}${t("coachPressureDays")}`);
+
+      // Full ROI target
+      if (totalROI < targetROI){
+        tips.push(`• ${t("coachRoiFail")}${totalROI.toFixed(2)}${t("coachRoiFailTip")}${targetROI.toFixed(2)}${t("coachRoiFailSuggestion")}`);
+      } else {
+        tips.push(`• ${t("coachRoiOk")}`);
+      }
+
+      // Full profit sign
+      if (profit < 0){
+        tips.push(`• ${t("coachProfitNeg")}`);
+      }
+
+      $("coachText").innerHTML = tips.map(tip => `<div>${tip}</div>`).join("");
+
+      // store current state (for export)
+      window.__MODEL_STATE__ = collectState();
+    }
+
+    function collectState(){
+      const ids = [
+        "country_select","exchange_rate",
+        "target_roi","target_roi_client","commission_rate","net_gmv","roas","area_m2",
+        "live_daily_hours","live_daily_rate","live_s_hours","live_s_rate","live_ab_hours","live_ab_rate",
+        "video_s_cnt","video_s_rate","video_ab_cnt","video_ab_rate","video_daily_cnt","video_daily_rate",
+        "work_days","host_cap_per_day","ops_cap_per_day","editor_cap_per_day",
+        "manager_cnt","manager_cost","host_cnt","host_cost","ops_cnt","ops_cost","editor_cnt","editor_cost","outsourcing_cnt","outsourcing_cost",
+        "rent_per_m2","utilities","network_cost","asset_total","asset_months",
+        "set_obs_total","set_real_total","set_months","reimburse_monthly"
+      ];
+      const o = {};
+      ids.forEach(id => {
+        const el = $(id);
+        if (el) o[id] = el.value;
+      });
+      // 保存语言设置
+      o.lang = currentLang;
+      return o;
+    }
+    function applyState(state){
+      if (!state) return;
+      Object.keys(state).forEach(id => {
+        if (id === "lang") return; // 语言设置单独处理
+        const el = $(id);
+        if (el) el.value = state[id];
+      });
+      // 恢复货币设置
+      const country = state.country_select || "CN";
+      const preset = COUNTRY_CURRENCY[country];
+      if (preset) {
+        $("currency_code").value = preset.code;
+        $("currency_symbol").value = preset.symbol;
+        $("currency_display").textContent = `${preset.code} (${preset.symbol})`;
+        currentCurrency = {
+          code: preset.code,
+          symbol: preset.symbol,
+          rate: toNum(state.exchange_rate, preset.rate)
+        };
+      }
+      // 恢复语言设置
+      if (state.lang && (state.lang === "zh" || state.lang === "en")) {
+        setLang(state.lang);
+      } else {
+        compute();
+      }
+    }
+
+    function resetExample(){
+      applyState({
+        country_select: "CN",
+        exchange_rate: "1",
+        target_roi: "1.50",
+        target_roi_client: "5",
+        commission_rate: "5",
+        net_gmv: "3000000",
+        roas: "5",
+        area_m2: "80",
+
+        live_daily_hours: "120",
+        live_daily_rate: "300",
+        live_s_hours: "24",
+        live_s_rate: "800",
+        live_ab_hours: "24",
+        live_ab_rate: "500",
+
+        video_s_cnt: "6",
+        video_s_rate: "3000",
+        video_ab_cnt: "12",
+        video_ab_rate: "1200",
+        video_daily_cnt: "30",
+        video_daily_rate: "300",
+
+        work_days: "25",
+        host_cap_per_day: "6",
+        ops_cap_per_day: "8",
+        editor_cap_per_day: "2",
+
+        manager_cnt: "1",
+        manager_cost: "20000",
+        host_cnt: "2",
+        host_cost: "12000",
+        ops_cnt: "1",
+        ops_cost: "15000",
+        editor_cnt: "1",
+        editor_cost: "10000",
+        outsourcing_cnt: "0",
+        outsourcing_cost: "5000",
+
+        rent_per_m2: "120",
+        utilities: "2000",
+        network_cost: "3000",
+        asset_total: "120000",
+        asset_months: "24",
+
+        set_obs_total: "0",
+        set_real_total: "0",
+        set_months: "6",
+        reimburse_monthly: "0"
+      });
+    }
+
+    // ---------- wiring ----------
+    function wire(){
+      document.querySelectorAll("input,select").forEach(el=>{
+        el.addEventListener("input", compute);
+        el.addEventListener("change", compute);
+      });
+
+      // 国家选择事件
+      $("country_select").addEventListener("change", onCountryChange);
+      $("exchange_rate").addEventListener("input", onExchangeRateChange);
+
+      $("btnReset").addEventListener("click", resetExample);
+
+      $("btnPrint").addEventListener("click", () => {
+        window.print();
+      });
+
+      $("btnExport").addEventListener("click", () => {
+        const state = window.__MODEL_STATE__ || collectState();
+        const payload = {
+          meta: { name: "DP/TSP v2.5 live-ops calculator", exported_at: new Date().toISOString() },
+          state
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "dp-tsp-calculator-v2.5.json";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      $("btnImport").addEventListener("click", async () => {
+        const inp = document.createElement("input");
+        inp.type = "file";
+        inp.accept = "application/json";
+        inp.onchange = async () => {
+          const file = inp.files?.[0];
+          if (!file) return;
+          const text = await file.text();
+          try{
+            const payload = JSON.parse(text);
+            if (payload && payload.state) applyState(payload.state);
+            else alert("JSON 格式不对：需要包含 state 字段。");
+          }catch(e){
+            alert("解析失败：不是有效 JSON。");
+          }
+        };
+        inp.click();
+      });
+
+      compute();
+    }
+
+    wire();
+  </script>
+</body>
+</html>

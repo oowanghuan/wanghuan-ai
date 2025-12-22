@@ -227,6 +227,37 @@
                 </a>
               </div>
             </div>
+
+            <div class="product-card tool-card">
+              <div class="product-header">
+                <div class="product-icon">
+                  <el-icon><DataAnalysis /></el-icon>
+                </div>
+                <span class="product-status live">{{ $t('products.live') }}</span>
+              </div>
+              <h3>{{ $t('products.tspPricingTitle') }}</h3>
+              <p class="product-subtitle">{{ $t('products.tspPricingSubtitle') }}</p>
+              <p class="product-desc">
+                {{ $t('products.tspPricingDesc') }}
+              </p>
+              <ul class="mini-feature-list">
+                <li>{{ $t('products.tspPricingFeature1') }}</li>
+                <li>{{ $t('products.tspPricingFeature2') }}</li>
+                <li>{{ $t('products.tspPricingFeature3') }}</li>
+                <li>{{ $t('products.tspPricingFeature4') }}</li>
+              </ul>
+              <div class="product-features">
+                <span class="feature-tag">DP/TSP</span>
+                <span class="feature-tag">Live Streaming</span>
+                <span class="feature-tag">Finance</span>
+              </div>
+              <div class="product-actions">
+                <a href="/tsp-pricing.html" target="_blank" class="btn btn-primary">
+                  {{ $t('products.visitProject') }}
+                  <el-icon><TopRight /></el-icon>
+                </a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -371,7 +402,8 @@ import {
   VideoCamera,
   Lock,
   Headset,
-  Folder
+  Folder,
+  DataAnalysis
 } from '@element-plus/icons-vue'
 
 const pageRef = ref(null)

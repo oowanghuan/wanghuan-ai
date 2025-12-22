@@ -118,6 +118,13 @@ export default {
     postVideoTitle: 'PostVideo',
     postVideoSubtitle: 'Content & Data Monitoring System',
     postVideoDesc: 'Validating AI + content production + operations loop',
+    tspPricingTitle: 'TSP Pricing Calculator',
+    tspPricingSubtitle: 'Live Streaming Operations Financial Modeling',
+    tspPricingDesc: 'Pricing & cost calculator for DP/TSP service providers with capacity alerts',
+    tspPricingFeature1: 'Live + Video fees + Commission calculation',
+    tspPricingFeature2: 'Labor/Venue/Equipment cost breakdown',
+    tspPricingFeature3: 'Capacity pressure warning (>90%)',
+    tspPricingFeature4: 'Multi-currency & Bilingual',
 
     // In Development
     soundLibTitle: 'Sound Library',
