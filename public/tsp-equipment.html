@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>直播间设备清单 (BOM) - DP/TSP</title>
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --card: #111827;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --accent: #7aa2ff;
+      --accent2: #a78bfa;
+      --success: #4ade80;
+      --warn: #fbbf24;
+      --danger: #f87171;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    header h1 {
+      font-size: 24px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 20px;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .back-link:hover { opacity: 1; }
+
+    /* Config Selector */
+    .config-selector {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .config-selector h3 {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .config-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .config-btn {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px 20px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .config-btn:hover {
+      border-color: var(--accent);
+      background: rgba(122,162,255,0.05);
+    }
+    .config-btn.active {
+      border-color: var(--accent);
+      background: rgba(122,162,255,0.1);
+    }
+    .config-btn .label {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .config-btn .price-range {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .config-btn.high .label { color: var(--accent2); }
+    .config-btn.mid .label { color: var(--accent); }
+    .config-btn.low .label { color: var(--success); }
+
+    /* Category Section */
+    .category {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .category-header {
+      background: rgba(122,162,255,0.08);
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .category-header h2 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .category-header .en {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    thead {
+      background: rgba(0,0,0,0.2);
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    th.num, td.num {
+      text-align: right;
+    }
+    td.item-name {
+      font-weight: 500;
+    }
+    td.ref {
+      color: var(--muted);
+      font-size: 12px;
+      max-width: 200px;
+    }
+    input[type="number"] {
+      width: 100px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      text-align: right;
+    }
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    input.qty {
+      width: 60px;
+    }
+    .subtotal {
+      font-weight: 600;
+      color: var(--accent);
+      font-family: "SF Mono", Monaco, monospace;
+    }
+    tbody tr:hover {
+      background: rgba(122,162,255,0.03);
+    }
+
+    /* Summary */
+    .summary {
+      background: linear-gradient(135deg, rgba(122,162,255,0.1), rgba(167,139,250,0.1));
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 30px;
+    }
+    .summary h3 {
+      font-size: 16px;
+      margin-bottom: 16px;
+      color: var(--accent);
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .summary-item {
+      background: rgba(0,0,0,0.2);
+      padding: 16px;
+      border-radius: 8px;
+    }
+    .summary-item .label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .summary-item .value {
+      font-size: 24px;
+      font-weight: 700;
+      font-family: "SF Mono", Monaco, monospace;
+    }
+    .summary-item.total .value {
+      color: var(--accent);
+    }
+
+    /* Reference Prices */
+    .ref-prices {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .ref-prices h4 {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .ref-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .ref-item {
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(0,0,0,0.2);
+    }
+    .ref-item .tier {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .ref-item.high .tier { color: var(--accent2); }
+    .ref-item.mid .tier { color: var(--accent); }
+    .ref-item.low .tier { color: var(--success); }
+    .ref-item .range {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #5a8dee);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(122,162,255,0.3);
+    }
+    .btn-secondary {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    /* Language Toggle */
+    .lang-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 4px;
+      background: var(--card);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .lang-btn {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .config-buttons { flex-direction: column; }
+      .config-btn { min-width: 100%; }
+      .ref-grid { grid-template-columns: 1fr; }
+      table { font-size: 12px; }
+      th, td { padding: 10px 12px; }
+      input[type="number"] { width: 80px; }
+      input.qty { width: 50px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('zh')">中文</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+
+  <div class="container">
+    <a href="tsp-pricing.html" class="back-link">← <span data-i18n="backToCalc">返回报价测算</span></a>
+
+    <header>
+      <h1 data-i18n="pageTitle">直播间硬件配置标准化清单 (BOM)</h1>
+      <p data-i18n="pageDesc">本清单用于核算直播间初期投入成本。根据以下项目填写具体的品牌、型号及单价。</p>
+    </header>
+
+    <!-- Config Selector -->
+    <div class="config-selector">
+      <h3 data-i18n="selectConfig">选择配置方案</h3>
+      <div class="config-buttons">
+        <button class="config-btn high" onclick="selectConfig('high')">
+          <div class="label" data-i18n="highConfig">高配方案</div>
+          <div class="price-range">¥100,000 - 150,000</div>
+        </button>
+        <button class="config-btn mid active" onclick="selectConfig('mid')">
+          <div class="label" data-i18n="midConfig">中配方案</div>
+          <div class="price-range">¥30,000 - 50,000</div>
+        </button>
+        <button class="config-btn low" onclick="selectConfig('low')">
+          <div class="label" data-i18n="lowConfig">低配方案</div>
+          <div class="price-range">¥5,000 - 15,000</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- 一、视频采集系统 -->
+    <div class="category">
+      <div class="category-header">
+        <h2>一、<span data-i18n="cat1">视频采集系统</span></h2>
+        <span class="en">Video Capture</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="thItem">项目</th>
+            <th data-i18n="thRef">参考型号</th>
+            <th class="num" data-i18n="thPrice">单价</th>
+            <th class="num" data-i18n="thQty">数量</th>
+            <th class="num" data-i18n="thSubtotal">小计</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-name" data-i18n="item_camera">主摄像机</td>
+            <td class="ref" id="ref_camera">Sony ZV-E10 / Canon M50</td>
+            <td class="num"><input type="number" id="price_camera" value="5000" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_camera" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_camera">5,000</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_lens">镜头</td>
+            <td class="ref" id="ref_lens">16-50mm 套机镜头</td>
+            <td class="num"><input type="number" id="price_lens" value="0" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_lens" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_lens">0</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_captureCard">视频采集卡</td>
+            <td class="ref" id="ref_captureCard">绿联/阿卡西斯 HDMI采集</td>
+            <td class="num"><input type="number" id="price_captureCard" value="200" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_captureCard" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_captureCard">200</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_power">相机电源</td>
+            <td class="ref" id="ref_power">假电池直供电源</td>
+            <td class="num"><input type="number" id="price_power" value="150" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_power" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_power">150</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_tripod">相机支架</td>
+            <td class="ref" id="ref_tripod">入门级铝合金三脚架</td>
+            <td class="num"><input type="number" id="price_tripod" value="300" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_tripod" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_tripod">300</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 二、音频系统 -->
+    <div class="category">
+      <div class="category-header">
+        <h2>二、<span data-i18n="cat2">音频系统</span></h2>
+        <span class="en">Audio System</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="thItem">项目</th>
+            <th data-i18n="thRef">参考型号</th>
+            <th class="num" data-i18n="thPrice">单价</th>
+            <th class="num" data-i18n="thQty">数量</th>
+            <th class="num" data-i18n="thSubtotal">小计</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-name" data-i18n="item_mic">麦克风</td>
+            <td class="ref" id="ref_mic">罗德 Wireless Go II</td>
+            <td class="num"><input type="number" id="price_mic" value="2000" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_mic" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_mic">2,000</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_audioInterface">声卡/调音台</td>
+            <td class="ref" id="ref_audioInterface">雅马哈 AG03</td>
+            <td class="num"><input type="number" id="price_audioInterface" value="1200" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_audioInterface" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_audioInterface">1,200</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_headphone">监听耳机</td>
+            <td class="ref" id="ref_headphone">普通入耳式监听</td>
+            <td class="num"><input type="number" id="price_headphone" value="200" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_headphone" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_headphone">200</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 三、灯光系统 -->
+    <div class="category">
+      <div class="category-header">
+        <h2>三、<span data-i18n="cat3">灯光系统</span></h2>
+        <span class="en">Lighting System</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="thItem">项目</th>
+            <th data-i18n="thRef">参考型号</th>
+            <th class="num" data-i18n="thPrice">单价</th>
+            <th class="num" data-i18n="thQty">数量</th>
+            <th class="num" data-i18n="thSubtotal">小计</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-name" data-i18n="item_keyLight">主灯/顶灯</td>
+            <td class="ref" id="ref_keyLight">神牛 SL150W</td>
+            <td class="num"><input type="number" id="price_keyLight" value="1500" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_keyLight" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_keyLight">1,500</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_fillLight">补光灯/轮廓灯</td>
+            <td class="ref" id="ref_fillLight">神牛 P120C</td>
+            <td class="num"><input type="number" id="price_fillLight" value="800" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_fillLight" value="2" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_fillLight">1,600</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_ambientLight">背景氛围灯</td>
+            <td class="ref" id="ref_ambientLight">RGB 智能灯带</td>
+            <td class="num"><input type="number" id="price_ambientLight" value="300" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_ambientLight" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_ambientLight">300</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_lightStand">灯光支架</td>
+            <td class="ref" id="ref_lightStand">普通铝合金灯架</td>
+            <td class="num"><input type="number" id="price_lightStand" value="150" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_lightStand" value="3" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_lightStand">450</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 四、计算与网络系统 -->
+    <div class="category">
+      <div class="category-header">
+        <h2>四、<span data-i18n="cat4">计算与网络系统</span></h2>
+        <span class="en">Computing & Network</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="thItem">项目</th>
+            <th data-i18n="thRef">参考型号</th>
+            <th class="num" data-i18n="thPrice">单价</th>
+            <th class="num" data-i18n="thQty">数量</th>
+            <th class="num" data-i18n="thSubtotal">小计</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-name" data-i18n="item_computer">直播电脑</td>
+            <td class="ref" id="ref_computer">i7 + RTX 3060 (16G)</td>
+            <td class="num"><input type="number" id="price_computer" value="8000" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_computer" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_computer">8,000</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_monitor">显示器</td>
+            <td class="ref" id="ref_monitor">24寸 1080P * 2</td>
+            <td class="num"><input type="number" id="price_monitor" value="800" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_monitor" value="2" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_monitor">1,600</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_network">网络设备</td>
+            <td class="ref" id="ref_network">家庭百兆光纤+普通路由</td>
+            <td class="num"><input type="number" id="price_network" value="500" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_network" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_network">500</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 五、空间装修与辅助 -->
+    <div class="category">
+      <div class="category-header">
+        <h2>五、<span data-i18n="cat5">空间装修与辅助</span></h2>
+        <span class="en">Space & Others</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th data-i18n="thItem">项目</th>
+            <th data-i18n="thRef">参考型号</th>
+            <th class="num" data-i18n="thPrice">单价</th>
+            <th class="num" data-i18n="thQty">数量</th>
+            <th class="num" data-i18n="thSubtotal">小计</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="item-name" data-i18n="item_soundproof">隔音工程</td>
+            <td class="ref" id="ref_soundproof">简易隔音棉/地毯</td>
+            <td class="num"><input type="number" id="price_soundproof" value="2000" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_soundproof" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_soundproof">2,000</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_backdrop">背景墙</td>
+            <td class="ref" id="ref_backdrop">品牌喷绘背景</td>
+            <td class="num"><input type="number" id="price_backdrop" value="1500" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_backdrop" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_backdrop">1,500</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_furniture">直播桌椅</td>
+            <td class="ref" id="ref_furniture">简约办公桌椅</td>
+            <td class="num"><input type="number" id="price_furniture" value="1500" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_furniture" value="1" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_furniture">1,500</td>
+          </tr>
+          <tr>
+            <td class="item-name" data-i18n="item_displayRack">样品展示架</td>
+            <td class="ref" id="ref_displayRack">宜家铁艺架</td>
+            <td class="num"><input type="number" id="price_displayRack" value="500" onchange="compute()"></td>
+            <td class="num"><input type="number" class="qty" id="qty_displayRack" value="2" onchange="compute()"></td>
+            <td class="num subtotal" id="sub_displayRack">1,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary">
+      <h3 data-i18n="summaryTitle">汇总统计 (Total)</h3>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="label" data-i18n="sumVideo">视频采集系统</div>
+          <div class="value" id="sum_video">¥5,650</div>
+        </div>
+        <div class="summary-item">
+          <div class="label" data-i18n="sumAudio">音频系统</div>
+          <div class="value" id="sum_audio">¥3,400</div>
+        </div>
+        <div class="summary-item">
+          <div class="label" data-i18n="sumLighting">灯光系统</div>
+          <div class="value" id="sum_lighting">¥3,850</div>
+        </div>
+        <div class="summary-item">
+          <div class="label" data-i18n="sumComputing">计算与网络</div>
+          <div class="value" id="sum_computing">¥10,100</div>
+        </div>
+        <div class="summary-item">
+          <div class="label" data-i18n="sumSpace">空间装修</div>
+          <div class="value" id="sum_space">¥6,000</div>
+        </div>
+        <div class="summary-item total">
+          <div class="label" data-i18n="sumTotal">设备总投入</div>
+          <div class="value" id="sum_total">¥29,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reference Prices -->
+    <div class="ref-prices">
+      <h4 data-i18n="refPriceTitle">参考预算区间</h4>
+      <div class="ref-grid">
+        <div class="ref-item high">
+          <div class="tier" data-i18n="highTier">高配方案</div>
+          <div class="range">¥100,000 - 150,000</div>
+        </div>
+        <div class="ref-item mid">
+          <div class="tier" data-i18n="midTier">中配方案</div>
+          <div class="range">¥30,000 - 50,000</div>
+        </div>
+        <div class="ref-item low">
+          <div class="tier" data-i18n="lowTier">低配方案</div>
+          <div class="range">¥5,000 - 15,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn btn-primary" onclick="applyToMainCalc()" data-i18n="applyBtn">应用到报价测算</button>
+      <button class="btn btn-secondary" onclick="resetToDefault()" data-i18n="resetBtn">重置为默认</button>
+      <button class="btn btn-secondary" onclick="exportData()" data-i18n="exportBtn">导出清单</button>
+    </div>
+  </div>
+
+  <script>
+    // Configuration presets
+    const CONFIGS = {
+      high: {
+        camera: { price: 20000, ref: 'Sony A7M4 / FX3', refEn: 'Sony A7M4 / FX3' },
+        lens: { price: 15000, ref: '24-70mm f2.8 GM', refEn: '24-70mm f2.8 GM' },
+        captureCard: { price: 1200, ref: 'Elgato Cam Link 4K', refEn: 'Elgato Cam Link 4K' },
+        power: { price: 300, ref: '假电池直供电源', refEn: 'Dummy battery power' },
+        tripod: { price: 2000, ref: '专业液压云台三脚架', refEn: 'Pro fluid head tripod' },
+        mic: { price: 4000, ref: '舒尔 SM7B / 罗德 NT1', refEn: 'Shure SM7B / Rode NT1' },
+        audioInterface: { price: 3500, ref: 'Focusrite / Rodecaster', refEn: 'Focusrite / Rodecaster' },
+        headphone: { price: 1200, ref: '铁三角 M50x / 索尼 7506', refEn: 'ATH-M50x / Sony 7506' },
+        keyLight: { price: 5000, ref: '爱图仕 300D / 南冠 FS300', refEn: 'Aputure 300D / Nanguang FS300' },
+        fillLight: { price: 2500, ref: '爱图仕 60x * 2', refEn: 'Aputure 60x * 2' },
+        ambientLight: { price: 1500, ref: 'RGB 棒灯 / 洗墙灯', refEn: 'RGB bar / wall washer' },
+        lightStand: { price: 500, ref: '专业C型架/不锈钢架', refEn: 'C-stand / SS stand' },
+        computer: { price: 25000, ref: 'i9 + RTX 4080 (32G)', refEn: 'i9 + RTX 4080 (32G)' },
+        monitor: { price: 2500, ref: '27寸 2K 144Hz * 2', refEn: '27" 2K 144Hz * 2' },
+        network: { price: 3000, ref: '商业专线+企业级路由器', refEn: 'Business line + enterprise router' },
+        soundproof: { price: 8000, ref: '槽孔吸音板/高密吸音棉', refEn: 'Acoustic panels / foam' },
+        backdrop: { price: 5000, ref: '定制实木栅栏/3D背景墙', refEn: 'Custom wood / 3D backdrop' },
+        furniture: { price: 5000, ref: '电竞桌/人体工学椅', refEn: 'Gaming desk / ergonomic chair' },
+        displayRack: { price: 2000, ref: '定制玻璃柜/旋转台', refEn: 'Custom glass case / turntable' }
+      },
+      mid: {
+        camera: { price: 5000, ref: 'Sony ZV-E10 / Canon M50', refEn: 'Sony ZV-E10 / Canon M50' },
+        lens: { price: 0, ref: '16-50mm 套机镜头', refEn: '16-50mm kit lens' },
+        captureCard: { price: 200, ref: '绿联/阿卡西斯 HDMI采集', refEn: 'UGREEN / Acasis HDMI capture' },
+        power: { price: 150, ref: '假电池直供电源', refEn: 'Dummy battery power' },
+        tripod: { price: 300, ref: '入门级铝合金三脚架', refEn: 'Entry-level aluminum tripod' },
+        mic: { price: 2000, ref: '罗德 Wireless Go II', refEn: 'Rode Wireless Go II' },
+        audioInterface: { price: 1200, ref: '雅马哈 AG03', refEn: 'Yamaha AG03' },
+        headphone: { price: 200, ref: '普通入耳式监听', refEn: 'Basic IEM' },
+        keyLight: { price: 1500, ref: '神牛 SL150W', refEn: 'Godox SL150W' },
+        fillLight: { price: 800, ref: '神牛 P120C', refEn: 'Godox P120C' },
+        ambientLight: { price: 300, ref: 'RGB 智能灯带', refEn: 'RGB LED strip' },
+        lightStand: { price: 150, ref: '普通铝合金灯架', refEn: 'Basic aluminum stand' },
+        computer: { price: 8000, ref: 'i7 + RTX 3060 (16G)', refEn: 'i7 + RTX 3060 (16G)' },
+        monitor: { price: 800, ref: '24寸 1080P * 2', refEn: '24" 1080P * 2' },
+        network: { price: 500, ref: '家庭百兆光纤+普通路由', refEn: 'Home fiber + basic router' },
+        soundproof: { price: 2000, ref: '简易隔音棉/地毯', refEn: 'Basic acoustic foam / carpet' },
+        backdrop: { price: 1500, ref: '品牌喷绘背景', refEn: 'Printed backdrop' },
+        furniture: { price: 1500, ref: '简约办公桌椅', refEn: 'Simple office desk & chair' },
+        displayRack: { price: 500, ref: '宜家铁艺架', refEn: 'IKEA metal shelf' }
+      },
+      low: {
+        camera: { price: 0, ref: '旗舰智能手机 (iPhone)', refEn: 'Flagship smartphone (iPhone)' },
+        lens: { price: 0, ref: '手机自带镜头', refEn: 'Phone built-in lens' },
+        captureCard: { price: 0, ref: '无 (手机直推)', refEn: 'None (direct stream)' },
+        power: { price: 50, ref: '手机充电线', refEn: 'Phone charger' },
+        tripod: { price: 100, ref: '手机落地支架', refEn: 'Phone floor stand' },
+        mic: { price: 200, ref: '无线领夹麦 (入门级)', refEn: 'Wireless lavalier (entry)' },
+        audioInterface: { price: 100, ref: '手机转接头/直播声卡', refEn: 'Phone adapter / live sound card' },
+        headphone: { price: 0, ref: '手机自带耳机', refEn: 'Phone earbuds' },
+        keyLight: { price: 200, ref: '大功率LED球泡/简易柔光灯', refEn: 'High-power LED / simple softbox' },
+        fillLight: { price: 100, ref: '桌面补光灯', refEn: 'Desk ring light' },
+        ambientLight: { price: 50, ref: '简易彩灯', refEn: 'Simple color lights' },
+        lightStand: { price: 50, ref: '简易三脚架', refEn: 'Simple tripod' },
+        computer: { price: 0, ref: '现有办公笔电', refEn: 'Existing laptop' },
+        monitor: { price: 0, ref: '单显示器', refEn: 'Single monitor' },
+        network: { price: 200, ref: '4G/5G 移动网络', refEn: '4G/5G mobile data' },
+        soundproof: { price: 300, ref: '窗帘/装饰布', refEn: 'Curtains / fabric' },
+        backdrop: { price: 200, ref: '纯色背景纸', refEn: 'Solid color backdrop' },
+        furniture: { price: 0, ref: '现有家具', refEn: 'Existing furniture' },
+        displayRack: { price: 200, ref: '简易货架', refEn: 'Simple shelf' }
+      }
+    };
+
+    const ITEMS = ['camera', 'lens', 'captureCard', 'power', 'tripod', 'mic', 'audioInterface', 'headphone',
+                   'keyLight', 'fillLight', 'ambientLight', 'lightStand', 'computer', 'monitor', 'network',
+                   'soundproof', 'backdrop', 'furniture', 'displayRack'];
+
+    const VIDEO_ITEMS = ['camera', 'lens', 'captureCard', 'power', 'tripod'];
+    const AUDIO_ITEMS = ['mic', 'audioInterface', 'headphone'];
+    const LIGHTING_ITEMS = ['keyLight', 'fillLight', 'ambientLight', 'lightStand'];
+    const COMPUTING_ITEMS = ['computer', 'monitor', 'network'];
+    const SPACE_ITEMS = ['soundproof', 'backdrop', 'furniture', 'displayRack'];
+
+    let currentConfig = 'mid';
+    let currentLang = 'zh';
+
+    const I18N = {
+      zh: {
+        pageTitle: '直播间硬件配置标准化清单 (BOM)',
+        pageDesc: '本清单用于核算直播间初期投入成本。根据以下项目填写具体的品牌、型号及单价。',
+        backToCalc: '返回报价测算',
+        selectConfig: '选择配置方案',
+        highConfig: '高配方案',
+        midConfig: '中配方案',
+        lowConfig: '低配方案',
+        cat1: '视频采集系统',
+        cat2: '音频系统',
+        cat3: '灯光系统',
+        cat4: '计算与网络系统',
+        cat5: '空间装修与辅助',
+        thItem: '项目',
+        thRef: '参考型号',
+        thPrice: '单价',
+        thQty: '数量',
+        thSubtotal: '小计',
+        summaryTitle: '汇总统计 (Total)',
+        sumVideo: '视频采集系统',
+        sumAudio: '音频系统',
+        sumLighting: '灯光系统',
+        sumComputing: '计算与网络',
+        sumSpace: '空间装修',
+        sumTotal: '设备总投入',
+        refPriceTitle: '参考预算区间',
+        highTier: '高配方案',
+        midTier: '中配方案',
+        lowTier: '低配方案',
+        applyBtn: '应用到报价测算',
+        resetBtn: '重置为默认',
+        exportBtn: '导出清单',
+        item_camera: '主摄像机',
+        item_lens: '镜头',
+        item_captureCard: '视频采集卡',
+        item_power: '相机电源',
+        item_tripod: '相机支架',
+        item_mic: '麦克风',
+        item_audioInterface: '声卡/调音台',
+        item_headphone: '监听耳机',
+        item_keyLight: '主灯/顶灯',
+        item_fillLight: '补光灯/轮廓灯',
+        item_ambientLight: '背景氛围灯',
+        item_lightStand: '灯光支架',
+        item_computer: '直播电脑',
+        item_monitor: '显示器',
+        item_network: '网络设备',
+        item_soundproof: '隔音工程',
+        item_backdrop: '背景墙',
+        item_furniture: '直播桌椅',
+        item_displayRack: '样品展示架'
+      },
+      en: {
+        pageTitle: 'Livestream Equipment BOM',
+        pageDesc: 'This checklist is used to calculate the initial investment cost of a livestream studio.',
+        backToCalc: 'Back to Calculator',
+        selectConfig: 'Select Configuration',
+        highConfig: 'High-End',
+        midConfig: 'Mid-Range',
+        lowConfig: 'Budget',
+        cat1: 'Video Capture',
+        cat2: 'Audio System',
+        cat3: 'Lighting System',
+        cat4: 'Computing & Network',
+        cat5: 'Space & Others',
+        thItem: 'Item',
+        thRef: 'Reference',
+        thPrice: 'Price',
+        thQty: 'Qty',
+        thSubtotal: 'Subtotal',
+        summaryTitle: 'Summary (Total)',
+        sumVideo: 'Video Capture',
+        sumAudio: 'Audio System',
+        sumLighting: 'Lighting',
+        sumComputing: 'Computing & Network',
+        sumSpace: 'Space & Others',
+        sumTotal: 'Total Investment',
+        refPriceTitle: 'Reference Budget Range',
+        highTier: 'High-End',
+        midTier: 'Mid-Range',
+        lowTier: 'Budget',
+        applyBtn: 'Apply to Calculator',
+        resetBtn: 'Reset to Default',
+        exportBtn: 'Export List',
+        item_camera: 'Main Camera',
+        item_lens: 'Lens',
+        item_captureCard: 'Capture Card',
+        item_power: 'Camera Power',
+        item_tripod: 'Camera Stand',
+        item_mic: 'Microphone',
+        item_audioInterface: 'Audio Interface',
+        item_headphone: 'Headphones',
+        item_keyLight: 'Key Light',
+        item_fillLight: 'Fill Light',
+        item_ambientLight: 'Ambient Light',
+        item_lightStand: 'Light Stand',
+        item_computer: 'Computer',
+        item_monitor: 'Monitor',
+        item_network: 'Network',
+        item_soundproof: 'Soundproofing',
+        item_backdrop: 'Backdrop',
+        item_furniture: 'Desk & Chair',
+        item_displayRack: 'Display Rack'
+      }
+    };
+
+    function $(id) { return document.getElementById(id); }
+
+    function fmtMoney(n) {
+      return '¥' + n.toLocaleString('zh-CN');
+    }
+
+    function selectConfig(config) {
+      currentConfig = config;
+      document.querySelectorAll('.config-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.config-btn.${config}`).classList.add('active');
+
+      const preset = CONFIGS[config];
+      ITEMS.forEach(item => {
+        const priceEl = $(`price_${item}`);
+        const refEl = $(`ref_${item}`);
+        if (priceEl && preset[item]) {
+          priceEl.value = preset[item].price;
+        }
+        if (refEl && preset[item]) {
+          refEl.textContent = currentLang === 'zh' ? preset[item].ref : preset[item].refEn;
+        }
+      });
+      compute();
+    }
+
+    function compute() {
+      let videoTotal = 0, audioTotal = 0, lightingTotal = 0, computingTotal = 0, spaceTotal = 0;
+
+      ITEMS.forEach(item => {
+        const price = Number($(`price_${item}`).value) || 0;
+        const qty = Number($(`qty_${item}`).value) || 0;
+        const subtotal = price * qty;
+        $(`sub_${item}`).textContent = fmtMoney(subtotal);
+
+        if (VIDEO_ITEMS.includes(item)) videoTotal += subtotal;
+        else if (AUDIO_ITEMS.includes(item)) audioTotal += subtotal;
+        else if (LIGHTING_ITEMS.includes(item)) lightingTotal += subtotal;
+        else if (COMPUTING_ITEMS.includes(item)) computingTotal += subtotal;
+        else if (SPACE_ITEMS.includes(item)) spaceTotal += subtotal;
+      });
+
+      $('sum_video').textContent = fmtMoney(videoTotal);
+      $('sum_audio').textContent = fmtMoney(audioTotal);
+      $('sum_lighting').textContent = fmtMoney(lightingTotal);
+      $('sum_computing').textContent = fmtMoney(computingTotal);
+      $('sum_space').textContent = fmtMoney(spaceTotal);
+
+      const total = videoTotal + audioTotal + lightingTotal + computingTotal + spaceTotal;
+      $('sum_total').textContent = fmtMoney(total);
+    }
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang][key]) {
+          el.textContent = I18N[lang][key];
+        }
+      });
+
+      // Update reference texts
+      const preset = CONFIGS[currentConfig];
+      ITEMS.forEach(item => {
+        const refEl = $(`ref_${item}`);
+        if (refEl && preset[item]) {
+          refEl.textContent = lang === 'zh' ? preset[item].ref : preset[item].refEn;
+        }
+      });
+    }
+
+    function resetToDefault() {
+      selectConfig(currentConfig);
+    }
+
+    function applyToMainCalc() {
+      const total = $('sum_total').textContent.replace(/[¥,]/g, '');
+      // Store in localStorage for the main page to read
+      localStorage.setItem('equipmentTotal', total);
+      localStorage.setItem('equipmentConfig', currentConfig);
+      alert(currentLang === 'zh' ?
+        `设备总投入 ${$('sum_total').textContent} 已保存，返回报价测算页面后将自动填入。` :
+        `Equipment total ${$('sum_total').textContent} saved. It will be auto-filled when you return to the calculator.`
+      );
+      window.location.href = 'tsp-pricing.html';
+    }
+
+    function exportData() {
+      let csv = '项目,参考型号,单价,数量,小计\n';
+      ITEMS.forEach(item => {
+        const name = I18N[currentLang][`item_${item}`] || item;
+        const ref = $(`ref_${item}`).textContent;
+        const price = $(`price_${item}`).value;
+        const qty = $(`qty_${item}`).value;
+        const sub = $(`sub_${item}`).textContent;
+        csv += `"${name}","${ref}",${price},${qty},"${sub}"\n`;
+      });
+
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `livestream-equipment-${currentConfig}-${new Date().toISOString().slice(0,10)}.csv`;
+      link.click();
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      selectConfig('mid');
+    });
+  </script>
+</body>
+</html>
