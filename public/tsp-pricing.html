@@ -1147,18 +1147,6 @@
           <div class="sub-bd">
             <div class="grid2" style="margin-bottom:12px;">
               <div class="field">
-                <label><span data-i18n="adsBudget">广告预算（月）</span></label>
-                <input id="ads_budget" type="number" value="50000">
-                <div class="hint" data-i18n="adsBudgetHint">商户每月投放的广告费用（投流预算）</div>
-              </div>
-              <div class="field">
-                <label><span data-i18n="clientTotalInvest">商户总投入</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
-                <div id="clientTotalInvestBox" class="roi-result-box" style="font-size:14px;">-</div>
-                <div class="hint" data-i18n="clientTotalInvestHint">服务费 + 分佣 + 广告费</div>
-              </div>
-            </div>
-            <div class="grid2" style="margin-bottom:12px;">
-              <div class="field">
                 <label><span data-i18n="clientTargetRoi">商户目标 ROI</span> <span class="muted" data-i18n="clientTargetRoiHint">建议 ≥ 3</span></label>
                 <input id="target_roi_client" type="number" value="3" step="0.5">
                 <div class="hint" data-i18n="clientRoiFormula">商户 ROI = GMV / (服务费 + 分佣 + 广告费)</div>
@@ -1167,6 +1155,18 @@
                 <label><span data-i18n="clientActualRoi">实际商户 ROI</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
                 <div id="clientRoiBox" class="roi-result-box">-</div>
                 <div class="hint" data-i18n="clientRoiMono">GMV / (服务费 + 分佣 + 广告费)</div>
+              </div>
+            </div>
+            <div class="grid2" style="margin-bottom:12px;">
+              <div class="field">
+                <label><span data-i18n="clientAdsBudget">广告预算</span> <span class="muted" data-i18n="fromRoas">来自ROAS预测</span></label>
+                <div id="clientAdsBudgetBox" class="roi-result-box" style="font-size:14px;">-</div>
+                <div class="hint" data-i18n="clientAdsBudgetHint">= 结算GMV / ROAS</div>
+              </div>
+              <div class="field">
+                <label><span data-i18n="clientTotalInvest">商户总投入</span> <span class="muted" data-i18n="autoCalc">自动计算</span></label>
+                <div id="clientTotalInvestBox" class="roi-result-box" style="font-size:14px;">-</div>
+                <div class="hint" data-i18n="clientTotalInvestHint">服务费 + 分佣 + 广告费</div>
               </div>
             </div>
             <div class="smallnote" id="clientCoachText">-</div>
@@ -1585,7 +1585,9 @@
         clientView: "📈 商户视角（甲方）",
         clientViewPill: "GMV / 商户总投入",
         adsBudget: "广告预算（月）",
-        adsBudgetHint: "商户每月投放的广告费用（投流预算）",
+        clientAdsBudget: "广告预算",
+        fromRoas: "来自ROAS预测",
+        clientAdsBudgetHint: "= 结算GMV / ROAS",
         clientTotalInvest: "商户总投入",
         clientTotalInvestHint: "服务费 + 分佣 + 广告费",
         clientTargetRoi: "商户目标 ROI",
@@ -1892,8 +1894,9 @@
         bizCheckDesc: "Core ROI (service fee break-even) + Full ROI (commission = profit)",
         clientView: "📈 Client View (Merchant)",
         clientViewPill: "GMV / Client Total Investment",
-        adsBudget: "Ads Budget (Monthly)",
-        adsBudgetHint: "Monthly advertising spend (traffic budget)",
+        clientAdsBudget: "Ads Budget",
+        fromRoas: "From ROAS",
+        clientAdsBudgetHint: "= GMV / ROAS",
         clientTotalInvest: "Client Total Investment",
         clientTotalInvestHint: "Service Fee + Commission + Ads",
         clientTargetRoi: "Client Target ROI",
@@ -2363,13 +2366,14 @@
 
       // ========== CLIENT (商户) ROI ==========
       const targetROIClient = toNum($("target_roi_client").value, 3);
-      const adsBudget = toNum($("ads_budget").value, 0);
+      // 使用上面 ROAS 预测的广告预算 adsBudgetEst
       // 商户总投入 = 服务费 + 分佣 + 广告费
-      const clientTotalInvest = totalRevenue + adsBudget;
+      const clientTotalInvest = totalRevenue + adsBudgetEst;
       // 商户 ROI = GMV / (服务费 + 分佣 + 广告费)  -- 商户花 1 元能带来多少 GMV
       const clientROI = clientTotalInvest > 0 ? (netGMV / clientTotalInvest) : 0;
 
-      // 显示商户总投入
+      // 显示广告预算和商户总投入
+      $("clientAdsBudgetBox").textContent = fmtMoney(adsBudgetEst, true);
       $("clientTotalInvestBox").textContent = fmtMoney(clientTotalInvest, true);
 
       // Helper function to update ROI box with color class
