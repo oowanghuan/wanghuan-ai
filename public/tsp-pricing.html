@@ -732,12 +732,6 @@
               </thead>
               <tbody>
                 <tr>
-                  <td class="rowtitle" data-i18n="daily">Daily（日常）</td>
-                  <td class="num"><input id="live_daily_hours" type="number" value="120" style="width:110px"></td>
-                  <td class="num"><input id="live_daily_rate" type="number" value="300" style="width:110px"></td>
-                  <td class="num mono" id="live_daily_sub">-</td>
-                </tr>
-                <tr>
                   <td class="rowtitle" data-i18n="sLevel">S（SBD / Mega）</td>
                   <td class="num"><input id="live_s_hours" type="number" value="24" style="width:110px"></td>
                   <td class="num"><input id="live_s_rate" type="number" value="800" style="width:110px"></td>
@@ -748,6 +742,12 @@
                   <td class="num"><input id="live_ab_hours" type="number" value="24" style="width:110px"></td>
                   <td class="num"><input id="live_ab_rate" type="number" value="500" style="width:110px"></td>
                   <td class="num mono" id="live_ab_sub">-</td>
+                </tr>
+                <tr>
+                  <td class="rowtitle" data-i18n="daily">Daily（日常）</td>
+                  <td class="num"><input id="live_daily_hours" type="number" value="120" style="width:110px"></td>
+                  <td class="num"><input id="live_daily_rate" type="number" value="300" style="width:110px"></td>
+                  <td class="num mono" id="live_daily_sub">-</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -2650,16 +2650,16 @@
         <div class="quick-section-title">🎬 <span data-i18n-quick="liveWorkload">直播工作量（小时/月）</span></div>
         <div class="quick-grid">
           <div class="quick-field">
-            <label>Daily <span style="color:var(--muted);font-size:10px;" data-i18n-quick="dailyDesc">日常</span></label>
-            <input id="q_live_daily" type="number" value="120">
-          </div>
-          <div class="quick-field">
             <label>S <span style="color:var(--muted);font-size:10px;" data-i18n-quick="sDesc">SBD/Mega</span></label>
             <input id="q_live_s" type="number" value="24">
           </div>
-          <div class="quick-field full">
+          <div class="quick-field">
             <label>A/B <span style="color:var(--muted);font-size:10px;" data-i18n-quick="abDesc">PD/DD</span></label>
             <input id="q_live_ab" type="number" value="24">
+          </div>
+          <div class="quick-field full">
+            <label>Daily <span style="color:var(--muted);font-size:10px;" data-i18n-quick="dailyDesc">日常</span></label>
+            <input id="q_live_daily" type="number" value="120">
           </div>
         </div>
       </div>
@@ -2760,16 +2760,16 @@
         <div style="background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:10px; padding:12px; font-size:12px;">
           <div style="font-weight:600; color:var(--text); margin-bottom:6px;" data-i18n-quick="liveBreakdown">直播服务费</div>
           <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
-            <span style="color:var(--muted);">Daily</span>
-            <span style="color:var(--accent);" id="q_rate_live_daily">-/h</span>
-          </div>
-          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
             <span style="color:var(--muted);">S</span>
             <span style="color:var(--accent);" id="q_rate_live_s">-/h</span>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px; border-bottom:1px dashed rgba(255,255,255,.08); margin-bottom:8px; padding-bottom:8px;">
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
             <span style="color:var(--muted);">A/B</span>
             <span style="color:var(--accent);" id="q_rate_live_ab">-/h</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px; border-bottom:1px dashed rgba(255,255,255,.08); margin-bottom:8px; padding-bottom:8px;">
+            <span style="color:var(--muted);">Daily</span>
+            <span style="color:var(--accent);" id="q_rate_live_daily">-/h</span>
           </div>
           <div style="font-weight:600; color:var(--text); margin-bottom:6px;" data-i18n-quick="videoBreakdown">短视频服务费</div>
           <div style="display:flex; justify-content:space-between; padding:3px 0; padding-left:12px;">
