@@ -2975,9 +2975,9 @@
         // 建议报价 = 总成本 × (1 + 利润率)
         const quote = totalCost * (1 + profitMargin);
 
-        // 报价拆分：直播70% / 短视频30%，再按级别内部分配
-        const liveRatio = 0.7;
-        const videoRatio = 0.3;
+        // 报价拆分：直播80% / 短视频20%，再按级别内部分配
+        const liveRatio = 0.8;
+        const videoRatio = 0.2;
         const liveFee = quote * liveRatio;
         const videoFee = quote * videoRatio;
 
