@@ -125,6 +125,18 @@ const activeTag = ref(allTag.value)
 
 const posts = ref([
   {
+    title: 'AI Coding Template 项目规模化开发探讨',
+    subtitle: '会议纪要：功能拆解、大文档管理与 API 契约驱动开发',
+    slug: 'ai-coding-template-scaling',
+    date: '2024-12-29',
+    dateDisplay: '2024/12/29',
+    tags: ['AI-Coding', 'Spec-Driven', 'Architecture'],
+    summary: '从简单工具到企业级系统的规模化挑战，以及"抓大放小、契约优先"的解决方案：领域驱动拆分、API 契约优先、AI 角色模拟、大文档 Token 优化等最佳实践。',
+    readingMins: 15,
+    link: '/blog/ai-coding-template-scaling',
+    isInternal: true
+  },
+  {
     title: 'AI 规划能力与自我反思机制：一次深度对话',
     subtitle: '从"能写代码"到"能自校验"的关键机制',
     slug: 'ai-planning-and-reflection',

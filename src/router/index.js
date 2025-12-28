@@ -8,6 +8,7 @@ import About from '../views/About.vue'
 import AiThreeNonDeliverances from '../views/articles/AiThreeNonDeliverances.vue'
 import AiCodingTemplateToWorkflow from '../views/articles/AiCodingTemplateToWorkflow.vue'
 import AiPlanningAndReflection from '../views/articles/AiPlanningAndReflection.vue'
+import AiCodingTemplateScaling from '../views/articles/AiCodingTemplateScaling.vue'
 
 const routes = [
   {
@@ -45,6 +46,11 @@ const routes = [
     path: '/blog/ai-planning-and-reflection',
     name: 'AiPlanningAndReflection',
     component: AiPlanningAndReflection
+  },
+  {
+    path: '/blog/ai-coding-template-scaling',
+    name: 'AiCodingTemplateScaling',
+    component: AiCodingTemplateScaling
   }
 ]
 
