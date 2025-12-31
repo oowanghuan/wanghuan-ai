@@ -9,6 +9,7 @@ import AiThreeNonDeliverances from '../views/articles/AiThreeNonDeliverances.vue
 import AiCodingTemplateToWorkflow from '../views/articles/AiCodingTemplateToWorkflow.vue'
 import AiPlanningAndReflection from '../views/articles/AiPlanningAndReflection.vue'
 import AiCodingTemplateScaling from '../views/articles/AiCodingTemplateScaling.vue'
+import ProfessionalDevelopersControl from '../views/articles/ProfessionalDevelopersControl.vue'
 
 const routes = [
   {
@@ -51,6 +52,11 @@ const routes = [
     path: '/blog/ai-coding-template-scaling',
     name: 'AiCodingTemplateScaling',
     component: AiCodingTemplateScaling
+  },
+  {
+    path: '/blog/professional-developers-control',
+    name: 'ProfessionalDevelopersControl',
+    component: ProfessionalDevelopersControl
   }
 ]
 
