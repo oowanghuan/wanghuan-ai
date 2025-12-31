@@ -131,8 +131,8 @@ const posts = ref([
     date: '2024-12-31',
     dateDisplay: '2024/12/31',
     tags: ['AI-Coding', 'Reflection', 'Role'],
-    summary: '专业工程师不只靠感觉，而是靠掌控和控制。AI 并不能替代软件工程经验，职业开发者的价值正从写代码向监督代码、评估代码、架构控制转移。',
-    readingMins: 8,
+    summary: '专业工程师不只靠感觉，而是靠掌控和控制。AI 并不能替代软件工程经验，职业开发者的价值正从写代码向监督代码、评估代码、架构控制转移。附：团队/流程/个人/技术四层可落地操作指南。',
+    readingMins: 18,
     link: '/blog/professional-developers-control',
     isInternal: true
   },
