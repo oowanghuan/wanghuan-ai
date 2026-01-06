@@ -10,6 +10,7 @@ import AiCodingTemplateToWorkflow from '../views/articles/AiCodingTemplateToWork
 import AiPlanningAndReflection from '../views/articles/AiPlanningAndReflection.vue'
 import AiCodingTemplateScaling from '../views/articles/AiCodingTemplateScaling.vue'
 import ProfessionalDevelopersControl from '../views/articles/ProfessionalDevelopersControl.vue'
+import AiSuperIntern from '../views/articles/AiSuperIntern.vue'
 
 const routes = [
   {
@@ -57,6 +58,11 @@ const routes = [
     path: '/blog/professional-developers-control',
     name: 'ProfessionalDevelopersControl',
     component: ProfessionalDevelopersControl
+  },
+  {
+    path: '/blog/ai-super-intern',
+    name: 'AiSuperIntern',
+    component: AiSuperIntern
   }
 ]
 
