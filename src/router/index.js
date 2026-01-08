@@ -11,6 +11,7 @@ import AiPlanningAndReflection from '../views/articles/AiPlanningAndReflection.v
 import AiCodingTemplateScaling from '../views/articles/AiCodingTemplateScaling.vue'
 import ProfessionalDevelopersControl from '../views/articles/ProfessionalDevelopersControl.vue'
 import AiSuperIntern from '../views/articles/AiSuperIntern.vue'
+import AiSuperInternEn from '../views/articles/AiSuperInternEn.vue'
 
 const routes = [
   {
@@ -63,6 +64,11 @@ const routes = [
     path: '/blog/ai-super-intern',
     name: 'AiSuperIntern',
     component: AiSuperIntern
+  },
+  {
+    path: '/blog/ai-super-intern-en',
+    name: 'AiSuperInternEn',
+    component: AiSuperInternEn
   }
 ]
 

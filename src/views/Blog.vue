@@ -125,6 +125,18 @@ const activeTag = ref(allTag.value)
 
 const posts = ref([
   {
+    title: "Don't Treat AI as a God, Treat It as Your 24/7 \"Super Intern\"",
+    subtitle: 'How to Actually Use AI in Real Life and Real Work',
+    slug: 'ai-super-intern-en',
+    date: '2026-01-08',
+    dateDisplay: '2026/01/08',
+    tags: ['AI-Guide', 'Mindset', 'Beginner', 'English'],
+    summary: 'Demystifying AI: it\'s a "word prediction master + super database", not a god. When in doubt, ask AI. Hand the "mentally draining first draft" to AI, keep the "valuable judgment call" for yourself. Includes: career-level practice guide + Prompt/Context/Task optimization tips.',
+    readingMins: 15,
+    link: '/blog/ai-super-intern-en',
+    isInternal: true
+  },
+  {
     title: '写给朋友们：别把 AI 当神，把它当那个随叫随到的「超级实习生」',
     subtitle: '在真实生活和真实职场里，AI 到底应该怎么用',
     slug: 'ai-super-intern',
