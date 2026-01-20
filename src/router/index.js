@@ -12,6 +12,7 @@ import AiCodingTemplateScaling from '../views/articles/AiCodingTemplateScaling.v
 import ProfessionalDevelopersControl from '../views/articles/ProfessionalDevelopersControl.vue'
 import AiSuperIntern from '../views/articles/AiSuperIntern.vue'
 import AiSuperInternEn from '../views/articles/AiSuperInternEn.vue'
+import ClaudeCodeOnboarding from '../views/articles/ClaudeCodeOnboarding.vue'
 
 const routes = [
   {
@@ -69,6 +70,11 @@ const routes = [
     path: '/blog/ai-super-intern-en',
     name: 'AiSuperInternEn',
     component: AiSuperInternEn
+  },
+  {
+    path: '/blog/claude-code-onboarding',
+    name: 'ClaudeCodeOnboarding',
+    component: ClaudeCodeOnboarding
   }
 ]
 

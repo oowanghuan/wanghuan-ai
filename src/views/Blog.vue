@@ -125,6 +125,18 @@ const activeTag = ref(allTag.value)
 
 const posts = ref([
   {
+    title: '写给新同事：Claude Code + AI Coding Template 入门指南',
+    subtitle: '从零开始，让你第一天就能和 AI 一起写代码',
+    slug: 'claude-code-onboarding',
+    date: '2026-01-19',
+    dateDisplay: '2026/01/19',
+    tags: ['AI-Coding', 'Onboarding', 'Tutorial'],
+    summary: '手把手教你使用 Claude Code 和 AI Coding Template：10分钟安装配置、8阶段工作流、Slash命令速查、实战演示。附新人第一周 Checklist 和常见问题 FAQ。',
+    readingMins: 20,
+    link: '/blog/claude-code-onboarding',
+    isInternal: true
+  },
+  {
     title: "Don't Treat AI as a God, Treat It as Your 24/7 \"Super Intern\"",
     subtitle: 'How to Actually Use AI in Real Life and Real Work',
     slug: 'ai-super-intern-en',
