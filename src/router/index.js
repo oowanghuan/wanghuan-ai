@@ -13,6 +13,7 @@ import ProfessionalDevelopersControl from '../views/articles/ProfessionalDevelop
 import AiSuperIntern from '../views/articles/AiSuperIntern.vue'
 import AiSuperInternEn from '../views/articles/AiSuperInternEn.vue'
 import ClaudeCodeOnboarding from '../views/articles/ClaudeCodeOnboarding.vue'
+import AiTrainingMaterials from '../views/articles/AiTrainingMaterials.vue'
 
 const routes = [
   {
@@ -75,6 +76,11 @@ const routes = [
     path: '/blog/claude-code-onboarding',
     name: 'ClaudeCodeOnboarding',
     component: ClaudeCodeOnboarding
+  },
+  {
+    path: '/blog/ai-training-materials',
+    name: 'AiTrainingMaterials',
+    component: AiTrainingMaterials
   }
 ]
 

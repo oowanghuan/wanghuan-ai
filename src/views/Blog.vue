@@ -125,6 +125,18 @@ const activeTag = ref(allTag.value)
 
 const posts = ref([
   {
+    title: 'AI 指挥官培训系列',
+    subtitle: '从执行者到指挥官：掌握 AI 协作的核心心法与实战技能',
+    slug: 'ai-training-materials',
+    date: '2026-01-22',
+    dateDisplay: '2026/01/22',
+    tags: ['AI-Coding', 'Training', 'Audio'],
+    summary: '4 模块系统培训：AI 工作流商业词汇 → 指挥官心态转变 → 作战策略 → 六步标准工作循环。包含音频讲解 + PDF 配套讲义。',
+    readingMins: 120,
+    link: '/blog/ai-training-materials',
+    isInternal: true
+  },
+  {
     title: '写给新同事：Claude Code + AI Coding Template 入门指南',
     subtitle: '从零开始，让你第一天就能和 AI 一起写代码',
     slug: 'claude-code-onboarding',
