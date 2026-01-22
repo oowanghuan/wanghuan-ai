@@ -137,6 +137,18 @@ const posts = ref([
     isInternal: true
   },
   {
+    title: 'AI Commander Training Series',
+    subtitle: 'From Executor to Commander: Master the Core Mindset and Skills of AI Collaboration',
+    slug: 'ai-training-materials-en',
+    date: '2026-01-22',
+    dateDisplay: '2026/01/22',
+    tags: ['AI-Coding', 'Training', 'Audio', 'English'],
+    summary: '4-module systematic training: AI Workflow Business Vocabulary → Commander Mindset Shift → Operational Strategy → 6-Step Standard Work Cycle. Includes audio lectures + PDF materials.',
+    readingMins: 120,
+    link: '/blog/ai-training-materials-en',
+    isInternal: true
+  },
+  {
     title: '写给新同事：Claude Code + AI Coding Template 入门指南',
     subtitle: '从零开始，让你第一天就能和 AI 一起写代码',
     slug: 'claude-code-onboarding',

@@ -7,20 +7,20 @@
           <span class="badge-icon">🎓</span>
           <span>AI Commander Training Series</span>
         </div>
-        <h1>AI 指挥官培训系列</h1>
-        <p class="subtitle">从执行者到指挥官：掌握 AI 协作的核心心法与实战技能</p>
+        <h1>AI Commander Training</h1>
+        <p class="subtitle">From Executor to Commander: Master the Mindset and Skills of AI Collaboration</p>
         <div class="header-stats">
           <div class="stat">
             <span class="stat-icon">📚</span>
-            <span>4 个模块</span>
+            <span>4 Modules</span>
           </div>
           <div class="stat">
             <span class="stat-icon">🎧</span>
-            <span>~2 小时音频</span>
+            <span>~2 Hours Audio</span>
           </div>
           <div class="stat">
             <span class="stat-icon">📄</span>
-            <span>配套 PDF 讲义</span>
+            <span>PDF Handouts</span>
           </div>
         </div>
       </div>
@@ -29,45 +29,45 @@
     <!-- Course Overview -->
     <section class="course-overview">
       <div class="container container-md">
-        <h2>课程概述</h2>
+        <h2>Course Overview</h2>
         <p class="overview-text">
-          这套培训材料将帮助你从"用 AI 的人"转变为"指挥 AI 的人"。
-          不是教你成为 AI 专家，而是帮你<strong>更清晰地工作、更好地决策、用 AI 作为杠杆而非借口</strong>。
+          This training will help you transform from "someone who uses AI" to "someone who commands AI".
+          It's not about becoming an AI expert — it's about <strong>working more clearly, making better decisions, and using AI as leverage, not as an excuse</strong>.
         </p>
         <div class="core-principle">
           <span class="principle-icon">🎯</span>
-          <span>核心原则：<strong>AI 执行，人类决策，责任永远在人</strong></span>
+          <span>Core Principle: <strong>AI executes, humans decide, responsibility always stays with humans</strong></span>
         </div>
         <div class="learning-path">
           <div class="path-item">
             <div class="path-number">0</div>
             <div class="path-content">
-              <h4>建立共同语言</h4>
-              <p>统一 AI 协作的核心概念和术语</p>
+              <h4>Shared Language</h4>
+              <p>Align on core AI collaboration concepts</p>
             </div>
           </div>
           <div class="path-arrow">→</div>
           <div class="path-item">
             <div class="path-number">1</div>
             <div class="path-content">
-              <h4>转变思维模式</h4>
-              <p>从执行者心态升级到指挥官心态</p>
+              <h4>Mindset Shift</h4>
+              <p>From executor to commander mentality</p>
             </div>
           </div>
           <div class="path-arrow">→</div>
           <div class="path-item">
             <div class="path-number">2</div>
             <div class="path-content">
-              <h4>掌握作战策略</h4>
-              <p>学习 AI 协作的战术和运营方法</p>
+              <h4>Operational Strategy</h4>
+              <p>Tactics for working with AI</p>
             </div>
           </div>
           <div class="path-arrow">→</div>
           <div class="path-item">
             <div class="path-number">3</div>
             <div class="path-content">
-              <h4>标准化工作流</h4>
-              <p>六步循环，形成可复用的工作模式</p>
+              <h4>Standard Workflow</h4>
+              <p>6-step cycle for repeatable results</p>
             </div>
           </div>
         </div>
@@ -77,38 +77,38 @@
     <!-- Modules -->
     <section class="modules-section">
       <div class="container container-md">
-        <h2>课程模块</h2>
+        <h2>Course Modules</h2>
 
         <!-- Module 0 -->
         <div class="module-card">
           <div class="module-header">
             <div class="module-badge part0">Part 0</div>
             <div class="module-title">
-              <h3>AI 工作流商业词汇</h3>
-              <p class="module-subtitle">AI Workflow Business Vocabulary</p>
+              <h3>AI Workflow Business Vocabulary</h3>
+              <p class="module-subtitle">A shared language for everyone</p>
             </div>
           </div>
           <div class="module-desc">
-            <p>建立共同语言，让团队所有人理解相同的概念、使用相同的术语。</p>
+            <p>Build a common vocabulary so everyone understands the same concepts and uses the same terms.</p>
             <ul class="module-points">
-              <li>什么是 "Prompt"？在工作中到底意味着什么</li>
-              <li>什么是 "Context"？如何用工作语言理解它</li>
-              <li>如何在没有技术恐惧的情况下思考 AI</li>
-              <li>AI 协作的基础心智模型</li>
+              <li>What is a "Prompt"? What does it actually mean in work terms</li>
+              <li>What is "Context"? How to understand it in business language</li>
+              <li>How to think about AI without technical fear</li>
+              <li>The foundational mental model for AI collaboration</li>
             </ul>
           </div>
           <div class="module-resources">
             <a :href="audioUrls.part0" target="_blank" class="resource-btn audio" :class="{ disabled: !audioUrls.part0 }">
               <span class="resource-icon">🎧</span>
               <span class="resource-text">
-                <strong>音频讲解</strong>
+                <strong>Audio</strong>
                 <small>33.1 MB · ~30 min</small>
               </span>
             </a>
             <a :href="pdfUrls.part0" target="_blank" class="resource-btn pdf" :class="{ disabled: !pdfUrls.part0 }">
               <span class="resource-icon">📄</span>
               <span class="resource-text">
-                <strong>PDF 讲义</strong>
+                <strong>PDF Handout</strong>
                 <small>12.9 MB</small>
               </span>
             </a>
@@ -120,31 +120,31 @@
           <div class="module-header">
             <div class="module-badge part1">Part 1</div>
             <div class="module-title">
-              <h3>从执行者到指挥官</h3>
-              <p class="module-subtitle">From Executor to Commander</p>
+              <h3>From Executor to Commander</h3>
+              <p class="module-subtitle">The critical mindset shift</p>
             </div>
           </div>
           <div class="module-desc">
-            <p>当 AI 成为工作流的一部分时，你的角色如何转变。</p>
+            <p>How your role changes when AI becomes part of the workflow.</p>
             <ul class="module-points">
-              <li><strong>AI 执行，你决策</strong>——核心分工原则</li>
-              <li>责任永远在人，不在工具</li>
-              <li>从"做事的人"到"指挥做事的人"</li>
-              <li>如何在心态上完成这个转变</li>
+              <li><strong>AI executes, you decide</strong> — the core division of labor</li>
+              <li>Responsibility always stays with humans, not tools</li>
+              <li>From "the person who does things" to "the person who directs things"</li>
+              <li>How to make this mindset transition</li>
             </ul>
           </div>
           <div class="module-resources">
             <a :href="audioUrls.part1" target="_blank" class="resource-btn audio" :class="{ disabled: !audioUrls.part1 }">
               <span class="resource-icon">🎧</span>
               <span class="resource-text">
-                <strong>音频讲解</strong>
+                <strong>Audio</strong>
                 <small>31.2 MB · ~28 min</small>
               </span>
             </a>
             <a :href="pdfUrls.part1" target="_blank" class="resource-btn pdf" :class="{ disabled: !pdfUrls.part1 }">
               <span class="resource-icon">📄</span>
               <span class="resource-text">
-                <strong>PDF 讲义</strong>
+                <strong>PDF Handout</strong>
                 <small>12.7 MB</small>
               </span>
             </a>
@@ -156,31 +156,31 @@
           <div class="module-header">
             <div class="module-badge part2">Part 2</div>
             <div class="module-title">
-              <h3>AI 指挥作战策略</h3>
-              <p class="module-subtitle">AI Command Operational Strategy</p>
+              <h3>AI Command Operational Strategy</h3>
+              <p class="module-subtitle">Practical methods for working with AI</p>
             </div>
           </div>
           <div class="module-desc">
-            <p>如何在实际工作中与 AI 协作——具体的操作方法。</p>
+            <p>How to actually work with AI — concrete operational methods.</p>
             <ul class="module-points">
-              <li>如何给 AI 分配任务</li>
-              <li>如何迭代和优化 AI 的输出</li>
-              <li>当 AI 出错时如何介入和纠正</li>
-              <li>真实场景案例：品牌运营、短视频内容、产品销售</li>
+              <li>How to assign tasks to AI</li>
+              <li>How to iterate and refine AI's output</li>
+              <li>When and how to intervene when AI is wrong</li>
+              <li>Real scenarios: brand operations, short-video content, product sales</li>
             </ul>
           </div>
           <div class="module-resources">
             <a :href="audioUrls.part2" target="_blank" class="resource-btn audio" :class="{ disabled: !audioUrls.part2 }">
               <span class="resource-icon">🎧</span>
               <span class="resource-text">
-                <strong>音频讲解</strong>
+                <strong>Audio</strong>
                 <small>29 MB · ~26 min</small>
               </span>
             </a>
             <a :href="pdfUrls.part2" target="_blank" class="resource-btn pdf" :class="{ disabled: !pdfUrls.part2 }">
               <span class="resource-icon">📄</span>
               <span class="resource-text">
-                <strong>PDF 讲义</strong>
+                <strong>PDF Handout</strong>
                 <small>12.5 MB</small>
               </span>
             </a>
@@ -192,31 +192,31 @@
           <div class="module-header">
             <div class="module-badge part3">Part 3</div>
             <div class="module-title">
-              <h3>标准 AI 工作循环与汇报</h3>
-              <p class="module-subtitle">Standard AI Work Cycle & Reporting</p>
+              <h3>Standard AI Work Cycle & Reporting</h3>
+              <p class="module-subtitle">Making AI collaboration your default workflow</p>
             </div>
           </div>
           <div class="module-desc">
-            <p>AI 协作如何成为默认工作流，以及如何汇报工作成果。</p>
+            <p>How AI collaboration becomes the default workflow, and how to report results.</p>
             <ul class="module-points">
-              <li>六步标准工作循环：从任务定义到成果验收</li>
-              <li>如何沟通和汇报 AI 协作的工作成果</li>
-              <li>向上汇报的方法——管理层只关心结果，不关心工具</li>
-              <li>将 AI 作为杠杆，而不是借口</li>
+              <li>The 6-step standard work cycle: from task definition to result validation</li>
+              <li>How to communicate and report AI collaboration outcomes</li>
+              <li>Reporting upward — management cares about results, not tools</li>
+              <li>Using AI as leverage, not as an excuse</li>
             </ul>
           </div>
           <div class="module-resources">
             <a :href="audioUrls.part3" target="_blank" class="resource-btn audio" :class="{ disabled: !audioUrls.part3 }">
               <span class="resource-icon">🎧</span>
               <span class="resource-text">
-                <strong>音频讲解</strong>
+                <strong>Audio</strong>
                 <small>27.3 MB · ~25 min</small>
               </span>
             </a>
             <a :href="pdfUrls.part3" target="_blank" class="resource-btn pdf" :class="{ disabled: !pdfUrls.part3 }">
               <span class="resource-icon">📄</span>
               <span class="resource-text">
-                <strong>PDF 讲义</strong>
+                <strong>PDF Handout</strong>
                 <small>17 MB</small>
               </span>
             </a>
@@ -228,22 +228,22 @@
     <!-- How to Use -->
     <section class="how-to-use">
       <div class="container container-md">
-        <h2>如何使用这套材料</h2>
+        <h2>How to Use This Material</h2>
         <div class="use-steps">
           <div class="use-step">
             <div class="step-icon">🎧</div>
-            <h4>先听音频</h4>
-            <p>在通勤、运动、做家务时听，建立整体概念框架</p>
+            <h4>Listen First</h4>
+            <p>Listen during commute, exercise, or chores to build the conceptual framework</p>
           </div>
           <div class="use-step">
             <div class="step-icon">📄</div>
-            <h4>再看讲义</h4>
-            <p>对照 PDF 讲义，深入理解关键概念和方法论</p>
+            <h4>Read the Handouts</h4>
+            <p>Review the PDF handouts to deepen understanding of key concepts</p>
           </div>
           <div class="use-step">
             <div class="step-icon">💻</div>
-            <h4>最后实践</h4>
-            <p>用 Claude Code + AI Coding Template 在真实项目中练习</p>
+            <h4>Practice</h4>
+            <p>Apply what you learned in real projects using AI tools</p>
           </div>
         </div>
       </div>
@@ -252,21 +252,21 @@
     <!-- Related Resources -->
     <section class="related-section">
       <div class="container container-md">
-        <h2>配套资源</h2>
+        <h2>Related Resources</h2>
         <div class="related-grid">
-          <router-link to="/blog/claude-code-onboarding" class="related-card">
-            <span class="related-icon">📖</span>
+          <router-link to="/blog/ai-training-materials" class="related-card">
+            <span class="related-icon">🇨🇳</span>
             <div class="related-content">
-              <h4>Claude Code 入门指南</h4>
-              <p>新同事必读的 AI 编程工具入门教程</p>
+              <h4>Chinese Version</h4>
+              <p>View this page in Chinese</p>
             </div>
             <span class="related-arrow">→</span>
           </router-link>
-          <router-link to="/blog/ai-super-intern" class="related-card">
+          <router-link to="/blog/ai-super-intern-en" class="related-card">
             <span class="related-icon">🧠</span>
             <div class="related-content">
-              <h4>把 AI 当超级实习生</h4>
-              <p>建立正确的 AI 协作心智模型</p>
+              <h4>Treat AI as Super Intern</h4>
+              <p>Build the right mental model for AI</p>
             </div>
             <span class="related-arrow">→</span>
           </router-link>
@@ -274,18 +274,10 @@
             <span class="related-icon">🛠️</span>
             <div class="related-content">
               <h4>AI Coding Template</h4>
-              <p>团队 AI 协作开发框架模板</p>
+              <p>Team AI collaboration framework</p>
             </div>
             <span class="related-arrow">→</span>
           </a>
-          <router-link to="/blog/ai-training-materials-en" class="related-card">
-            <span class="related-icon">🌐</span>
-            <div class="related-content">
-              <h4>English Version</h4>
-              <p>View this page in English</p>
-            </div>
-            <span class="related-arrow">→</span>
-          </router-link>
         </div>
       </div>
     </section>
@@ -294,13 +286,13 @@
     <footer class="training-footer">
       <div class="container container-md">
         <div class="footer-content">
-          <p>有问题或建议？欢迎联系我</p>
+          <p>Questions or feedback? Feel free to reach out</p>
           <a href="mailto:oowanghuan@gmail.com" class="contact-btn">
             <span>📧</span> oowanghuan@gmail.com
           </a>
         </div>
         <div class="back-link">
-          <router-link to="/blog">← 返回博客</router-link>
+          <router-link to="/blog">← Back to Blog</router-link>
         </div>
       </div>
     </footer>
@@ -431,7 +423,7 @@ const pdfUrls = reactive({
   padding: 16px 32px;
   border-radius: 12px;
   margin: 0 auto 48px;
-  max-width: 600px;
+  max-width: 700px;
   font-size: 15px;
   color: #92400e;
 }
