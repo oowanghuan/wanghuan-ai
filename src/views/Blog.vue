@@ -125,6 +125,18 @@ const activeTag = ref(allTag.value)
 
 const posts = ref([
   {
+    title: 'Spec-Driven 开发：让 AI 帮你从需求到代码',
+    subtitle: '整理自胥老师的实战经验分享',
+    slug: 'spec-driven-development',
+    date: '2026-01-22',
+    dateDisplay: '2026/01/22',
+    tags: ['AI-Coding', 'Spec-Driven', '方法论'],
+    summary: '传统团队 4-6 个月的需求文档工作，用四层文档体系 + AI 协作可以压缩到 2 天。效率差距不在工具，在方法论。',
+    readingMins: 8,
+    link: '/blog/spec-driven-development',
+    isInternal: true
+  },
+  {
     title: 'AI 指挥官培训系列',
     subtitle: '从执行者到指挥官：掌握 AI 协作的核心心法与实战技能',
     slug: 'ai-training-materials',

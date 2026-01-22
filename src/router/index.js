@@ -15,6 +15,7 @@ import AiSuperInternEn from '../views/articles/AiSuperInternEn.vue'
 import ClaudeCodeOnboarding from '../views/articles/ClaudeCodeOnboarding.vue'
 import AiTrainingMaterials from '../views/articles/AiTrainingMaterials.vue'
 import AiTrainingMaterialsEn from '../views/articles/AiTrainingMaterialsEn.vue'
+import SpecDrivenDevelopment from '../views/articles/SpecDrivenDevelopment.vue'
 
 const routes = [
   {
@@ -87,6 +88,11 @@ const routes = [
     path: '/blog/ai-training-materials-en',
     name: 'AiTrainingMaterialsEn',
     component: AiTrainingMaterialsEn
+  },
+  {
+    path: '/blog/spec-driven-development',
+    name: 'SpecDrivenDevelopment',
+    component: SpecDrivenDevelopment
   }
 ]
 
