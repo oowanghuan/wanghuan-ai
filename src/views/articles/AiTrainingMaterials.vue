@@ -112,6 +112,13 @@
                 <small>12.9 MB</small>
               </span>
             </a>
+            <button v-if="hasQuiz('part0')" class="resource-btn quiz" @click="openQuiz('part0')">
+              <span class="resource-icon">📝</span>
+              <span class="resource-text">
+                <strong>参加测验</strong>
+                <small>{{ quizQuestions.part0.length }} 道题</small>
+              </span>
+            </button>
           </div>
         </div>
 
@@ -148,6 +155,13 @@
                 <small>12.7 MB</small>
               </span>
             </a>
+            <button v-if="hasQuiz('part1')" class="resource-btn quiz" @click="openQuiz('part1')">
+              <span class="resource-icon">📝</span>
+              <span class="resource-text">
+                <strong>参加测验</strong>
+                <small>{{ quizQuestions.part1.length }} 道题</small>
+              </span>
+            </button>
           </div>
         </div>
 
@@ -184,6 +198,13 @@
                 <small>12.5 MB</small>
               </span>
             </a>
+            <button v-if="hasQuiz('part2')" class="resource-btn quiz" @click="openQuiz('part2')">
+              <span class="resource-icon">📝</span>
+              <span class="resource-text">
+                <strong>参加测验</strong>
+                <small>{{ quizQuestions.part2.length }} 道题</small>
+              </span>
+            </button>
           </div>
         </div>
 
@@ -220,6 +241,13 @@
                 <small>17 MB</small>
               </span>
             </a>
+            <button v-if="hasQuiz('part3')" class="resource-btn quiz" @click="openQuiz('part3')">
+              <span class="resource-icon">📝</span>
+              <span class="resource-text">
+                <strong>参加测验</strong>
+                <small>{{ quizQuestions.part3.length }} 道题</small>
+              </span>
+            </button>
           </div>
         </div>
       </div>
@@ -304,11 +332,22 @@
         </div>
       </div>
     </footer>
+
+    <!-- Quiz Component -->
+    <TrainingQuiz
+      :visible="showQuiz"
+      :questions="currentQuizQuestions"
+      :meta="currentQuizMeta"
+      :partKey="currentQuizPart"
+      @close="closeQuiz"
+    />
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, ref, computed } from 'vue'
+import TrainingQuiz from '@/components/TrainingQuiz.vue'
+import { quizQuestions, quizMeta } from '@/data/quizQuestions'
 
 const R2_BASE = 'https://pub-33689c7bd4e649ef8c405747dff3c92b.r2.dev'
 
@@ -325,6 +364,31 @@ const pdfUrls = reactive({
   part2: `${R2_BASE}/Part%202%20AI_Command_Operational_Strategy.pdf`,
   part3: `${R2_BASE}/Part%203%20Standard_AI_Work_Cycle.pdf`,
 })
+
+// Quiz state
+const showQuiz = ref(false)
+const currentQuizPart = ref('part0')
+
+const currentQuizQuestions = computed(() => {
+  return quizQuestions[currentQuizPart.value] || []
+})
+
+const currentQuizMeta = computed(() => {
+  return quizMeta[currentQuizPart.value] || {}
+})
+
+const hasQuiz = (part) => {
+  return quizQuestions[part] && quizQuestions[part].length > 0
+}
+
+const openQuiz = (part) => {
+  currentQuizPart.value = part
+  showQuiz.value = true
+}
+
+const closeQuiz = () => {
+  showQuiz.value = false
+}
 </script>
 
 <style scoped>
@@ -637,6 +701,18 @@ const pdfUrls = reactive({
 .resource-btn.pdf:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(248, 113, 113, 0.3);
+}
+
+.resource-btn.quiz {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1e40af;
+  border: none;
+  cursor: pointer;
+}
+
+.resource-btn.quiz:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .resource-btn.disabled {
