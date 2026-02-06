@@ -12,9 +12,13 @@
 import Navbar from './components/Navbar.vue'
 import Footer from './components/Footer.vue'
 import { inject } from '@vercel/analytics'
+import { injectSpeedInsights } from '@vercel/speed-insights'
 
 // 初始化 Vercel Analytics
 inject()
+
+// 初始化 Vercel Speed Insights
+injectSpeedInsights()
 </script>
 
 <style>
